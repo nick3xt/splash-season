@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SPLASH SEASON — NBA Playoffs 3PT Pick'em</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0a0a0a;--dark:#111;--dark2:#1a1a1a;--dark3:#222;--dark4:#2a2a2a;
+  --gold:#fdb927;--gold-dim:#c9981f;--gold-glow:rgba(253,185,39,0.18);
+  --purple:#552583;--purple-light:#7a3db8;--purple-dim:#3d1a60;
+  --white:#f5f5f5;--gray:#888;--gray-light:#bbb;
+  --red:#e74c3c;--green:#2ecc71;--green-dim:#1a7a42;
+  --border:rgba(253,185,39,0.15);--border-purple:rgba(85,37,131,0.4);
+  --t1:#fdb927;--t2:#7a3db8;--t3:#666;
+}
+html,body{height:100%;background:var(--black);color:var(--white);font-family:'Inter',sans-serif;overflow-x:hidden}
+h1,h2,h3,.bebas{font-family:'Bebas Neue',sans-serif;letter-spacing:0.04em}
+.raj{font-family:'Rajdhani',sans-serif}
+a{color:var(--gold);text-decoration:none}
+img{max-width:100%}
+button{cursor:pointer;font-family:'Inter',sans-serif}
+input,select,textarea{font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--dark2)}
+::-webkit-scrollbar-thumb{background:var(--dark4);border-radius:3px}
+
+/* LAYOUT */
+#app{display:flex;flex-direction:column;min-height:100vh}
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--black);padding:20px}
+#main-app{display:none;flex-direction:column;min-height:100vh}
+
+/* LOGIN */
+.login-card{
+  background:var(--dark);border:1px solid var(--border);border-radius:16px;
+  padding:48px 40px;width:100%;max-width:440px;text-align:center;
+  box-shadow:0 0 60px var(--gold-glow),0 20px 40px rgba(0,0,0,0.6);
+  position:relative;overflow:hidden;
+}
+.login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--gold),var(--purple))}
+.jersey-display{width:100px;height:120px;margin:0 auto 20px;display:flex;align-items:center;justify-content:center}
+.jersey-svg{width:100px;height:120px;filter:drop-shadow(0 0 20px var(--gold-glow))}
+.app-title{font-size:52px;line-height:1;background:linear-gradient(135deg,var(--gold),#fff8dc,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.app-subtitle{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--purple-light);margin-bottom:24px}
+.kobe-quote{font-size:13px;font-style:italic;color:var(--gray-light);line-height:1.6;margin-bottom:28px;padding:0 8px;border-left:2px solid var(--gold-dim);text-align:left}
+.kobe-quote::before{content:'\201C'}
+.kobe-quote::after{content:'\201D'}
+.kobe-attr{font-size:11px;color:var(--gray);margin-top:4px;text-align:right;font-style:normal;letter-spacing:0.05em}
+.login-form{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+.form-group{display:flex;flex-direction:column;gap:6px;text-align:left}
+.form-group label{font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray)}
+.form-group input{background:var(--dark2);border:1px solid var(--dark4);border-radius:8px;padding:12px 14px;color:var(--white);font-size:15px;transition:border-color .2s,box-shadow .2s;outline:none}
+.form-group input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow)}
+.btn-login{background:linear-gradient(135deg,var(--gold),var(--gold-dim));color:var(--black);font-weight:700;font-size:15px;letter-spacing:0.08em;border:none;border-radius:8px;padding:14px;transition:transform .15s,box-shadow .15s;text-transform:uppercase;margin-top:4px}
+.btn-login:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(253,185,39,0.35)}
+.login-error{background:rgba(231,76,60,0.12);border:1px solid rgba(231,76,60,0.3);color:#ff6b6b;border-radius:8px;padding:10px 14px;font-size:13px;display:none}
+
+/* TOPBAR */
+#topbar{background:var(--dark);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,0.4)}
+.topbar-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em;background:linear-gradient(90deg,var(--gold),#fff8dc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.topbar-logo span{color:var(--purple-light);-webkit-text-fill-color:var(--purple-light)}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.topbar-user{font-size:13px;font-weight:500;color:var(--gray-light);display:flex;align-items:center;gap:8px}
+.user-badge{background:var(--gold);color:var(--black);font-size:11px;font-weight:700;letter-spacing:0.06em;padding:2px 7px;border-radius:4px;text-transform:uppercase;display:none}
+.btn-logout{background:var(--dark3);border:1px solid var(--dark4);color:var(--gray);font-size:12px;padding:6px 12px;border-radius:6px;transition:all .15s;font-weight:500}
+.btn-logout:hover{border-color:var(--red);color:var(--red)}
+
+/* TABS */
+#tabs{background:var(--dark2);border-bottom:1px solid var(--border);display:flex;gap:2px;padding:0 16px;overflow-x:auto;scrollbar-width:none;position:sticky;top:56px;z-index:99}
+#tabs::-webkit-scrollbar{display:none}
+.tab-btn{background:none;border:none;color:var(--gray);font-family:'Rajdhani',sans-serif;font-weight:600;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;padding:13px 16px;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;position:relative}
+.tab-btn:hover{color:var(--white)}
+.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.tab-admin{display:none}
+
+/* CONTENT */
+#content{flex:1;padding:20px;max-width:1100px;width:100%;margin:0 auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.section-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.section-title{font-size:28px;color:var(--gold)}
+.section-badge{background:var(--purple-dim);border:1px solid var(--border-purple);color:var(--purple-light);font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;letter-spacing:0.06em;text-transform:uppercase}
+
+/* LOADING */
+.loading-spinner{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:60px 20px;color:var(--gray)}
+.spinner{width:36px;height:36px;border:3px solid var(--dark4);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:60px 20px}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.empty-title{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gray);margin-bottom:8px}
+.empty-sub{font-size:14px;color:var(--gray)}
+
+/* SHOOTER SLOTS */
+.shooter-slots{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.shooter-slot{
+  flex:1;min-width:140px;max-width:200px;
+  background:var(--dark);border:2px dashed var(--dark4);border-radius:12px;
+  padding:14px;text-align:center;transition:all .2s;
+}
+.shooter-slot.filled{border-style:solid;border-color:var(--gold);background:rgba(253,185,39,0.06)}
+.slot-label{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);margin-bottom:6px}
+.slot-player{font-size:13px;font-weight:600;color:var(--white);line-height:1.3}
+.slot-team{font-size:11px;color:var(--gray);margin-top:2px}
+.slot-empty-icon{font-size:24px;color:var(--dark4)}
+.slot-tier{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px}
+
+/* GAME CARDS */
+.games-grid{display:flex;flex-direction:column;gap:16px}
+.game-card{background:var(--dark);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .2s}
+.game-card:hover{border-color:rgba(253,185,39,0.3)}
+.game-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--dark2);border-bottom:1px solid var(--border)}
+.game-matchup{display:flex;align-items:center;gap:10px;flex:1}
+.team-block{display:flex;align-items:center;gap:8px}
+.team-logo{width:32px;height:32px;object-fit:contain;filter:drop-shadow(0 0 4px rgba(0,0,0,0.4))}
+.team-logo-fallback{width:32px;height:32px;background:var(--dark4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--gray)}
+.team-abbr{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px}
+.vs-sep{color:var(--gray);font-size:12px;margin:0 6px}
+.game-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.game-status{font-size:11px;font-weight:600;letter-spacing:0.06em;padding:3px 8px;border-radius:4px}
+.status-scheduled{background:rgba(85,37,131,0.3);color:var(--purple-light)}
+.status-live{background:rgba(46,204,113,0.15);color:var(--green);animation:pulse 2s infinite}
+.status-final{background:var(--dark4);color:var(--gray)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.game-time{font-size:12px;color:var(--gray)}
+.game-pick-area{padding:16px 20px}
+.game-locked-msg{background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.2);border-radius:8px;padding:10px 14px;font-size:13px;color:#ff9999;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.pick-already-made{background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.2);border-radius:8px;padding:12px 16px;font-size:13px;color:var(--green);display:flex;align-items:center;gap:10px}
+.pick-already-made strong{color:var(--gold)}
+
+.team-pick-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.team-pick-cols{grid-template-columns:1fr}}
+.team-pick-col{background:var(--dark2);border:1px solid var(--dark4);border-radius:10px;padding:12px}
+.team-pick-label{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.team-pick-label img{width:20px;height:20px;object-fit:contain}
+.team-pick-label span{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:13px;color:var(--gold)}
+.player-select{
+  width:100%;background:var(--dark3);border:1px solid var(--dark4);
+  color:var(--white);border-radius:8px;padding:10px 12px;font-size:13px;
+  outline:none;transition:border-color .2s;cursor:pointer;margin-bottom:8px;
+}
+.player-select:focus{border-color:var(--gold)}
+.player-select option{background:var(--dark3)}
+.player-select optgroup{color:var(--gray);font-size:12px}
+.btn-pick-game{
+  width:100%;background:var(--gold);color:var(--black);font-weight:700;
+  font-size:13px;letter-spacing:0.06em;text-transform:uppercase;
+  border:none;border-radius:8px;padding:10px;transition:all .15s;
+}
+.btn-pick-game:hover{background:var(--gold-dim);transform:translateY(-1px)}
+.btn-pick-game:disabled{background:var(--dark4);color:var(--gray);pointer-events:none}
+
+/* PLAYER TABS (Stars/Role/Brick) */
+.players-table{display:flex;flex-direction:column;gap:8px}
+.player-row-stats{
+  display:flex;align-items:center;gap:12px;
+  background:var(--dark);border:1px solid var(--border);border-radius:10px;
+  padding:12px 16px;transition:border-color .2s;
+}
+.player-row-stats:hover{border-color:rgba(253,185,39,0.3)}
+.player-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;min-width:30px;text-align:right;color:var(--gray)}
+.player-rank.r1{color:var(--gold)}
+.player-rank.r2{color:#c0c0c0}
+.player-rank.r3{color:#cd7f32}
+.player-headshot{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--dark4);border:2px solid var(--dark4);flex-shrink:0}
+.player-headshot.t1{border-color:rgba(253,185,39,0.5)}
+.player-headshot.t2{border-color:rgba(122,61,184,0.5)}
+.player-headshot.t3{border-color:rgba(136,136,136,0.3)}
+.player-info{flex:1;min-width:0}
+.player-name{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-team-row{display:flex;align-items:center;gap:6px;margin-top:3px}
+.player-team-logo-sm{width:16px;height:16px;object-fit:contain}
+.player-team-abbr{font-size:12px;color:var(--gray-light)}
+.tier-badge{font-size:10px;font-weight:700;letter-spacing:0.06em;padding:2px 7px;border-radius:4px;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+.tier-1{background:rgba(253,185,39,0.15);color:var(--gold);border:1px solid rgba(253,185,39,0.25)}
+.tier-2{background:rgba(122,61,184,0.2);color:var(--purple-light);border:1px solid rgba(122,61,184,0.3)}
+.tier-3{background:rgba(136,136,136,0.12);color:var(--gray-light);border:1px solid rgba(136,136,136,0.2)}
+.player-stats-row{display:flex;gap:16px;flex-shrink:0}
+.stat-block{text-align:right}
+.stat-val{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;color:var(--gold);line-height:1}
+.stat-lbl{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:0.06em}
+.stat-val.green{color:var(--green)}
+.stat-val.purple{color:var(--purple-light)}
+.burned-overlay{opacity:0.4;position:relative}
+.burned-overlay::after{content:'🔥 BURNED';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:16px;color:#ff6b6b;letter-spacing:0.1em}
+@media(max-width:600px){.player-stats-row{display:none}.player-rank{display:none}}
+
+/* BRACKET */
+.bracket-container{overflow-x:auto;padding-bottom:12px}
+.bracket-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.bracket-conf{background:var(--dark);border:1px solid var(--border);border-radius:12px;padding:20px}
+.bracket-conf-title{font-size:22px;color:var(--gold);margin-bottom:16px;text-align:center}
+.bracket-series{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.series-card{background:var(--dark2);border:1px solid var(--dark4);border-radius:8px;padding:12px}
+.series-seeds{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.seed-team{display:flex;align-items:center;gap:8px}
+.seed-num{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gray);min-width:20px}
+.seed-name{font-weight:600;font-size:13px}
+.seed-logo{width:24px;height:24px;object-fit:contain}
+.series-score{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;color:var(--purple-light);text-align:center}
+
+/* MY PICKS TABLE */
+.picks-table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+thead th{background:var(--dark2);padding:12px 14px;text-align:left;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);border-bottom:1px solid var(--border);white-space:nowrap}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.04);transition:background .12s}
+tbody tr:hover{background:var(--dark2)}
+tbody tr:last-child{border-bottom:none}
+td{padding:12px 14px;vertical-align:middle}
+.pick-player-cell{display:flex;align-items:center;gap:10px}
+.pick-hs{width:32px;height:32px;border-radius:50%;object-fit:cover;background:var(--dark4)}
+.result-hit{color:var(--green);font-weight:700}
+.result-miss{color:var(--red);font-weight:700}
+.result-pending{color:var(--gray);font-style:italic}
+.points-earned{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;color:var(--gold)}
+.picks-totals{background:var(--dark2);border-top:2px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:flex-end;gap:10px;border-radius:0 0 12px 12px}
+.picks-totals-label{font-size:13px;color:var(--gray);font-weight:500}
+.picks-totals-val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold)}
+
+/* LEADERBOARD */
+.leaderboard-list{display:flex;flex-direction:column;gap:8px}
+.lb-row{display:flex;align-items:center;gap:14px;background:var(--dark);border:1px solid var(--border);border-radius:10px;padding:14px;transition:all .15s}
+.lb-row.me{border-color:var(--gold);background:rgba(253,185,39,0.04);box-shadow:0 0 0 1px var(--gold)}
+.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:24px;min-width:32px;text-align:center}
+.lb-rank.top1{color:var(--gold)}
+.lb-rank.top2{color:#c0c0c0}
+.lb-rank.top3{color:#cd7f32}
+.lb-rank.other{color:var(--gray)}
+.lb-medal{font-size:18px;min-width:24px;text-align:center}
+.lb-username{flex:1;font-weight:600;font-size:15px}
+.lb-username.me-text{color:var(--gold)}
+.lb-you-badge{font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;background:var(--gold);color:var(--black);padding:2px 6px;border-radius:4px}
+.lb-points{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);min-width:60px;text-align:right}
+.lb-pts-label{font-size:11px;color:var(--gray);font-weight:500;text-align:right}
+
+/* ADMIN */
+.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+@media(max-width:700px){.admin-grid{grid-template-columns:1fr}}
+.admin-card{background:var(--dark);border:1px solid var(--border);border-radius:12px;padding:20px}
+.admin-card-title{font-size:18px;color:var(--gold);margin-bottom:14px}
+.admin-form{display:flex;flex-direction:column;gap:10px}
+.admin-input{background:var(--dark2);border:1px solid var(--dark4);color:var(--white);border-radius:8px;padding:10px 12px;font-size:14px;outline:none;transition:border-color .2s}
+.admin-input:focus{border-color:var(--gold)}
+.btn-admin{background:var(--purple);color:var(--white);font-weight:600;border:none;border-radius:8px;padding:10px;font-size:14px;transition:background .15s}
+.btn-admin:hover{background:var(--purple-light)}
+.btn-admin-gold{background:var(--gold-dim);color:var(--black)}
+.btn-admin-gold:hover{background:var(--gold)}
+.admin-users-list{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.admin-user-row{display:flex;align-items:center;justify-content:space-between;background:var(--dark2);border-radius:8px;padding:10px 12px;font-size:13px}
+.admin-user-name{font-weight:600}
+.admin-user-pts{color:var(--gold);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px}
+.grade-section{background:var(--dark);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:0}
+.grade-picks-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.grade-pick-row{display:flex;align-items:center;gap:10px;background:var(--dark2);border-radius:8px;padding:10px 12px}
+.grade-pick-info{flex:1;font-size:13px}
+.grade-pick-name{font-weight:600}
+.grade-pick-sub{font-size:11px;color:var(--gray);margin-top:2px}
+.btn-hit{background:rgba(46,204,113,0.15);color:var(--green);border:1px solid rgba(46,204,113,0.3);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;transition:background .15s}
+.btn-hit:hover{background:rgba(46,204,113,0.3)}
+.btn-miss{background:rgba(231,76,60,0.12);color:var(--red);border:1px solid rgba(231,76,60,0.25);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;transition:background .15s}
+.btn-miss:hover{background:rgba(231,76,60,0.25)}
+.graded-badge{font-size:11px;font-weight:700;padding:4px 8px;border-radius:4px}
+.graded-hit{background:rgba(46,204,113,0.1);color:var(--green)}
+.graded-miss{background:rgba(231,76,60,0.1);color:var(--red)}
+
+/* TOAST */
+#toast-container{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--dark2);border-left:4px solid var(--gold);border-radius:8px;padding:12px 16px;font-size:14px;font-weight:500;color:var(--white);max-width:320px;min-width:200px;box-shadow:0 4px 20px rgba(0,0,0,0.5);animation:toastIn .3s ease;pointer-events:auto}
+.toast.success{border-left-color:var(--green)}
+.toast.error{border-left-color:var(--red)}
+.toast.info{border-left-color:var(--purple-light)}
+@keyframes toastIn{from{transform:translateX(40px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* LIGHT MODE */
+body.light-mode{
+  --black:#f0f0f0;--dark:#ffffff;--dark2:#f5f5f5;--dark3:#ebebeb;--dark4:#ddd;
+  --white:#111;--gray:#666;--gray-light:#444;
+  --border:rgba(200,150,0,0.2);--border-purple:rgba(85,37,131,0.25);
+  --gold-glow:rgba(200,150,0,0.12);
+}
+body.light-mode #login-screen{background:#f0f0f0}
+body.light-mode .login-card{box-shadow:0 0 60px rgba(200,150,0,0.12),0 20px 40px rgba(0,0,0,0.1)}
+body.light-mode .player-select option{background:#ebebeb;color:#111}
+body.light-mode .toast{background:#fff;color:#111}
+body.light-mode .player-select{color:#111}
+body.light-mode table{color:#111}
+body.light-mode thead th{background:#ebebeb}
+
+/* THEME TOGGLE */
+.btn-theme{background:none;border:1px solid var(--dark4);color:var(--gray-light);font-size:16px;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;flex-shrink:0}
+.btn-theme:hover{border-color:var(--gold);color:var(--gold)}
+
+/* INITIALS AVATAR */
+.initials-avatar{display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:700;font-family:'Rajdhani',sans-serif;letter-spacing:0.04em;background:var(--dark3);color:var(--gray-light);flex-shrink:0}
+
+@media(max-width:600px){
+  .login-card{padding:32px 20px}
+  .app-title{font-size:42px}
+  #content{padding:14px}
+  .bracket-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="jersey-display">
+      <svg class="jersey-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="jG" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#552583"/><stop offset="100%" style="stop-color:#7a3db8"/></linearGradient>
+          <linearGradient id="gG" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#fdb927"/><stop offset="100%" style="stop-color:#f5a623"/></linearGradient>
+        </defs>
+        <path d="M20 30 L10 55 L20 58 L18 110 L82 110 L80 58 L90 55 L80 30 L65 22 Q50 32 35 22 Z" fill="url(#jG)" stroke="#fdb927" stroke-width="1.5"/>
+        <path d="M37 22 Q50 36 63 22" fill="none" stroke="#fdb927" stroke-width="1.5"/>
+        <line x1="23" y1="62" x2="21" y2="108" stroke="#fdb927" stroke-width="3" opacity="0.5"/>
+        <line x1="77" y1="62" x2="79" y2="108" stroke="#fdb927" stroke-width="3" opacity="0.5"/>
+        <text x="50" y="68" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="11" fill="#fdb927" letter-spacing="3" opacity="0.85">KOBE</text>
+        <text x="50" y="88" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="28" fill="url(#gG)" letter-spacing="2">24</text>
+        <text x="50" y="103" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="8" fill="#fdb927" letter-spacing="2" opacity="0.6">LAKERS</text>
+      </svg>
+    </div>
+    <div class="app-title bebas">SPLASH SEASON</div>
+    <div class="app-subtitle">NBA Playoffs 3PT Pick'em</div>
+    <div class="kobe-quote">The most important thing is to try and inspire people so that they can be great in whatever they want to do.<div class="kobe-attr">— Kobe Bryant, #24</div></div>
+    <div class="login-form">
+      <div class="form-group"><label>Username</label><input type="text" id="login-username" placeholder="Enter username" autocomplete="username" autocapitalize="off"/></div>
+      <div class="form-group"><label>Password</label><input type="password" id="login-password" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="login-error" id="login-error"></div>
+      <button class="btn-login" onclick="doLogin()">🏀 Let's Ball</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app">
+  <div id="topbar">
+    <div class="topbar-logo bebas">SPLASH <span>SEASON</span></div>
+    <div class="topbar-right">
+      <button class="btn-theme" id="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
+      <div class="topbar-user"><span id="topbar-username"></span><span class="user-badge" id="admin-badge">Admin</span></div>
+      <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div id="tabs">
+    <button class="tab-btn active" onclick="switchTab('picks')" data-tab="picks">🏀 Today's Picks</button>
+    <button class="tab-btn" onclick="switchTab('stars')" data-tab="stars">⭐ Stars</button>
+    <button class="tab-btn" onclick="switchTab('role')" data-tab="role">🏀 Role Players</button>
+    <button class="tab-btn" onclick="switchTab('brick')" data-tab="brick">🧱 Brick City</button>
+    <button class="tab-btn" onclick="switchTab('bracket')" data-tab="bracket">🏆 Bracket</button>
+    <button class="tab-btn" onclick="switchTab('leaderboard')" data-tab="leaderboard">📊 Leaderboard</button>
+    <button class="tab-btn" onclick="switchTab('mypicks')" data-tab="mypicks">📋 My Picks</button>
+    <button class="tab-btn tab-admin" onclick="switchTab('admin')" data-tab="admin">⚙️ Admin</button>
+  </div>
+
+  <div id="content">
+
+    <!-- PICKS TAB -->
+    <div class="tab-panel active" id="panel-picks">
+      <div class="section-header">
+        <div class="section-title bebas">TODAY'S PICKS</div>
+        <div class="section-badge" id="picks-date-badge"></div>
+      </div>
+      <div id="shooter-slots-bar"></div>
+      <div id="picks-content"><div class="loading-spinner"><div class="spinner"></div><div>Loading today's games...</div></div></div>
+    </div>
+
+    <!-- STARS TAB -->
+    <div class="tab-panel" id="panel-stars">
+      <div class="section-header">
+        <div class="section-title bebas">⭐ Stars</div>
+        <div class="section-badge">Tier 1 — 1 point per 3PM</div>
+      </div>
+      <div id="stars-content"><div class="loading-spinner"><div class="spinner"></div><div>Loading...</div></div></div>
+    </div>
+
+    <!-- ROLE PLAYERS TAB -->
+    <div class="tab-panel" id="panel-role">
+      <div class="section-header">
+        <div class="section-title bebas">🏀 Role Players</div>
+        <div class="section-badge">Tier 2 — 2 points per 3PM</div>
+      </div>
+      <div id="role-content"><div class="loading-spinner"><div class="spinner"></div><div>Loading...</div></div></div>
+    </div>
+
+    <!-- BRICK CITY TAB -->
+    <div class="tab-panel" id="panel-brick">
+      <div class="section-header">
+        <div class="section-title bebas">🧱 Brick City</div>
+        <div class="section-badge">Tier 3 — 3 points per 3PM</div>
+      </div>
+      <div id="brick-content"><div class="loading-spinner"><div class="spinner"></div><div>Loading...</div></div></div>
+    </div>
+
+    <!-- BRACKET TAB -->
+    <div class="tab-panel" id="panel-bracket">
+      <div class="section-header">
+        <div class="section-title bebas">🏆 Bracket</div>
+        <div class="section-badge">2026 NBA Playoffs — First Round</div>
+      </div>
+      <div class="bracket-container">
+        <div class="bracket-grid">
+          <div class="bracket-conf">
+            <div class="bracket-conf-title bebas">Eastern Conference</div>
+            <div class="bracket-series">
+              <div class="series-card">
+                <div class="series-seeds">
+                  <div class="seed-team"><span class="seed-num">1</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612765/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Detroit Pistons</span></div>
+                  <div class="series-score">vs</div>
+                  <div class="seed-team"><span class="seed-num">8</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612753/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Orlando Magic</span></div>
+                </div>
+              </div>
+              <div class="series-card">
+                <div class="series-seeds">
+                  <div class="seed-team"><span class="seed-num">2</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612738/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Boston Celtics</span></div>
+                  <div class="series-score">vs</div>
+                  <div class="seed-team"><span class="seed-num">7</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612755/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Philadelphia 76ers</span></div>
+                </div>
+              </div>
+              <div class="series-card">
+                <div class="series-seeds">
+                  <div class="seed-team"><span class="seed-num">3</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612752/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">New York Knicks</span></div>
+                  <div class="series-score">vs</div>
+                  <div class="seed-team"><span class="seed-num">6</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612737/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Atlanta Hawks</span></div>
+                </div>
+              </div>
+              <div class="series-card">
+                <div class="series-seeds">
+                  <div class="seed-team"><span class="seed-num">4</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612739/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Cleveland Cavaliers</span></div>
+                  <div class="series-score">vs</div>
+                  <div class="seed-team"><span class="seed-num">5</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612761/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Toronto Raptors</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bracket-conf">
+            <div class="bracket-conf-title bebas">Western Conference</div>
+            <div class="bracket-series">
+              <div class="series-card">
+                <div class="series-seeds">
+                  <div class="seed-team"><span class="seed-num">1</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612760/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">OKC Thunder</span></div>
+                  <div class="series-score">vs</div>
+                  <div class="seed-team"><span class="seed-num">8</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612756/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Phoenix Suns</span></div>
+                </div>
+              </div>
+              <div class="series-card">
+                <div class="series-seeds">
+                  <div class="seed-team"><span class="seed-num">2</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612759/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">San Antonio Spurs</span></div>
+                  <div class="series-score">vs</div>
+                  <div class="seed-team"><span class="seed-num">7</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612757/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Portland Trail Blazers</span></div>
+                </div>
+              </div>
+              <div class="series-card">
+                <div class="series-seeds">
+                  <div class="seed-team"><span class="seed-num">3</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612743/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Denver Nuggets</span></div>
+                  <div class="series-score">vs</div>
+                  <div class="seed-team"><span class="seed-num">6</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612750/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Minnesota Timberwolves</span></div>
+                </div>
+              </div>
+              <div class="series-card">
+                <div class="series-seeds">
+                  <div class="seed-team"><span class="seed-num">4</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612747/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Los Angeles Lakers</span></div>
+                  <div class="series-score">vs</div>
+                  <div class="seed-team"><span class="seed-num">5</span><img class="seed-logo" src="https://cdn.nba.com/logos/nba/1610612745/global/L/logo.svg" onerror="this.style.display='none'"/><span class="seed-name">Houston Rockets</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD TAB -->
+    <div class="tab-panel" id="panel-leaderboard">
+      <div class="section-header"><div class="section-title bebas">Leaderboard</div><div class="section-badge">Playoffs 2026</div></div>
+      <div id="leaderboard-content"><div class="loading-spinner"><div class="spinner"></div><div>Loading standings...</div></div></div>
+    </div>
+
+    <!-- MY PICKS TAB -->
+    <div class="tab-panel" id="panel-mypicks">
+      <div class="section-header"><div class="section-title bebas">My Picks</div></div>
+      <div id="mypicks-content"><div class="loading-spinner"><div class="spinner"></div><div>Loading your picks...</div></div></div>
+    </div>
+
+    <!-- ADMIN TAB -->
+    <div class="tab-panel" id="panel-admin">
+      <div class="section-header"><div class="section-title bebas">Admin Panel</div><div class="section-badge">Commissioner</div></div>
+      <div class="admin-grid">
+        <div class="admin-card">
+          <div class="admin-card-title">➕ Create Player Account</div>
+          <div class="admin-form">
+            <input class="admin-input" id="new-username" placeholder="Username" autocapitalize="off"/>
+            <input class="admin-input" id="new-password" placeholder="Password" type="password"/>
+            <select class="admin-input" id="new-role"><option value="player">Player</option><option value="admin">Admin</option></select>
+            <button class="btn-admin btn-admin-gold" onclick="adminCreateUser()">Create Account</button>
+          </div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-title">👥 All Players</div>
+          <div id="admin-users-list"><div class="loading-spinner" style="padding:20px"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+      <div class="grade-section">
+        <div class="admin-card-title" style="font-size:22px;color:var(--gold);margin-bottom:16px">📋 Grade Picks</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px">
+          <div class="admin-form" style="flex-direction:row;gap:10px;flex-wrap:wrap">
+            <input type="date" class="admin-input" id="grade-date" style="min-width:160px"/>
+            <button class="btn-admin" onclick="loadPicksForGrading()">Load Picks</button>
+          </div>
+        </div>
+        <div id="grade-picks-content"><div style="font-size:13px;color:var(--gray)">Select a date to load picks for grading.</div></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main-app -->
+
+<div id="toast-container"></div>
+</div><!-- /app -->
+
+<script>
+// ============================================================
+// CONFIG — replace with your Supabase credentials
+// ============================================================
+const SUPABASE_URL = 'SUPABASE_URL_HERE';
+const SUPABASE_KEY = 'SUPABASE_KEY_HERE';
+
+// ============================================================
+// STATE
+// ============================================================
+let currentUser = null;
+let allPlayers = []; // all ss_playoff_players
+let playersByTeam = {}; // nba_team_id -> [players]
+let burnedPlayerIds = new Set();
+let todaysPicks = {}; // gameId -> pick object
+let gamesCache = null;
+
+// ============================================================
+// SUPABASE CLIENT
+// ============================================================
+async function sb(path, opts = {}) {
+  const method = opts.method || 'GET';
+  const body = opts.body ? JSON.stringify(opts.body) : undefined;
+  const prefer = opts.prefer || (method === 'POST' ? 'return=representation' : undefined);
+  const headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
+    'Content-Type': 'application/json',
+    ...(prefer ? {'Prefer': prefer} : {}),
+    ...(opts.headers || {})
+  };
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {method, headers, body});
+  if (r.status === 204) return [];
+  const text = await r.text();
+  if (!text) return [];
+  try { return JSON.parse(text); } catch { return []; }
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function toast(msg, type = 'info', dur = 3000) {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => { el.style.opacity='0'; el.style.transform='translateX(40px)'; el.style.transition='all .3s'; setTimeout(()=>el.remove(),300); }, dur);
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+async function doLogin() {
+  const u = document.getElementById('login-username').value.trim();
+  const p = document.getElementById('login-password').value;
+  const err = document.getElementById('login-error');
+  if (!u || !p) { err.style.display='block'; err.textContent='Enter username and password.'; return; }
+  err.style.display='none';
+  try {
+    const rows = await sb(`ss_users?username=eq.${encodeURIComponent(u)}&select=*`);
+    if (!rows.length || rows[0].password_hash !== p) {
+      err.style.display='block'; err.textContent='Invalid username or password.'; return;
+    }
+    currentUew Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('picks-date-badge').textContent = today;
+  await Promise.all([loadPlayers(), loadBurned()]);
+  loadPicks();
+}
+
+// ============================================================
+// LOAD PLAYERS
+// ============================================================
+async function loadPlayers() {
+  allPlayers = await sb('ss_playoff_players?select=*&order=tier.asc,name.asc');
+  playersByTeam = {};
+  allPlayers.forEach(p => {
+    if (!playersByTeam[p.nba_team_id]) playersByTeam[p.nba_team_id] = [];
+    playersByTeam[p.nba_team_id].push(p);
+  });
+  return allPlayers;
+}
+async function loadBurned() {
+  if (!currentUser) return;
+  const rows = await sb(`ss_burned_players?username=eq.${encodeURIComponent(currentUser.username)}&select=player_id`);
+  burnedPlayerIds = new Set((rows||[]).map(r=>r.player_id));
+}
+
+// ============================================================
+// TODAY'S PICKS
+// ============================================================
+async function loadPicks() {
+  if (!currentUser) return;
+  const gameDate = new Date().toISOString().split('T')[0];
+  const picks = await sb(`ss_picks?username=eq.${encodeURIComponent(currentUser.username)}&game_date=eq.${gameDate}&select=*`);
+  todaysPicks = {};
+  picks.forEach(p => { todaysPicks[p.game_id] = p; });
+  await loadTodaysGames();
+}
+
+async function loadTodaysGames() {
+  try {
+    const r = await fetch('https://cdn.nba.com/static/json/liveData/scoreboard/todaysScoreboard_00.json');
+    const data = await r.json();
+    gamesCache = (data.scoreboard?.games || []).filter(g => isPlayoffGame(g));
+    renderPicksTab(gamesCache);
+  } catch(e) {
+    document.getElementById('picks-content').innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-title">No Games Today</div><div class="empty-sub">Check back on game days.</div></div>`;
+    document.getElementById('shooter-slots-bar').innerHTML = '';
+  }
+}
+
+function isPlayoffGame(g) {
+  if (g.gameType === 4) return true;
+  const PLAYOFF_TEAM_IDS = [1610612765,1610612753,1610612738,1610612755,1610612752,1610612737,1610612739,1610612761,1610612760,1610612756,1610612759,1610612757,1610612743,1610612750,1610612747,1610612745];
+  const h = g.homeTeam?.teamId, a = g.awayTeam?.teamId;
+  return PLAYOFF_TEAM_IDS.includes(h) && PLAYOFF_TEAM_IDS.includes(a);
+}
+
+function renderPicksTab(games) {
+  renderShooterSlots(games);
+  if (!games.length) {
+    document.getElementById('picks-content').innerHTML = `<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-title">No Playoff Games Today</div><div class="empty-sub">Check back on game days.</div></div>`;
+    return;
+  }
+  let html = '<div class="games-grid">';
+  games.forEach(g => { html += renderGameCard(g); });
+  html += '</div>';
+  document.getElementById('picks-content').innerHTML = html;
+}
+
+function renderShooterSlots(games) {
+  if (!games.length) { document.getElementById('shooter-slots-bar').innerHTML=''; return; }
+  let html = '<div class="shooter-slots">';
+  games.forEach((g,i) => {
+    const pick = todaysPicks[g.gameId];
+    const ha = g.homeTeam?.teamTricode || 'HOM';
+    const aa = g.awayTeam?.teamTricode || 'AWY';
+    if (pick) {
+      const tierLabel = pick.player_tier===1?'⭐':pick.player_tier===2?'🏀':'🧱';
+      const tierClass = `tier-${pick.player_tier}`;
+      html += `<div class="shooter-slot filled">
+        <div class="slot-label">Shooter ${i+1} · ${aa} @ ${ha}</div>
+        <div class="slot-player">${pick.player_name}</div>
+        <div class="slot-team">${pick.team_abbr||''}</div>
+        <div class="slot-tier tier-badge ${tierClass}">${tierLabel} ${pick.player_tier}pt</div>
+      </div>`;
+    } else {
+      html += `<div class="shooter-slot">
+        <div class="slot-label">Shooter ${i+1} · ${aa} @ ${ha}</div>
+        <div class="slot-empty-icon">🎯</div>
+      </div>`;
+    }
+  });
+  html += '</div>';
+  document.getElementById('shooter-slots-bar').innerHTML = html;
+}
+
+function renderGameCard(g) {
+  const hId = g.homeTeam?.teamId, aId = g.awayTeam?.teamId;
+  const hAbbr = g.homeTeam?.teamTricode||'HOM', aAbbr = g.awayTeam?.teamTricode||'AWY';
+  const hName = g.homeTeam?.teamName||hAbbr, aName = g.awayTeam?.teamName||aAbbr;
+  const statusNum = g.gameStatus || 1;
+  const isLive = statusNum === 2, isFinal = statusNum === 3;
+  const isLocked = isLive || isFinal;
+  const statusClass = isLive?'status-live':isFinal?'status-final':'status-scheduled';
+  const statusText = isLive?'🔴 LIVE':isFinal?'FINAL':(g.gameStatusText||'Scheduled');
+  const pick = todaysPicks[g.gameId];
+
+  const hLogo = `<img class="team-logo" src="https://cdn.nba.com/logos/nba/${hId}/global/L/logo.svg" onerror="this.outerHTML='<div class=\'team-logo-fallback\'>${hAbbr}</div>'"/>`;
+  const aLogo = `<img class="team-logo" src="https://cdn.nba.com/logos/nba/${aId}/global/L/logo.svg" onerror="this.outerHTML='<div class=\'team-logo-fallback\'>${aAbbr}</div>'"/>`;
+
+  let bodyHtml = '';
+  if (isLocked) {
+    bodyHtml += `<div class="game-locked-msg">🔒 Game locked — picks closed${isFinal?' (Final)':' (In progress)'}</div>`;
+  }
+  if (pick) {
+    const tierLabel = pick.player_tier===1?'⭐ 1pt':pick.player_tier===2?'🏀 2pt':'🧱 3pt';
+    bodyHtml += `<div class="pick-already-made">✅ Picked: <strong>${pick.player_name}</strong> (${pick.team_abbr||''}) — ${tierLabel}</div>`;
+  } else if (!isLocked) {
+    bodyHtml += buildPickDropdowns(g, hId, aId, hAbbr, aAbbr, hName, aName);
+  }
+
+  return `<div class="game-card">
+    <div class="game-header">
+      <div class="game-matchup">
+        <div class="team-block">${aLogo}<span class="team-abbr">${aAbbr}</span></div>
+        <span class="vs-sep">@</span>
+        <div class="team-block">${hLogo}<span class="team-abbr">${hAbbr}</span></div>
+      </div>
+      <div class="game-meta">
+        <span class="game-status ${statusClass}">${statusText}</span>
+        <span class="game-time">${g.gameEt ? new Date(g.gameEt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZoneName:'short'}) : ''}</span>
+      </div>
+    </div>
+    <div class="game-pick-area">${bodyHtml}</div>
+  </div>`;
+}
+
+function buildPickDropdowns(g, hId, aId, hAbbr, aAbbr, hName, aName) {
+  const hLogoSm = `<img style="width:20px;height:20px;object-fit:contain" src="https://cdn.nba.com/logos/nba/${hId}/global/L/logo.svg" onerror="this.style.display='none'"/>`;
+  const aLogoSm = `<img style="width:20px;height:20px;object-fit:contain" src="https://cdn.nba.com/logos/nba/${aId}/global/L/logo.svg" onerror="this.style.display='none'"/>`;
+  const awayOpts = buildPlayerOptions(aId);
+  const homeOpts = buildPlayerOptions(hId);
+  const gid = g.gameId;
+  return `<div class="team-pick-cols">
+    <div class="team-pick-col">
+      <div class="team-pick-label">${aLogoSm}<span>${aAbbr} — ${aName}</span></div>
+      <select class="player-select" id="sel-${gid}-away">${awayOpts}</select>
+      <button class="btn-pick-game" onclick="submitPick('${gid}','away','${aAbbr}','${aId}')">Pick Player</button>
+    </div>
+    <div class="team-pick-col">
+      <div class="team-pick-label">${hLogoSm}<span>${hAbbr} — ${hName}</span></div>
+      <select class="player-select" id="sel-${gid}-home">${homeOpts}</select>
+      <button class="btn-pick-game" onclick="submitPick('${gid}','home','${hAbbr}','${hId}')">Pick Player</button>
+    </div>
+  </div>`;
+}
+
+function buildPlayerOptions(teamId) {
+  const players = (playersByTeam[parseInt(teamId)] || []);
+  if (!players.length) return '<option value="">No roster loaded</option>';
+  let opts = '<option value="">— Select a player —</option>';
+  const tiers = [{t:1,label:'⭐ Stars — 1 point'},{t:2,label:'🏀 Role Players — 2 points'},{t:3,label:'🧱 Brick City — 3 points'}];
+  tiers.forEach(({t,label}) => {
+    const tp = players.filter(p=>p.tier===t);
+    if (!tp.length) return;
+    opts += `<optgroup label="${label}">`;
+    tp.forEach(p => {
+      const burned = burnedPlayerIds.has(p.id);
+      const ptLabel = t===1?'⭐ 1pt':t===2?'🏀 2pt':'🧱 3pt';
+      opts += `<option value="${p.id}|${p.name}|${t}" ${burned?'disabled':''} style="${burned?'color:#666':''}">${burned?'🔥 ':''} ${p.name} — ${ptLabel}</option>`;
+    });
+    opts += '</optgroup>';
+  });
+  return opts;
+}
+
+async function submitPick(gameId, side, teamAbbr, teamId) {
+  const sel = document.getElementById(`sel-${gameId}-${side}`);
+  if (!sel || !sel.value) { toast('Select a player first!','error'); return; }
+  const [playerId, playerName, tierStr] = sel.value.split('|');
+  const tier = parseInt(tierStr);
+  if (burnedPlayerIds.has(parseInt(playerId))) { toast('That player is burned!','error'); return; }
+  const gameDate = new Date().toISOString().split('T')[0];
+  try {
+    // Insert pick
+    await sb('ss_picks', {method:'POST', body:{
+      username: currentUser.username,
+      game_date: gameDate,
+      game_id: gameId,
+      player_id: parseInt(playerId),
+      player_name: playerName,
+      player_tier: tier,
+      team_abbr: teamAbbr,
+      result: 'pending',
+      points_earned: 0
+    }});
+    // Burn player
+    await sb('ss_burned_players', {method:'POST', body:{
+      username: currentUser.username,
+      player_id: parseInt(playerId)
+    }});
+    burnedPlayerIds.add(parseInt(playerId));
+    todaysPicks[gameId] = {game_id:gameId, player_name:playerName, player_tier:tier, team_abbr:teamAbbr};
+    toast(`Locked in ${playerName}! 🔥`,'success');
+    renderPicksTab(gamesCache);
+  } catch(e) { toast('Error saving pick. Try again.','error'); }
+}
+
+// ============================================================
+// PLAYER TABS
+// ============================================================
+function renderTierTab(tier, containerId) {
+  const players = allPlayers.filter(p=>p.tier===tier);
+  if (!players.length) {
+    document.getElementById(containerId).innerHTML<`<div class="empty-state"><div class="empty-icon">${tier===1?'⭐':tier===2?'🏀':'🧱'}</div><div class="empty-title">No players loaded</div><div class="empty-sub">Add players to Supabase first.</div></div>`;
+    return;
+  }
+  // Sort: tier1 by 3PM/g desc, others by 3pt% desc
+  const sorted = [...players].sort((a,b)=>(b.three_pm_per_game||0)-(a.three_pm_per_game||0));
+  let html = '<div class="players-table">';
+  sorted.forEach((p,i) => {
+    const rankClass = i===0?'r1':i===1?'r2':i===2?'r3':'other';
+    const tcls = `t${tier}`;
+    const burned = burnedPlayerIds.has(p.id);
+    const pct = p.three_pt_pct ? (p.three_pt_pct*100).toFixed(1)+'%' : '—';
+    const pmg = p.three_pm_per_game ? p.three_pm_per_game.toFixed(1) : '—';
+    const playoff3 = p.playoff_three_pm != null ? p.playoff_three_pm : '—';
+    const pctColor = p.three_pt_pct >= 0.38 ? 'green' : p.three_pt_pct >= 0.33 ? '' : '';
+    html += `<div class="player-row-stats ${burned?'burned-overlay':''}">
+      <div class="player-rank ${rankClass}">${i+1}</div>
+      ${hsHtml(p.nba_player_id, p.name, 48, tcls)}
+      <div class="player-info">
+        <div class="player-name">${p.name}</div>
+        <div class="player-team-row">
+          <img class="player-team-logo-sm" src="https://cdn.nba.com/logos/nba/${p.nba_team_id}/global/L/logo.svg" onerror="this.style.display='none'"/>
+          <span class="player-team-abbr">${p.team_abbr||''}</span>
+          <span class="tier-badge tier-${tier}">${tier===1?'⭐ 1pt':tier===2?'🏀 2pt':'🧱 3pt'}</span>
+        </div>
+      </div>
+      <div class="player-stats-row">
+        <div class="stat-block"><div class="stat-val ${pctColor}">${pct}</div><div class="stat-lbl">3PT%</div></div>
+        <div class="stat-block"><div class="stat-val">${pmg}</div><div class="stat-lbl">3PM/G</div></div>
+        <div class="stat-block"><div class="stat-val purple">${playoff3}</div><div class="stat-lbl">Playoff 3PM</div></div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  document.getElementById(containerId).innerHTML = html;
+}
+function renderStars() { renderTierTab(1,'stars-content'); }
+function renderRole() { renderTierTab(2,'role-content'); }
+function renderBrick() { renderTierTab(3,'brick-content'); }
+
+// ============================================================
+// LEADERBOARD
+// ============================================================
+async function loadLeaderboard() {
+  const users = await sb('ss_users?select=username,total_points,role&order=total_points.desc');
+  if (!users.length) { document.getElementById('leaderboard-content').innerHTML='<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">No standings yet</div></div>'; return; }
+  const medals = ['🥇','🥈','🥉'];
+  let html = '<div class="leaderboard-list">';
+  users.forEach((u,i) => {
+    const isMe = u.username === currentUser?.username;
+    const rankClass = i===0?'top1':i===1?'top2':i===2?'top3':'other';
+    html += `<div class="lb-row ${isMe?'me':''}">
+      <div class="lb-rank ${rankClass}">${i+1}</div>
+      <div class="lb-medal">${medals[i]||''}</div>
+      <div class="lb-username ${isMe?'me-text':''}">${u.username}${isMe?' <span class="lb-you-badge">YOU</span>':''}</div>
+      <div>
+        <div class="lb-points">${u.total_points||0}</div>
+        <div class="lb-pts-label">pts</div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  document.getElementById('leaderboard-content').innerHTML = html;
+}
+
+// ============================================================
+// MY PICKS
+// ============================================================
+async function loadMyPicks() {
+  if (!currentUser) return;
+  const picks = await sb(`ss_picks?username=eq.${encodeURIComponent(currentUser.username)}&select=*&order=game_date.desc,created_at.desc`);
+  if (!picks.length) { document.getElementById('mypicks-content').innerHTML='<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No picks yet</div><div class="empty-sub">Make your first pick today!</div></div>'; return; }
+  let totalPts = 0;
+  picks.forEach(p=>{ totalPts+=(p.points_earned||0); });
+  let html = `<div class="picks-table-wrap"><table><thead><tr><th>Date</th><th>Player</th><th>Team</th><th>Tier</th><th>Result</th><th>Points</th></tr></thead><tbody>`;
+  picks.forEach(p => {
+    const tierLabel = p.player_tier===1?'⭐ Star':p.player_tier===2?'🏀 Role':'🧱 Brick';
+    const resClass = p.result==='hit'?'result-hit':p.result==='miss'?'result-miss':'result-pending';
+    const resText = p.result==='hit'?'✅ HIT':p.result==='miss'?'❌ MISS':'⏳ Pending';
+    const player = allPlayers.find(pl=>pl.id===p.player_id);
+    html += `<tr>
+      <td style="color:var(--gray);font-size:12px">${p.game_date}</td>
+      <td><div class="pick-player-cell">
+        ${player?hsHtml(player.nba_player_id, player.name, 32, ''):'' }
+        <span>${p.player_name}</span>
+      </div></td>
+      <td style="color:var(--gray)">${p.team_abbr||''}</td>
+      <td><span class="tier-badge tier-${p.player_tier}">${tierLabel}</span></td>
+      <td class="${resClass}">${resText}</td>
+      <td><span class="points-earned">${p.points_earned||0}</span></td>
+    </tr>`;
+  });
+  html += `</tbody></table><div class="picks-totals"><span class="picks-totals-label">Total Points</span><span class="picks-totals-val">${totalPts}</span></div></div>`;
+  document.getElementById('mypicks-content').innerHTML = html;
+}
+
+// ============================================================
+// ADMIN
+// ============================================================
+async function adminCreateUser() {
+  const u = document.getElementById('new-username').value.trim();
+  const p = document.getElementById('new-password').value;
+  const r = document.getElementById('new-role').value;
+  if (!u||!p) { toast('Fill in all fields','error'); return; }
+  try {
+    await sb('ss_users', {method:'POST', body:{username:u,password_hash:p,role:r,total_points:0}});
+    toast(`Account created: ${u}`,'success');
+    document.getElementById('new-username').value='';
+    document.getElementById('new-password').value='';
+    loadAdminUsers();
+  } catch(e) { toast('Error creating user','error'); }
+}
+async function loadAdminUsers() {
+  const users = await sb('ss_users?select=username,total_points,role&order=total_points.desc');
+  let html = '<div class="admin-users-list">';
+  users.forEach(u => {
+    html += `<div class="admin-user-row"><span class="admin-user-name">${u.username} ${u.role==='admin'?'<span class="tier-badge tier-1" style="font-size:9px">ADMIN</span>':''}</span><span class="admin-user-pts">${u.total_points||0} pts</span></div>`;
+  });
+  html += '</div>';
+  document.getElementById('admin-users-list').innerHTML = html;
+}
+async function loadPicksForGrading() {
+  const date = document.getElementById('grade-date').value;
+  if (!date) { toast('Select a date','error'); return; }
+  const picks = await sb(`ss_picks?game_date=eq.${date}&select=*&order=username.asc,player_name.asc`);
+  if (!picks.length) { document.getElementById('grade-picks-content').innerHTML='<div style="font-size:13px;color:var(--gray)">No picks on this date.</div>'; return; }
+  let html = '<div class="grade-picks-list">';
+  picks.forEach(p => {
+    const tierLabel = p.player_tier===1?'⭐ 1pt':t.player_tier===2?'🏀 2pt':'🧱 3pt';
+    const player = allPlayers.find(pl=>pl.id===p.player_id);
+    const alreadyGraded = p.result && p.result!=='pending';
+    html += `<div class="grade-pick-row" id="gr-${p.id}">
+      ${player?hsHtml(player.nba_player_id, player.name, 36, ''):'' }
+      <div class="grade-pick-info">
+        <div class="grade-pick-name">${p.player_name} <span class="tier-badge tier-${p.player_tier}">${tierLabel}</span></div>
+        <div class="grade-pick-sub">by <strong>${p.username}</strong> · ${p.team_abbr||''}</div>
+      </div>
+      ${alreadyGraded
+        ? `<span class="graded-badge ${p.result==='hit'?'graded-hit':'graded-miss'}">${p.result==='hit'?'✅ HIT':'❌ MISS'} (${p.points_earned}pts)</span>`
+        : `<button class="btn-hit" onclick="gradePick(${p.id},'hit',${p.player_tier},'${p.username}')">✅ HIT</button>
+           <button class="btn-miss" onclick="gradePick(${p.id},'miss',0,'${p.username}')">❌ MISS</button>`
+      }
+    </div>`;
+  });
+  html += '</div>';
+  document.getElementById('grade-picks-content').innerHTML = html;
+}
+async function gradePick(pickId, result, tierPoints, username) {
+  const points = result==='hit' ? tierPoints : 0;
+  await sb(`ss_picks?id=eq.${pickId}`, {method:'PATCH', body:{result, points_earned:points}});
+  if (result==='hit') await sb(`ss_users?username=eq.${encodeURIComponent(username)}`, {method:'PATCH', body:{total_points_rpc: points}});
+  // Simpler: just increment total_points via direct update
+  if (result==='hit') {
+    const users = await sb(`ss_users?username=eq.${encodeURIComponent(username)}&select=total_points`);
+    const cur = users[0]?.total_points||0;
+    await sb(`ss_users?username=eq.${encodeURIComponent(username)}`, {method:'PATCH', body:{total_points: cur+points}});
+  }
+  toast(`Graded: ${result==='hit'?'HIT ✅':'MISS ❌'}`,'success');
+  loadPicksForGrading();
+}
+</script>
+</body>
+</html>
