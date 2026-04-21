@@ -1132,5 +1132,20 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  window.doLogin = function() {
+    var u = document.getElementById('loginUser').value.trim();
+    var p = document.getElementById('loginPass').value;
+    if (u === 'nick0' && p === '123') {
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+    } else {
+      var err = document.getElementById('loginError');
+      if (err) { err.style.display = 'block'; err.textContent = 'Invalid credentials'; }
+    }
+  };
+});
+</script>
 </body>
 </html>
