@@ -567,7 +567,7 @@ async function sb(path, opts={}) {
 // ============================================
 // LOGIN
 // ============================================
-window.doLogin = function doLogin() {
+window.doLogin = async function doLogin() {
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
   if (!u || !p) return;
@@ -607,7 +607,7 @@ function loginSuccess(user) {
 document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
 document.getElementById('loginUser').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('loginPass').focus(); });
 
-window.doLogout = window.doLogout = function doLogout() {
+window.doLogout = function doLogout() {
   currentUser = null;
   document.getElementById('app').style.display = 'none';
   document.getElementById('loginPage').style.display = 'flex';
@@ -1116,7 +1116,7 @@ function switchTab(tab) {
 // ============================================
 // THEME TOGGLE
 // ============================================
-window.toggleTheme = window.toggleTheme = function toggleTheme() {
+window.toggleTheme = function toggleTheme() {
   const html = document.documentElement;
   const isDark = html.getAttribute('data-theme') === 'dark';
   html.setAttribute('data-theme', isDark ? 'light' : 'dark');
