@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPLASH SEASON ð</title>
+<title>SPLASH SEASON 🏀</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root[data-theme="dark"] {
@@ -224,11 +224,6 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 .toast.show { opacity:1; }
 /* CONFIG BANNER */
 .config-banner { background:rgba(239,68,68,0.1); border:1px solid var(--red); border-radius:10px; padding:12px 16px; margin-bottom:20px; font-size:13px; color:var(--red); display:none; }
-
-.login-splash-title, .login-logo, .header-logo, .splash-big, .splash {
-  font-family: 'Bebas Neue', cursive !important;
-  letter-spacing: 4px;
-}
 </style>
 </head>
 <body>
@@ -241,7 +236,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
       <div class="splash">SPLASH</div>
       <div class="season">SEASON</div>
     </div>
-    <p class="kobe-quote">"Be a lion, not a sheep. Know your purpose and own it."<br><small style="color:#666;">â Kobe Bryant #24</small></p>
+    <p class="kobe-quot"Be a lion, not a sheep. Know your purpose and own it."o."<br><small style="color:#666;">— Kobe Bryant #24</small></p>
   </div>
   <div class="login-card">
     <h3>NBA Playoffs 3PT Pick'em</h3>
@@ -253,7 +248,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
       <label>Password</label>
       <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password">
     </div>
-    <button class="btn-login" onclick="doLogin()">LET'S SPLASH ð</button>
+    <button class="btn-login" onclick="doLogin()">LET'S SPLASH 🏀</button>
     <div class="login-error" id="loginError">Invalid username or password</div>
   </div>
 </div>
@@ -263,10 +258,10 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   <!-- HEADER -->
   <div class="header">
     <div class="header-logo">
-      ð SPLASH <span>SEASON</span>
+      SPLASH <span>SEASON</span>
     </div>
     <div class="header-right">
-      <button class="theme-toggle" onclick="toggleTheme()">ð¡</button>
+      <button class="theme-toggle" onclick="toggleTheme()">💡</button>
       <span class="user-badge" id="headerUser"></span>
       <button class="btn-logout" onclick="doLogout()">Logout</button>
     </div>
@@ -275,24 +270,24 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   <!-- TABS -->
   <div class="tabs-wrapper">
     <div class="tabs">
-      <div class="tab active" onclick="switchTab('picks')">ð¯ TODAY'S PICKS</div>
-      <div class="tab" onclick="switchTab('stars')">â­ STARS</div>
-      <div class="tab" onclick="switchTab('roleplayers')">ð ROLE PLAYERS</div>
-      <div class="tab" onclick="switchTab('brickcity')">ð§± BRICK CITY</div>
-      <div class="tab" onclick="switchTab('bracket')">ð BRACKET</div>
-      <div class="tab" onclick="switchTab('leaderboard')">ð LEADERBOARD</div>
-      <div class="tab" onclick="switchTab('mypicks')">ð MY PICKS</div>
-      <div class="tab" id="adminTab" style="display:none" onclick="switchTab('admin')">âï¸ ADMIN</div>
+      <div class="tab active" onclick="switchTab('picks')">🎯 TODAY'S PICKS</div>
+      <div class="tab" onclick="switchTab('stars')">⭐ STARS</div>
+      <div class="tab" onclick="switchTab('roleplayers')">🏀 ROLE PLAYERS</div>
+      <div class="tab" onclick="switchTab('brickcity')">🧱 BRICK CITY</div>
+      <div class="tab" onclick="switchTab('bracket')">🏆 BRACKET</div>
+      <div class="tab" onclick="switchTab('leaderboard')">📊 LEADERBOARD</div>
+      <div class="tab" onclick="switchTab('mypicks')">📋 MY PICKS</div>
+      <div class="tab" id="adminTab" style="display:none" onclick="switchTab('admin')">⚙️ ADMIN</div>
     </div>
   </div>
 
   <!-- TODAY'S PICKS TAB -->
   <div id="tab-picks" class="tab-content active">
-    <div class="config-banner" id="configBanner">â ï¸ Supabase not configured. Add your SUPABASE_URL and SUPABASE_KEY to the app code.</div>
+    <div class="config-banner" id="configBanner">⚠️ Supabase not configured. Add your SUPABASE_URL and SUPABASE_KEY to the app code.</div>
 
     <!-- SPLASH ZONE -->
     <div class="splash-zone">
-      <h3>ð¥ SPLASH ZONE â Hot Shooters</h3>
+      <h3>🔥 SPLASH ZONE — Hot Shooters</h3>
       <div class="hot-list" id="hotList"></div>
     </div>
 
@@ -308,8 +303,8 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   <!-- STARS TAB -->
   <div id="tab-stars" class="tab-content">
     <div class="section-header">
-      <div class="section-title">â­ STARS</div>
-      <div class="section-sub">Elite shooters â worth 1 point per 3</div>
+      <div class="section-title">⭐ STARS</div>
+      <div class="section-sub">Elite shooters — worth 1 point per 3</div>
     </div>
     <div class="filter-bar" id="starsFilter"></div>
     <table class="player-table" id="starsTable">
@@ -323,8 +318,8 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   <!-- ROLE PLAYERS TAB -->
   <div id="tab-roleplayers" class="tab-content">
     <div class="section-header">
-      <div class="section-title">ð ROLE PLAYERS</div>
-      <div class="section-sub">Solid shooters â worth 2 points per 3</div>
+      <div class="section-title">🏀 ROLE PLAYERS</div>
+      <div class="section-sub">Solid shooters — worth 2 points per 3</div>
     </div>
     <div class="filter-bar" id="rpFilter"></div>
     <table class="player-table" id="rpTable">
@@ -338,8 +333,8 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   <!-- BRICK CITY TAB -->
   <div id="tab-brickcity" class="tab-content">
     <div class="section-header">
-      <div class="section-title">ð§± BRICK CITY</div>
-      <div class="section-sub">Big men & non-shooters â worth 3 points per 3 (high risk, high reward)</div>
+      <div class="section-title">🧱 BRICK CITY</div>
+      <div class="section-sub">Big men & non-shooters — worth 3 points per 3 (high risk, high reward)</div>
     </div>
     <div class="filter-bar" id="bcFilter"></div>
     <table class="player-table" id="bcTable">
@@ -361,8 +356,8 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   <!-- LEADERBOARD TAB -->
   <div id="tab-leaderboard" class="tab-content">
     <div class="section-header">
-      <div class="section-title">ð LEADERBOARD</div>
-      <div class="section-sub">Season standings â alphabetical tiebreaker</div>
+      <div class="section-title">📊 LEADERBOARD</div>
+      <div class="section-sub">Season standings — alphabetical tiebreaker</div>
     </div>
     <table class="lb-table" id="lbTable">
       <thead><tr>
@@ -375,7 +370,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   <!-- MY PICKS TAB -->
   <div id="tab-mypicks" class="tab-content">
     <div class="section-header">
-      <div class="section-title">ð MY PICKS</div>
+      <div class="section-title">📋 MY PICKS</div>
       <div class="section-sub" id="myPicksSub"></div>
     </div>
     <table class="picks-table" id="myPicksTable">
@@ -388,7 +383,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 
   <!-- ADMIN TAB -->
   <div id="tab-admin" class="tab-content">
-    <div class="section-title" style="margin-bottom:20px;">âï¸ ADMIN PANEL</div>
+    <div class="section-title" style="margin-bottom:20px;">⚙️ ADMIN PANEL</div>
 
     <div class="admin-section">
       <h3>Create User</h3>
@@ -421,11 +416,11 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 <!-- PICK CONFIRM MODAL -->
 <div class="modal-overlay" id="pickModal">
   <div class="modal">
-    <h3>ð Confirm Pick</h3>
+    <h3>🏀 Confirm Pick</h3>
     <p id="modalText"></p>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-confirm" onclick="confirmPick()">SPLASH! ð¥</button>
+      <button class="btn-confirm" onclick="confirmPick()">SPLASH! 🔥</button>
     </div>
   </div>
 </div>
@@ -435,7 +430,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
 
 <script>
 // ===============================================
-// CONFIG â Replace with your Supabase credentials
+// CONFIG — Replace with your Supabase credentials
 // ============================================
 const SUPABASE_URL = 'SUPABASE_URL_HERE';
 const SUPABASE_KEY = 'SUPABASE_KEY_HERE';
@@ -471,11 +466,11 @@ function playerHeadshot(nbaId) {
 }
 
 // ============================================
-// PLAYER DATA â All 16 playoff rosters
+// PLAYER DATA — All 16 playoff rosters
 // tier: 1=Stars(1pt), 2=RolePlayers(2pt), 3=BrickCity(3pt)
 // ============================================
 const PLAYERS = [
-  // âââ OKC THUNDER âââ
+  // ═══ OKC THUNDER ═══
   { id:'sga', name:'Shai Gilgeous-Alexander', team:'OKC', nbaId:1628983, tier:1, pct:0.335, pmg:2.8 },
   { id:'reed-sheppard', name:'Reed Sheppard', team:'OKC', nbaId:1642355, tier:1, pct:0.432, pmg:3.1 },
   { id:'luguentz-dort', name:'Luguentz Dort', team:'OKC', nbaId:1629652, tier:2, pct:0.381, pmg:2.6 },
@@ -485,7 +480,7 @@ const PLAYERS = [
   { id:'alex-caruso', name:'Alex Caruso', team:'OKC', nbaId:1628384, tier:2, pct:0.371, pmg:2.2 },
   { id:'kenrich-williams', name:'Kenrich Williams', team:'OKC', nbaId:1629001, tier:2, pct:0.340, pmg:1.1 },
 
-  // âââ LA LAKERS âââ
+  // ═══ LA LAKERS ═══
   { id:'lebron-james', name:'LeBron James', team:'LAL', nbaId:2544, tier:1, pct:0.411, pmg:2.5 },
   { id:'austin-reaves', name:'Austin Reaves', team:'LAL', nbaId:1630559, tier:1, pct:0.383, pmg:2.8 },
   { id:'max-christie', name:'Max Christie', team:'LAL', nbaId:1631303, tier:1, pct:0.408, pmg:2.1 },
@@ -496,8 +491,8 @@ const PLAYERS = [
   { id:'jaxson-hayes', name:'Jaxson Hayes', team:'LAL', nbaId:1629614, tier:3, pct:0.000, pmg:0.0 },
   { id:'markieff-morris', name:'Markieff Morris', team:'LAL', nbaId:202694, tier:3, pct:0.310, pmg:0.6 },
 
-  // âââ HOUSTON ROCKETS âââ
-  { id:'alperen-sengun', name:'Alperen ÅengÃ¼n', team:'HOU', nbaId:1631167, tier:3, pct:0.212, pmg:0.4 },
+  // ═══ HOUSTON ROCKETS ═══
+  { id:'alperen-sengun', name:'Alperen Şengün', team:'HOU', nbaId:1631167, tier:3, pct:0.212, pmg:0.4 },
   { id:'jalen-green', name:'Jalen Green', team:'HOU', nbaId:1630224, tier:1, pct:0.359, pmg:3.2 },
   { id:'amen-thompson', name:'Amen Thompson', team:'HOU', nbaId:1641710, tier:3, pct:0.198, pmg:0.3 },
   { id:'dillon-brooks', name:'Dillon Brooks', team:'HOU', nbaId:1628415, tier:2, pct:0.341, pmg:2.0 },
@@ -506,8 +501,8 @@ const PLAYERS = [
   { id:'kevin-durant', name:'Kevin Durant', team:'HOU', nbaId:201142, tier:1, pct:0.388, pmg:2.4 },
   { id:'fred-vanvleet', name:'Fred VanVleet', team:'HOU', nbaId:1627832, tier:1, pct:0.374, pmg:3.0 },
 
-  // âââ DENVER NUGGETS âââ
-  { id:'nikola-jokic', name:'Nikola JokiÄ', team:'DEN', nbaId:203999, tier:2, pct:0.359, pmg:1.8 },
+  // ═══ DENVER NUGGETS ═══
+  { id:'nikola-jokic', name:'Nikola Jokić', team:'DEN', nbaId:203999, tier:2, pct:0.359, pmg:1.8 },
   { id:'jamal-murray', name:'Jamal Murray', team:'DEN', nbaId:1627750, tier:1, pct:0.391, pmg:3.2 },
   { id:'michael-porter-jr', name:'Michael Porter Jr.', team:'DEN', nbaId:1629008, tier:1, pct:0.388, pmg:2.6 },
   { id:'kentavious-caldwell-pope', name:'Kentavious Caldwell-Pope', team:'DEN', nbaId:203484, tier:1, pct:0.401, pmg:2.3 },
@@ -516,7 +511,7 @@ const PLAYERS = [
   { id:'peyton-watson', name:'Peyton Watson', team:'DEN', nbaId:1631248, tier:2, pct:0.358, pmg:1.4 },
   { id:'zeke-nnaji', name:'Zeke Nnaji', team:'DEN', nbaId:1630192, tier:3, pct:0.000, pmg:0.0 },
 
-  // âââ MINNESOTA TIMBERWOLVES âââ
+  // ═══ MINNESOTA TIMBERWOLVES ═══
   { id:'anthony-edwards', name:'Anthony Edwards', team:'MIN', nbaId:1630162, tier:1, pct:0.354, pmg:3.1 },
   { id:'donte-divincenzo', name:'Donte DiVincenzo', team:'MIN', nbaId:1629059, tier:1, pct:0.398, pmg:4.2 },
   { id:'jaden-mcdaniels', name:'Jaden McDaniels', team:'MIN', nbaId:1630183, tier:2, pct:0.372, pmg:1.8 },
@@ -526,13 +521,13 @@ const PLAYERS = [
   { id:'nickeil-alexander-walker', name:'Nickeil Alexander-Walker', team:'ATL', nbaId:1629638, tier:2, pct:0.365, pmg:2.1 },
   { id:'walker-kessler', name:'Walker Kessler', team:'MIN', nbaId:1631117, tier:3, pct:0.000, pmg:0.0 },
 
-  // âââ SAN ANTONIO SPURS âââ
+  // ═══ SAN ANTONIO SPURS ═══
   { id:'victor-wembanyama', name:'Victor Wembanyama', team:'SAS', nbaId:1641705, tier:2, pct:0.322, pmg:2.1 },
   { id:'devin-vassell', name:'Devin Vassell', team:'SAS', nbaId:1630170, tier:1, pct:0.408, pmg:3.0 },
   { id:'stephon-castle', name:'Stephon Castle', team:'SAS', nbaId:1642426, tier:2, pct:0.335, pmg:1.8 },
   { id:'keldon-johnson', name:'Keldon Johnson', team:'SAS', nbaId:1629640, tier:2, pct:0.352, pmg:1.7 },
-  { id:[X[XÚ[\YÛYIË[YNÒ[X[Ú[\YÛYIËX[NÔÐTÉËRYMÌLMKY\ÝÎËYÎKÈY©Ú\\ÛÛX\\ÉË[YNÒ\\ÛÛ\\ÉËX[NÔÐTÉËRYÌY\ÝÍÍKYÎKKÈYÞXÚXÛÛ[ÉË[YNÖXÚÛÛ[ÉËX[NÔÐTÉËRYMÎY\ËÝÌLYÎÈKÈYØÚ\\ËX\ÜÙ^IË[YNÐÚ\\È\ÜÙ^IËX[NÔÐTÉËRYMMMKY\ËÝYÎKËÈ8¥d8¥d8¥dÔSRSVTÈ8¥d8¥d8¥dÈYØ[\YK\Ú[[ÛÉË[YNÐ[\YHÚ[[ÛÉËX[NÔÔËRYMLMY\KÝÍÍËYÎËKÈYÙØ\K][ZË[YNÑØ\H[ËX[NÔÔËRYMLNY\KÝÎLKYÎHKÈYÜØÛÛÝZ[\ÛÛË[YNÊØÛÛÝ[\ÛÛËX[NÔÔËRYMMÌY\ÝNYÎKKÈYÛX[ÛÛKXÙÙÛË[YNÓX[ÛÛHÙÙÛËX[NÔÔËRYMÍÍËY\ÝÍYÎKÈYÜÚYYÛ\Ú\IË[YNÔÚYYÛÚ\IËX[NÔÔËRYMÌLMY\ÝÍYÎKHKÈYØÛXÛ	Ë[YNÐÛÛ	ËX[NÔÔËRYMMY\ËÝÌËYÎKÈYÙX[KX^]ÛË[YNÑX[H^]ÛËX[NÔÔËRYMLY\ËÝYÎKÈYÚÂX\K]Ø[Ù\Ë[YNÒX\HØ[Ù\ËX[NÔÔËRYMÌLÌY\ÝÍMKYÎKKËÈ8¥d8¥d8¥dUÒUTÕÓÈ8¥d8¥d8¥dÈYØØYKXÝ[[Ú[IË[YNÐØYHÝ[[Ú[IËX[NÑU	ËRYMÌNMKY\KÝÍNYÎÈKÈYÚ[[Y\[Ë[YNÒ[[\[ËX[NÑU	ËRYMÌLLY\ËÝYÎKÈYØ]\Ø\]Û\ÛÛË[YNÐ]\Ø\Û\ÛÛËX[NÑU	ËRYMMÌKY\ÝÌNYÎKKÈYÝ[KZ\]Ø^KZË[YNÕ[H\]Ø^HËX[NÑU	ËRYÍLKY\ÝÎYÎKÈYÝØX\ËZ\\ÉË[YNÕØX\È\\ÉËX[NÑU	ËRYNKY\ÝÍLYÎKKÈYÚÙKZ\\ÉË[YNÒÙH\\ÉËX[NÑU	ËRYY\ÝKYÎÈKÈYÛX\Ý\Ë\Ø\ÜÙ\Ë[YNÓX\Ý\ÈØ\ÜÙ\ËX[NÑU	ËRYMÌLËY\ÝÌÎYÎKHKÈYÜÚ[[ÛKYÛXØÚ[ÉË[YNÔÚ[[ÛHÛXØÚ[ÉËX[NÑU	ËRYMMÌY\ÝÍÎKYÎKËÈ8¥d8¥d8¥dÔSÈPQÒPÈ8¥d8¥d8¥dÈYÜ[ÛËX[Ú\ÉË[YNÔ[ÛÈ[Ú\ÉËX[NÓÔ	ËRYMÌLMY\KÝÍYÎHKÈYÙ[]ØYÛ\Ë[YNÑ[ØYÛ\ËX[NÓÔ	ËRYMÌLLËY\KÝÍNYÎÈKÈYÚ[[\ÝYÙÜÉË[YNÒ[[ÝYÙÜÉËX[NÓÔ	ËRYMÌNLKY\ÝÍNYÎHKÈYØÛÛKX[ÛIË[YNÐÛÛH[ÛIËX[NÓÔ	ËRYMÌMÍKY\ÝÍÌKYÎHKÈYÙØ\KZ\\ÉË[YNÑØ\H\\ÉËX[NÓÔ	ËRYÎLMY\ÝÎYÎKHKÈYÛÛ][Z\ØXXÉË[YNÒÛ][\ØXXÉËX[NÓÔ	ËRYMÍÌKY\ËÝNYÎHKÈYÝÙ[[XØ\\Ë[YNÕÙ[[Ø\\ËX[NÓÔ	ËRYMMÍY\ËÝYÎKÈYØ[ÛKXXÚÉË[YNÐ[ÛHXÚÉËX[NÓÔ	ËRYMMÌËY\ÝÌÌYÎKKËÈ8¥d8¥d8¥dÓUSSÐUSQTÈ8¥d8¥d8¥dÈYÙÛÝ[[Z]Ú[	Ë[YNÑÛÝ[Z]Ú[	ËX[NÐÓIËRYMÍÎY\KÝÍÎYÎHKÈYÙ\]\ËYØ\[	Ë[YNÑ\]\ÈØ\[	ËX[NÐÓIËRYMMÍY\KÝÍÌKYÎKÈYÚ[Y\ËZ\[Ë[YNÒ[Y\È\[ËX[NÐÓIËRYNLÍKY\KÝÎKYÎËÈKÈYÙ][[[Ø^IË[YNÑ][[Ø^IËX[NÐÓIËRYMÌNMY\ËÝÌLYÎHKÈYÚ\]X[[Ë[YNÒ\][[ËX[NÐÓIËRYMÎY\ËÝLLKYÎHKÈYÛX^\Ý\ÉË[YNÓX^Ý\ÉËX[NÐÓIËRYMMY\KÝÎYÎËHKÈYÝKZ\ÛYIË[YNÕH\ÛYIËX[NÐÓIËRYMMY\ÝKYÎKÈYÜØ[K[Y\[	Ë[YNÔØ[HY\[	ËX[NÐÓIËRYMÌY\ÝNYÎKÈYÙX[]ØYIË[YNÑX[ØYIËX[NÐÓIËRYMLMËY\ÝÎKYÎKÈKËÈ8¥d8¥d8¥dÔÓÈTÔÈ8¥d8¥d8¥dÈYÜØÛÝYKX\\ÉË[YNÔØÛÝYH\\ÉËX[NÕÔËRYMÌMËY\ÝÌLYÎKKÈYÛÙËX[[ØIË[YNÓÑÈ[[ØIËX[NÕÔËRYMÎY\ÝÍÌYÎKÈYÚ[[X[Y[\]ZXÚÛ^IË[YNÒ[[X[Y[]ZXÚÛ^IËX[NÕÔËRYMÌNLËY\KÝÎKYÎËKÈYÙÜY^KYXÚÉË[YNÑÜY^HXÚÉËX[NÕÔËRYMMÌY\ÝÍÍYÎÈKÈYÜX\]	Ë[YNÔ\]	ËX[NÕÔËRYMMY\ÝÍKYÎKÈYÚZÛØ\Ù[	Ë[YNÒZÛØ0í[	ËX[NÕÔËRYMÍÍLKY\ËÝYÎKÈYÜXÚ[Ý\ËXXÚ]]ØIË[YNÔXÚ[Ý\ÈXÚ]]ØIËX[NÕÔËRYMÌMÌËY\ËÝYÎKÈYÛØÚZKXYØZIË[YNÓØÚZHYØZIËX[NÕÔËRYMÌLLNKY\ÝÍËYÎKËÈ8¥d8¥d8¥dUÈSÔÈÓPÒÔÈ8¥d8¥d8¥dÈYÚ[[X[ÛÛË[YNÒ[[[ÛÛËX[NÓRÉËRYMÎY\KÝKYÎËHKÈYÚØ\X[ÛK]ÝÛÉË[YNÒØ\P[ÛHÝÛÉËX[NÓRÉËRYMMMËY\ÝKYÎHKÈYÛZZØ[XYÙ\ÉË[YNÓZZØ[YÙ\ÉËX[NÓRÉËRYMMKY\ÝÍÍYÎHKÈYÛÜÚZ\	Ë[YNÒÜÚ\	ËX[NÓRÉËRYMY\ÝÌÌKYÎKKÈYÛÙËX[[ØK[RÉË[YNÓÑÈ[[ØIËX[NÓRÉËRYMÎY\ÝÍÌYÎKÈYØØ[Y\Û\^[IË[YNÐØ[Y\Û^[IËX[NÓRÉËRYMMKY\ÝÍÌKYÎKÈYÛZ]Ú[\Ø[ÛÛË[YNÓZ]Ú[Ø[ÛÛËX[NÓRÉËRYMLLKY\ËÝYÎKÈYÙ]XÙK[XØYIË[YNÑ]XÙHXÐYIËX[NÓRÉËRYMÌLÍKY\ÝÍÎYÎHKËÈ8¥d8¥d8¥dUSHUÒÔÈ8¥d8¥d8¥dÈYÝYK^[Ý[ÉË[YNÕYH[Ý[ÉËX[NÐU	ËRYMLËY\KÝÌÎYÎKÈYØÚ[XØÛÛ[IË[YNÐÒXÐÛÛ[IËX[NÐU	ËRYÍY\KÝLYÎËKÈYÙZÝ[K[]\^IË[YNÑZÝ[H]\^IËX[NÐU	ËRYMÍÍKY\ÝÌKYÎKKÈYÛÛYZØK[ÚÛÛÝÝIË[YNÓÛYZØHÚÛÛÝÝIËX[NÐU	ËRYMÌMY\ËÝYÎKÈYØÛ[XØ\[IË[YNÐÛ[Ø\[IËX[NÐU	ËRYÎNLKY\ËÝYÎKÈYØÛ\K[[ÙIË[YNÓ\H[ÙHËX[NÐU	ËRYMY\ËÝMKYÎÈKÈYÙ\ÛÛY[Y[ÉË[YNÑ\ÛÛ[Y[ÉËX[NÐU	ËRYMÌLLKY\ÝÍYÎKHKÈYÜØY\KX^IË[YNÔØY\H^IËX[NÐU	ËRYMÌMÌËY\ÝÍYÎKHKËÈ8¥d8¥d8¥dÔÕÓÑSPÔÈ8¥d8¥d8¥dÈYÚ^\ÛÛ]][IË[YNÒ^\ÛÛ][IËX[NÐÔÉËRYMÍKY\KÝÍÌKYÎËÈKÈYÚ^[[XÝÛË[YNÒ^[[ÝÛËX[NÐÔÉËRYMÍÍNKY\KÝÍMYÎÈKÈYÜ^]Û\]Ú\	Ë[YNÔ^]Û]Ú\	ËX[NÐÔÉËRYMÌY\KÝKYÎËHKÈYÜØ[KZ]\Ù\Ë[YNÔØ[H]\Ù\ËX[NÐÔÉËRYMÌMY\KÝLKYÎHKÈYØ[ZÜÜ	Ë[YNÐ[ÜÜ	ËX[NÐÔÉËRYLMËY\ÝÌYÎKÈYÚYKZÛY^IË[YNÒYHÛY^IËX[NÐÔÉËRYÌY\ÝÍÌYÎÈKÈYÙ\XÚË]Ú]IË[YNÑ\XÚÈÚ]IËX[NÐÔÉËRYMMY\KÝÎYÎKÈYÛZÙKZÛÜ]	Ë[YNÓZÙHÛÜ]	ËX[NÐÔÉËRYMÍY\ËÝÍMËYÎKÈYÞ]Y\][X[Ë[YNÖ]Y\[X[ËX[NÐÔÉËRYMÌMY\ËÝKYÎHKËÈ8¥d8¥d8¥dSQSPHÍTÈ8¥J8¥J8¤
- ¢²C¢wVÂÖvV÷&vRrÂæÖS¢uVÂvV÷&vRrÂFVÓ¢urÂæ&C£##33ÂFW#£Â7C£ãCÂÖs£2ã"ÒÀ¢²C¢wG&W6RÖÖWrÂæÖS¢uG&W6RÖWrÂFVÓ¢urÂæ&C£c3sÂFW#£Â7C£ã3sÂÖs£2ãRÒÀ¢²C¢vÆ¦öVÂÖVÖ&BrÂæÖS¢t¦öVÂVÖ&BrÂFVÓ¢urÂæ&C£#3SBÂFW#£2Â7C£ã33rÂÖs£ãÒÀ¢²C¢v·ÆRÖÆ÷w'rÂæÖS¢t·ÆRÆ÷w'rÂFVÓ¢urÂæ&C£#scÂFW#£"Â7C£ã3cÂÖs£"ãÒÀ¢²C¢v6ÆV"ÖÖ'FârÂæÖS¢t6ÆV"Ö'FârÂFVÓ¢urÂæ&C£c#c3ÂFW#£"Â7C£ã3s2ÂÖs£ãÒÀ¢²C¢v¶VÆÇÖ÷V'&RrÂæÖS¢t¶VÆÇ÷V'&R§"ârÂFVÓ¢urÂæ&C£c#cc"ÂFW#£"Â7C£ã3CBÂÖs£ãrÒÀ¢²C¢væ6öÆ2Ö&GVÒrÂæÖS¢tæ6öÆ2&GVÒrÂFVÓ¢urÂæ&C£#SrÂFW#£"Â7C£ã3sRÂÖs£ãBÒÀ¢²C¢væG&RÖG'VÖÖöæBrÂæÖS¢tæG&RG'VÖÖöæBrÂFVÓ¢urÂæ&C£#32ÂFW#£2Â7C£ãÂÖs£ãÒÀ¢²C¢vW&2Öv÷&FöârÂæÖS¢tW&2v÷&FöârÂFVÓ¢urÂæ&C£#ScÂFW#£"Â7C£ã3rÂÖs£"ã2ÒÀ¥Ó° ¢òòFVGWÆ6FRÆW'0¦6öç7BÆW$ÖÒ·Ó°¥ÄU%2æf÷$V6Óâ²ÆW$Ö·æEÒÒ²Ò°¦6öç7BÄÅõÄU%2Òö&¦V7BçfÇVW2ÆW$Ö° ¢òò7F'3¢FW#ÓÂ6÷'B'7BFW62ÂÆÖB# ¦6öç7B5D%2ÒÄÅõÄU%2æfÇFW"ÓâçFW"ÓÓÒç6÷'BÆ"Óâ"ç7BÒç7Bç6Æ6RÃ#°¦6öç7B$ôÄUõÄU%2ÒÄÅõÄU%2æfÇFW"ÓâçFW"ÓÓÒ"ç6÷'BÆ"Óâ"ç7BÒç7B°¦6öç7B%$4µô4EÒÄÅõÄU%2æfÇFW"ÓâçFW"ÓÓÒ2ç6÷'BÆ"Óâ"ç7BÒç7B° ¢òòÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÐ¢òò%$4´UBDD¢òòÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÓÐ¦6öç7B%$4´U@ôì(ÝÍÐèl(ì¡½µéíÑ´è=-±ÍèÅô°ÝäéíÑ´è\à±Íèáô°ÍÉ¥Í\élÈ°Åtô°(ì¡½µéíÑ´è10±ÍèÑô°ÝäéíÑ´è!=T±ÍèÕô°ÍÉ¥Í\élÄ°Étô°(ì¡½µéíÑ´è8±ÍèÍô°ÝäéíÑ´è5%8±ÍèÙô°ÍÉ¥Í\élÈ°Átô°(ì¡½µéíÑ´èML±ÍèÉô°ÝäéíÑ´èA=H±ÍèÝô°ÍÉ¥Í\élÌ°Åtô°(t°(ÍÐèl(ì¡½µéíÑ´èP±ÍèÅô°ÝäéíÑ´è=I0±Íèáô°ÍÉ¥Í\élÈ°Étô°(ì¡½µéíÑ´è1±Í:4}, away:{team:'TOR',seed:5}, seriesW:[3,1] },
+  { id:�[X[�X�[\YۚYI��[YN�ҝ[X[��[\YۚYI�X[N���T����RY�M��L�MKY\��������YΌ���K��Y��\��\�ۋX�\��\���[YN��\��\�ۈ�\��\��X[N���T����RY���Y\��������KYΌK�K��Y�ޘX�X��[����[YN�֘X���[���X[N���T����RY�M���Y\�������LYΌ��K��Y���\�\�X�\��^I��[YN���\�\��\��^I�X[N���T����RY�M��M�MKY\������YΌ�K����8�d8�d8�dԕS��RS�V�T��8�d8�d8�d��Y��[��\��YK\�[[ۜ���[YN��[��\��YH�[[ۜ��X[N��ԉ���RY�M��LMY\��K������YΌˌK��Y���\�K]�[�Z����[YN���\�H�[�����X[N��ԉ���RY�M��LNY\��K����LKYΌ��HK��Y������Z[�\��ۉ��[YN������[�\��ۉ�X[N��ԉ���RY�M�M��Y\�������NYΌK�K��Y��X[��KX����ۉ��[YN��X[��H����ۉ�X[N��ԉ���RY�M���͌�Y\������͍�YΌ���K��Y���YYۋ\�\�I��[YN���YYۈ�\�I�X[N��ԉ���RY�M��LM�Y\��������YΌK�HK��Y�؛�X��	��[YN�Л���	�X[N��ԉ���RY�M��M���Y\��������YΌ�K��Y��X[��KX^]ۉ��[YN��X[��H^]ۉ�X[N��ԉ���RY�M��L�Y\������YΌ�K��Y�ښX�\�K]�[�\���[YN�ҘX�\�H�[�\��X[N��ԉ���RY�M��L��Y\�������MKYΌK��K����8�d8�d8�dU��UT�Ӕ�8�d8�d8�d��Y���YKX�[��[��[I��[YN���YH�[��[��[I�X[N��U	���RY�M��NMKY\��K����NYΌ���K��Y�ژ[[�Y\�[���[YN�Ҙ[[�\�[��X[N��U	���RY�M��LL�Y\������YΌ�K��Y��]\�\�]�\�ۉ��[YN��]\�\��\�ۉ�X[N��U	���RY�M�M�KY\�������NYΌK�K��Y��[KZ\�]�^KZ����[YN��[H\�]�^H����X[N��U	���RY���LKY\�������YΌ��K��Y��ؚX\�Z\��\���[YN��ؚX\�\��\��X[N��U	���RY����NKY\�������LYΌK��K��Y�ڛ�KZ\��\���[YN�қ�H\��\��X[N��U	���RY���Y\�������KYΌ���K��Y��X\��\�\�\��\���[YN��X\��\��\��\��X[N��U	���RY�M��L��Y\��������YΌK�HK��Y���[[ۙKY�۝X��[���[YN���[[ۙH�۝X��[��X[N��U	���RY�M�M̌�Y\��������KYΌ��K����8�d8�d8�dԓS��PQ�P�8�d8�d8�d��Y��[��X�[��\����[YN��[���[��\���X[N��ԓ	���RY�M��LMY\��K�����YΌ��HK��Y�ٜ�[��]�Yۙ\���[YN�ќ�[���Yۙ\��X[N��ԓ	���RY�M��LL�Y\��K����NYΌ���K��Y�ژ[[�\�Y�����[YN�Ҙ[[��Y����X[N��ԓ	���RY�M��NLKY\�������NYΌ��HK��Y����KX[�۞I��[YN����H[�۞I�X[N��ԓ	���RY�M��M�KY\��������KYΌ��HK��Y���\�KZ\��\���[YN���\�H\��\��X[N��ԓ	���RY���LMY\�������YΌK�HK��Y��ۘ][�Z\�XX���[YN�қۘ][�\�XX��X[N��ԓ	���RY�M����KY\�������NYΌ�HK��Y���[�[X�\�\���[YN���[�[�\�\�����X[N��ԓ	���RY�M��M͋Y\������YΌ�K��Y��[�۞KX�X����[YN��[�۞H�X���X[N��ԓ	���RY�M�M��Y\��������YΌK��K����8�d8�d8�d�U�SS��U�SQT��8�d8�d8�d��Y��ۛݘ[�[Z]�[	��[YN��ۛݘ[�Z]�[	�X[N���I���RY�M����Y\��K�����Y΍�HK��Y��\�]\�Y�\�[�	��[YN��\�]\��\�[�	�X[N���I���RY�M��M�͋Y\��K�����KYΌ��K��Y�ژ[Y\�Z\�[���[YN�Ҙ[Y\�\�[��X[N���I���RY��NL�KY\��K����KYΌˍ�K��Y��]�[�[[؛^I��[YN��]�[�[؛^I�X[N���I���RY�M��NM�Y\�������L�YΌ�HK��Y�ژ\��]X[[���[YN�Ҙ\��][[��X[N���I���RY�M����Y\������LLKYΌ�HK��Y��X^\��\���[YN��X^��\��X[N���I���RY�M��M���Y\��K����YΌˌHK��Y��KZ�\��YI��[YN��H�\��YI�X[N���I���RY�M��M��Y\������KYΌ���K��Y���[K[Y\��[	��[YN���[HY\��[	�X[N���I���RY�M�����Y\������NYΌ���K��Y��X[�]�YI��[YN��X[��YI�X[N���I���RY�M��LM��Y\�������KYΌK��K����8�d8�d8�dԓӕ��TԔ�8�d8�d8�d��Y�����YKX�\��\���[YN�����YH�\��\��X[N��ԉ���RY�M��M��Y\�������L�YΌK�K��Y����X[�[�؞I��[YN����[�[�؞I�X[N��ԉ���RY�M���Y\�������̋YΌ��K��Y��[[X[�Y[\]ZX��^I��[YN��[[X[�Y[]ZX��^I�X[N��ԉ���RY�M��NL�Y\��K����KYΌˌ�K��Y��ܘY^KYX����[YN��ܘY^HX���X[N��ԉ���RY�M�M̍Y\�������͋YΌ���K��Y�ܚ�X�\��]	��[YN�Ԓ��\��]	�X[N��ԉ���RY�M��M��Y\�������KYΌ��K��Y�ژZ�؋\�[	��[YN�ҘZ�؈0�[	�X[N��ԉ���RY�M����LKY\������YΌ�K��Y���X�[�\�XX�]]�I��[YN���X�[�\�X�]]�I�X[N��ԉ���RY�M��M��Y\������YΌ�K��Y����ZKXYؘZ�I��[YN����ZHYؘZ�I�X[N��ԉ���RY�M��LLNKY\������͌�YΌ��K����8�d8�d8�d�U�SԒ�ӒP���8�d8�d8�d��Y�ژ[[�X��[��ۉ��[YN�Ҙ[[���[��ۉ�X[N�ӖR����RY�M���Y\��K���KYΌˎHK��Y���\�X[�۞K]�ۜ���[YN���\�P[�۞H�ۜ��X[N�ӖR����RY�M���MM�Y\�������KYΌ��HK��Y��ZZ�[X��Y�\���[YN��ZZ�[��Y�\��X[N�ӖR����RY�M��M�KY\��������YΌ��HK��Y�����Z\�	��[YN�қ��\�	�X[N�ӖR����RY�M��Y\��������KYΌK��K��Y����X[�[�؞K[�R���[YN����[�[�؞I�X[N�ӖR����RY�M���Y\�������̋YΌ��K��Y���[Y\�ۋ\^[�I��[YN���[Y\�ۈ^[�I�X[N�ӖR����RY�M���M�KY\��������KYΌ��K��Y��Z]�[\�ؚ[��ۉ��[YN��Z]�[�ؚ[��ۉ�X[N�ӖR����RY�M��LLKY\������YΌ�K��Y��]X�K[X؜�YI��[YN��]X�HXМ�YI�X[N�ӖR����RY�M��L�KY\��������YΌ��HK����8�d8�d8�dUS�HU���8�d8�d8�d��Y���YK^[�[����[YN���YH[�[���X[N��U	���RY�M��L��Y\��K�����YΌ��K��Y��ڋ[X���[I��[YN��҈X���[I�X[N��U	���RY����Y\��K���L�YΌˎK��Y��Z��[�K[]\��^I��[YN��Z��[�H]\��^I�X[N��U	���RY�M����KY\������̎KYΌK��K��Y��۞YZ�K[��ۙ��I��[YN��۞YZ�H��ۙ��I�X[N��U	���RY�M��M�Y\������YΌ�K��Y���[�X�\[I��[YN���[��\[I�X[N��U	���RY���NLKY\������YΌ�K��Y���\��K[�[��I��[YN��\��H�[��H����X[N��U	���RY�M����Y\�������MKYΌ��K��Y��\�ۋY[�Y[���[YN��\�ۈ[�Y[��X[N��U	���RY�M��LLKY\�������YΌK�HK��Y���Y\KX�^I��[YN���Y\H�^I�X[N��U	���RY�M��M��Y\������͎YΌK�HK����8�d8�d8�d���ӈ�SP��8�d8�d8�d��Y�ژ^\�ۋ]][I��[YN�Ҙ^\�ۈ][I�X[N�Г�����RY�M��͎KY\��K�����KYΌˌ�K��Y�ژ^[[�X���ۉ��[YN�Ҙ^[[����ۉ�X[N�Г�����RY�M����NKY\��K����MYΌ���K��Y��^]ۋ\�]�\�	��[YN��^]ۈ�]�\�	�X[N�Г�����RY�M����Y\��K����KYΌˌHK��Y���[KZ]\�\���[YN���[H]\�\��X[N�Г�����RY�M��M�Y\��K���LKYΌ��HK��Y��[Zܙ�ܙ	��[YN��[ܙ�ܙ	�X[N�Г�����RY��LM�Y\������̋YΌ��K��Y�ڜ�YKZ�Y^I��[YN�Ҝ�YH�Y^I�X[N�Г�����RY��̌Y\�������̋YΌ���K��Y��\��X��]�]I��[YN��\��X���]I�X[N�Г�����RY�M��M�Y\��K����YΌ��K��Y��Z�KZ�ܛ�]	��[YN��Z�H�ܛ�]	�X[N�Г�����RY�M��͋Y\�������M�YΌ�K��Y��]�Y\�][X[���[YN��]�Y\�[X[��X[N�Г�����RY�M���MY\�������KYΌ�HK����8�d8�d8�dSQSPH͑T��8�J8�J8�
+ ���C�wV��vV�&vRr���S�uV�vV�&vRr�FVӢu��r��&�C�##33�F�W#��7C��C��s�2�"�����C�wG�&W6R���W�r���S�uG�&W6R��W�r�FVӢu��r��&�C�c3s��F�W#��7C��3s���s�2�R�����C�vƦ�V��V�&��Br���S�t��V�V�&��Br�FVӢu��r��&�C�#3�SB�F�W#�2�7C��33r��s�������C�v���R���w'�r���S�t���R��w'�r�FVӢu��r��&�C�#sc��F�W#�"�7C��3c��s�"������C�v6�V"��'F��r���S�t6�V"�'F��r�FVӢu��r��&�C�c#�c3�F�W#�"�7C��3s2��s�������C�v�V�ǒ��V'&Rr���S�t�V�ǒ�V'&R�"�r�FVӢu��r��&�C�c#cc"�F�W#�"�7C��3CB��s��r�����C�v�6��2�&GV�r���S�t�6��2&GV�r�FVӢu��r��&�C�#S�r�F�W#�"�7C��3sR��s��B�����C�v�G&R�G'V����Br���S�t�G&RG'V����Br�FVӢu��r��&�C�#3�2�F�W#�2�7C����s�������C�vW&�2�v�&F��r���S�tW&�2v�&F��r�FVӢu��r��&�C�#Sc��F�W#�"�7C��3�r��s�"�2���Ӱ����FVGWƖ6FR��W'0�6��7B��W$���Ӱ���U%2�f�$V6�������W$���E���ғ��6��7B�����U%2��&�V7B�f�VW2���W$�������7F'3�F�W#��6�'B'�7BFW62�Ɩ֗B# �6��7B5D%2������U%2�f��FW"����F�W"�����6�'B���"���"�7B��7B��6Ɩ6R��#���6��7B$��U���U%2������U%2�f��FW"����F�W"���"��6�'B���"���"�7B��7B���6��7B%$�4��4�E�������U%2�f��FW"����F�W"���2��6�'B���"���"�7B��7B�������������������������������������������������Т��%$4�UBDD����������������������������������������������Ц6��7B%$4�U@���(��ݕ���l(����쁡�����ѕ���=-��͕��������݅���ѕ���\���͕�������͕ɥ��\�lȰ�t���(����쁡�����ѕ���10��͕��������݅���ѕ���!=T��͕�������͕ɥ��\�lİ�t���(����쁡�����ѕ���8��͕��������݅���ѕ���5%8��͕�������͕ɥ��\�lȰ�t���(����쁡�����ѕ���ML��͕��������݅���ѕ���A=H��͕�������͕ɥ��\�l̰�t���(��t�(�������l(����쁡�����ѕ���P��͕��������݅���ѕ���=I0��͕�������͕ɥ��\�lȰ�t���(����쁡�����ѕ���1��͕��:4}, away:{team:'TOR',seed:5}, seriesW:[3,1] },
     { home:{team:'NYK',seed:3}, away:{team:'ATL',seed:6}, seriesW:[2,1] },
     { home:{team:'BOS',seed:2}, away:{team:'PHI',seed:7}, seriesW:[3,0] },
   ]
@@ -603,7 +598,7 @@ function loginSuccess(user) {
   currentUser = user;
   document.getElementById('loginPage').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  document.getElementById('headerUser').textContent = `ð¤ ${user.username}`;
+  document.getElementById('headerUser').textContent = `👤 ${user.username}`;
   if (user.role === 'admin') document.getElementById('adminTab').style.display = 'block';
   if (SUPABASE_URL === 'SUPABASE_URL_HERE') document.getElementById('configBanner').style.display = 'block';
   initApp();
@@ -687,11 +682,11 @@ function renderShooterSlots() {
     slot.id = `slot-${i}`;
     if (pick) {
       slot.innerHTML = `<div class="slot-label">Shooter ${i+1}</div>
-        <div class="slot-player">ð¥ ${pick.player_name}</div>
-        <div class="slot-pts">${pick.points_possible}pt pick Â· ${pick.result === 'pending' ? 'Pending' : pick.result === 'hit' ? 'â +'+pick.points_earned : 'â Miss'}</div>`;
+        <div class="slot-player">🔥 ${pick.player_name}</div>
+        <div class="slot-pts">${pick.points_possible}pt pick · ${pick.result === 'pending' ? 'Pending' : pick.result === 'hit' ? '✅ +'+pick.points_earned : '❌ Miss'}</div>`;
     } else {
       slot.innerHTML = `<div class="slot-label">Shooter ${i+1}</div>
-        <div style="font-size:22px;margin:6px 0;">ð</div>
+        <div style="font-size:22px;margin:6px 0;">🏀</div>
         <div class="slot-pts" style="color:var(--text2)">No pick yet</div>`;
     }
     el.appendChild(slot);
@@ -702,7 +697,7 @@ function renderGameCards() {
   const el = document.getElementById('gameCards');
   if (todayGames.length === 0) {
     el.innerHTML = `<div class="no-games">
-      <div class="no-games-icon">ð</div>
+      <div class="no-games-icon">🏀</div>
       <h2>No Playoff Games Today</h2>
       <p style="color:var(--text2);margin-top:8px;">Check back on game day!</p>
     </div>`;
@@ -750,7 +745,7 @@ function buildGameCard(game, idx) {
         </div>
         <div class="vs-block">
           <div class="vs-text">${isFinal ? `${game.homeTeam.score||0}-${game.awayTeam.score||0}` : 'VS'}</div>
-          <div class="game-time">${isLive ? 'ð´ LIVE' : isFinal ? 'FINAL' : gameTime}</div>
+          <div class="game-time">${isLive ? '🔴 LIVE' : isFinal ? 'FINAL' : gameTime}</div>
         </div>
         <div class="team-block">
           <img class="team-logo" src="${teamLogo(awayId)}" onerror="this.style.display='none'" alt="${awayName}">
@@ -777,7 +772,7 @@ function buildTeamPicker(teamKey, players, gameId, isLocked, myPick) {
       <div class="team-picker-header" onclick="togglePicker(this)">
         <img src="${teamLogo(team.id)}" style="width:24px;height:24px;object-fit:contain" onerror="this.style.display='none'">
         <div class="team-picker-title">${team.name}</div>
-        <span class="picker-toggle">â¼</span>
+        <span class="picker-toggle">▼</span>
       </div>
       <div class="player-list open">
         ${rows || '<div style="padding:12px;color:var(--text2);font-size:13px;">No players listed</div>'}
@@ -788,18 +783,18 @@ function buildTeamPicker(teamKey, players, gameId, isLocked, myPick) {
 function buildPlayerRow(p, gameId, isLocked, myPick) {
   const isBurned = burnedPlayers.includes(p.id);
   const isPicked = myPick && myPick.player_id === p.id;
-  const tierLabel = p.tier === 1 ? '<span class="p-tier tier-1">â­ 1pt</span>' :
-                    p.tier === 2 ? '<span class="p-tier tier-2">ð 2pt</span>' :
-                                   '<span class="p-tier tier-3">ð§± 3pt</span>';
+  const tierLabel = p.tier === 1 ? '<span class="p-tier tier-1">⭐ 1pt</span>' :
+                    p.tier === 2 ? '<span class="p-tier tier-2">🏀 2pt</span>' :
+                                   '<span class="p-tier tier-3">🧱 3pt</span>';
   const pctClass = p.pct >= 0.40 ? 'stat-green' : p.pct >= 0.33 ? 'stat-yellow' : 'stat-red';
 
   let actionBtn = '';
   if (isPicked) {
-    actionBtn = `<span class="btn-picked">â Picked</span>`;
+    actionBtn = `<span class="btn-picked">✅ Picked</span>`;
   } else if (isLocked) {
-    actionBtn = `<span class="btn-locked">ð Locked</span>`;
+    actionBtn = `<span class="btn-locked">🔒 Locked</span>`;
   } else if (isBurned) {
-    actionBtn = `<span class="btn-burned">ð¥ Burned</span>`;
+    actionBtn = `<span class="btn-burned">🔥 Burned</span>`;
   } else if (myPick) {
     actionBtn = `<span class="btn-locked" style="opacity:0.5">Picked</span>`;
   } else {
@@ -811,7 +806,7 @@ function buildPlayerRow(p, gameId, isLocked, myPick) {
       <img class="p-avatar" src="${playerHeadshot(p.nbaId)}" onerror="this.parentNode.querySelector('.p-avatar-fallback')&&(this.style.display='none')" alt="${p.name}">
       <div class="p-info">
         <div class="p-name">${p.name}</div>
-        <div class="p-stats"><span class="${pctClass}">${(p.pct*100).toFixed(1)}% 3PT</span> Â· ${p.pmg.toFixed(1)} 3PM/G</div>
+        <div class="p-stats"><span class="${pctClass}">${(p.pct*100).toFixed(1)}% 3PT</span> · ${p.pmg.toFixed(1)} 3PM/G</div>
       </div>
       ${tierLabel}
       <div class="p-action">${actionBtn}</div>
@@ -821,7 +816,7 @@ function buildPlayerRow(p, gameId, isLocked, myPick) {
 function togglePicker(header) {
   const list = header.nextElementSibling;
   list.classList.toggle('open');
-  header.querySelector('.picker-toggle').textContent = list.classList.contains('open') ? 'â²' : 'â¼';
+  header.querySelector('.picker-toggle').textContent = list.classList.contains('open') ? '▲' : '▼';
 }
 
 function renderHotList() {
@@ -832,7 +827,7 @@ function renderHotList() {
       <img src="${playerHeadshot(p.nbaId)}" onerror="this.style.display='none'" style="width:52px;height:52px;border-radius:50%;object-fit:cover;margin:0 auto 6px;">
       <div class="h-name">${p.name.split(' ').pop()}</div>
       <div class="h-stat">${p.pmg.toFixed(1)}</div>
-      <div class="h-label">3PM/G ð¥</div>
+      <div class="h-label">3PM/G 🔥</div>
       <div style="font-size:11px;color:var(--text2);margin-top:2px;">${(p.pct*100).toFixed(1)}% 3PT</div>
     </div>`).join('');
 }
@@ -865,7 +860,7 @@ async function confirmPick() {
     // Demo mode
     burnedPlayers.push(playerId);
     todayPicks[gameId] = { player_id: playerId, player_name: playerName, player_tier: tier, points_possible: tier, result: 'pending', points_earned: 0 };
-    showToast(`ð¥ ${playerName} locked in!`);
+    showToast(`🔥 ${playerName} locked in!`);
     renderShooterSlots();
     renderGameCards();
     return;
@@ -896,7 +891,7 @@ async function confirmPick() {
 
   burnedPlayers.push(playerId);
   await loadTodayPicks();
-  showToast(`ð¥ ${playerName} locked in!`);
+  showToast(`🔥 ${playerName} locked in!`);
   renderShooterSlots();
   renderGameCards();
 }
@@ -928,8 +923,8 @@ function renderPlayerTable(bodyId, players, burned) {
         <div class="p-combo">
           <img class="p-avatar" src="${playerHeadshot(p.nbaId)}" onerror="this.style.display='none'" style="width:36px;height:36px;">
           <div>
-            <div style="font-size:13px;font-weight:600">${p.name} ${isBurned ? '<span class="burned-overlay">ð¥BURNED</span>' : ''}</div>
-            <div style="font-size:11px;color:var(--text2)">${p.tier===1?'â­ Star':p.tier===2?'ð Role Player':'ð§± Brick City'}</div>
+            <div style="font-size:13px;font-weight:600">${p.name} ${isBurned ? '<span class="burned-overlay">🔥BURNED</span>' : ''}</div>
+            <div style="font-size:11px;color:var(--text2)">${p.tier===1?'⭐ Star':p.tier===2?'🏀 Role Player':'🧱 Brick City'}</div>
           </div>
         </div>
       </td>
@@ -941,7 +936,7 @@ function renderPlayerTable(bodyId, players, burned) {
       </td>
       <td><span class="stat-val ${pctClass}">${(p.pct*100).toFixed(1)}%</span></td>
       <td><span class="stat-val">${p.pmg.toFixed(1)}</span> <span class="stat-small">per game</span></td>
-      <td>${isBurned ? '<span style="color:var(--red);font-size:12px;">ð¥ Burned</span>' : '<span style="color:var(--green);font-size:12px;">â Available</span>'}</td>
+      <td>${isBurned ? '<span style="color:var(--red);font-size:12px;">🔥 Burned</span>' : '<span style="color:var(--green);font-size:12px;">✅ Available</span>'}</td>
     </tr>`;
   }).join('');
 }
@@ -966,7 +961,7 @@ function renderBracket() {
       ${BRACKET.west.map(m => bracketMatchup(m)).join('')}
     </div>
     <div class="finals-center">
-      <div class="finals-trophy">ð</div>
+      <div class="finals-trophy">🏆</div>
       <div class="finals-label">NBA<br>FINALS</div>
     </div>
     <div class="conf-bracket">
@@ -1012,8 +1007,8 @@ async function loadLeaderboard() {
   if (!rows || rows.length === 0) { el.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--text2)">No players yet</td></tr>'; return; }
   el.innerHTML = rows.map((r, i) => `
     <tr class="${r.username === currentUser?.username ? 'me' : ''}">
-      <td><span class="lb-rank">${i===0?'ð¥':i===1?'ð¥':i===2?'ð¥':i+1}</span></td>
-      <td><strong>${r.username}</strong>${r.username===currentUser?.username?' ð':''}</td>
+      <td><span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</span></td>
+      <td><strong>${r.username}</strong>${r.username===currentUser?.username?' 👈':''}</td>
       <td><span class="lb-pts">${r.total_points}</span></td>
     </tr>`).join('');
 }
@@ -1029,10 +1024,10 @@ async function loadMyPicks() {
   }
   const rows = await sb(`ss_picks?username=eq.${currentUser.username}&select=*&order=created_at.desc`);
   const el = document.getElementById('myPicksBody');
-  if (!rows || rows.length === 0) { el.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text2)">No picks yet â make your first pick!</td></tr>'; return; }
+  if (!rows || rows.length === 0) { el.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text2)">No picks yet — make your first pick!</td></tr>'; return; }
 
   const totalEarned = rows.reduce((s,r) => s + (r.points_earned||0), 0);
-  document.getElementById('myPicksSub').textContent = `${rows.length} picks Â· ${totalEarned} total points`;
+  document.getElementById('myPicksSub').textContent = `${rows.length} picks · ${totalEarned} total points`;
 
   el.innerHTML = rows.map(r => {
     const p = ALL_PLAYERS.find(x => x.id === r.player_id);
@@ -1044,9 +1039,9 @@ async function loadMyPicks() {
           <span>${r.player_name}</span>
         </div>
       </td>
-      <td>${r.player_tier===1?'â­':r.player_tier===2?'ð':'ð§±'}</td>
+      <td>${r.player_tier===1?'⭐':r.player_tier===2?'🏀':'🧱'}</td>
       <td>${r.points_possible}pt</td>
-      <td class="${r.result==='hit'?'result-hit':r.result==='miss'?'result-miss':'result-pending'}">${r.result==='hit'?'â HIT':r.result==='miss'?'â Miss':'â³ Pending'}</td>
+      <td class="${r.result==='hit'?'result-hit':r.result==='miss'?'result-miss':'result-pending'}">${r.result==='hit'?'✅ HIT':r.result==='miss'?'❌ Miss':'⏳ Pending'}</td>
       <td><strong>${r.points_earned||0}</strong></td>
     </tr>`;
   }).join('');
@@ -1060,7 +1055,7 @@ async function adminCreateUser() {
   const p = document.getElementById('newPassword').value.trim();
   if (!u || !p) return;
   const res = await sb('ss_users', { method:'POST', body: JSON.stringify({ username:u, password:p, role:'player', total_points:0 }) });
-  showToast(res ? `â User ${u} created!` : 'â Error creating user');
+  showToast(res ? `✅ User ${u} created!` : '❌ Error creating user');
   document.getElementById('newUsername').value = '';
   document.getElementById('newPassword').value = '';
   loadAdminUsers();
@@ -1073,10 +1068,10 @@ async function adminLoadPicks() {
   if (!rows || rows.length === 0) { el.innerHTML = '<p style="color:var(--text2)">No pending picks for this date</p>'; return; }
   el.innerHTML = rows.map(r => `
     <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:var(--bg3);border-radius:8px;margin-bottom:8px;">
-      <span><strong>${r.username}</strong> â ${r.player_name} (${r.points_possible}pt)</span>
+      <span><strong>${r.username}</strong> → ${r.player_name} (${r.points_possible}pt)</span>
       <div style="display:flex;gap:8px;">
-        <button class="btn-sm btn-success" onclick="gradePickResult(${r.id},'${r.username}',${r.points_possible},'hit')">â HIT</button>
-        <button class="btn-sm btn-danger" onclick="gradePickResult(${r.id},'${r.username}',0,'miss')">â Miss</button>
+        <button class="btn-sm btn-success" onclick="gradePickResult(${r.id},'${r.username}',${r.points_possible},'hit')">✅ HIT</button>
+        <button class="btn-sm btn-danger" onclick="gradePickResult(${r.id},'${r.username}',0,'miss')">❌ Miss</button>
       </div>
     </div>`).join('');
 }
