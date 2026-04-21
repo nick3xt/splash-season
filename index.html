@@ -567,7 +567,7 @@ async function sb(path, opts={}) {
 // ============================================
 // LOGIN
 // ============================================
-async window.doLogin = function doLogin() {
+window.doLogin = function doLogin() {
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
   if (!u || !p) return;
