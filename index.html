@@ -24,10 +24,15 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .login-btn:hover{opacity:.9;}
 .login-error{display:none;background:rgba(255,68,68,.15);border:1px solid #f44;color:#f88;padding:10px;border-radius:8px;font-size:13px;text-align:center;margin-top:10px;}
 .login-kobe{text-align:center;margin-top:20px;color:#5a4a70;font-size:12px;font-style:italic;line-height:1.5;}
+.join-toggle{text-align:center;margin-top:14px;color:#7c6fa0;font-size:13px;}
+.join-toggle a{color:#FDB927;cursor:pointer;text-decoration:none;font-weight:600;}
+.join-toggle a:hover{text-decoration:underline;}
+.join-form{display:none;}
+.success-msg{display:none;background:rgba(39,200,100,.15);border:1px solid #27c864;color:#5fe89a;padding:10px;border-radius:8px;font-size:13px;text-align:center;margin-top:10px;}
 
 /* APP */
 #app{display:none;min-height:100vh;}
-#app .app-header{background:linear-gradient(90deg,#0a0a1a,#1a0a30);border-bottom:2px solid rgba(253,185,39,.3);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
+.app-header{background:linear-gradient(90deg,#0a0a1a,#1a0a30);border-bottom:2px solid rgba(253,185,39,0.3);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
 .app-header h1{font-family:'Bebas Neue',sans-serif;font-size:26px;font-weight:700;color:#FDB927;letter-spacing:3px;}
 .header-actions{display:flex;align-items:center;gap:12px;}
 .logout-btn{background:none;border:1px solid #333;color:#aaa;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;}
@@ -63,7 +68,7 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .card-name{font-family:'Bebas Neue',sans-serif;font-size:19px;font-weight:700;color:#fff;letter-spacing:.5px;line-height:1.1;}
 .card-name.selected-name{color:#FDB927;}
 .card-team{display:flex;align-items:center;gap:6px;margin-top:3px;}
- .team-logo{width:20px;height:20px;object-fit:contain;}
+.team-logo{width:20px;height:20px;object-fit:contain;}
 .card-team-name{color:#9b8fcf;font-size:12px;font-weight:500;}
 .card-stats{color:#9b8fcf;font-size:12px;margin-top:4px;}
 .card-note{color:#7a7a9a;font-size:11px;margin-top:3px;font-style:italic;}
@@ -86,7 +91,7 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 /* ADMIN OVERLAY */
 #adminOverlay{position:fixed;inset:0;background:rgba(5,5,15,.97);z-index:9999;overflow-y:auto;padding:20px;display:none;}
 .admin-panel{max-width:580px;margin:0 auto;background:#0e0e1e;border:2px solid rgba(253,185,39,.4);border-radius:16px;padding:24px;}
- .admin-title{font-family:'Bebas Neue',sans-serif;color:#FDB927;font-size:30px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
+.admin-title{font-family:'Bebas Neue',sans-serif;color:#FDB927;font-size:30px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
 .admin-section{margin-bottom:24px;}
 .admin-section h3{font-family:'Bebas Neue',sans-serif;color:#9b8fcf;font-size:18px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1a1a30;}
 .admin-table{width:100%;border-collapse:collapse;}
@@ -113,10 +118,24 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
     <div class="tagline">NBA Picks 2026 &bull; Playoffs</div>
   </div>
   <div class="login-card">
-    <input type="text" id="loginUser" placeholder="Username" autocomplete="off">
-    <input type="password" id="loginPass" placeholder="Password">
-    <button class="login-btn" onclick="doLogin()">LET'S SPLASH</button>
-    <div class="login-error" id="loginError">Invalid credentials</div>
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <input type="text" id="loginUser" placeholder="Username" autocomplete="off">
+      <input type="password" id="loginPass" placeholder="Password">
+      <button class="login-btn" onclick="doLogin()">LET'S SPLASH</button>
+      <div class="login-error" id="loginError">Invalid credentials</div>
+      <div class="join-toggle">New here? <a onclick="showJoin()">Create account</a></div>
+    </div>
+    <!-- JOIN FORM -->
+    <div id="joinForm" class="join-form">
+      <input type="text" id="joinUser" placeholder="Choose a username" autocomplete="off">
+      <input type="password" id="joinPass" placeholder="Choose a password">
+      <input type="password" id="joinPass2" placeholder="Confirm password">
+      <button class="login-btn" onclick="doJoin()">JOIN THE SPLASH</button>
+      <div class="login-error" id="joinError">Error</div>
+      <div class="success-msg" id="joinSuccess">Account created! Logging you in...</div>
+      <div class="join-toggle">Already have an account? <a onclick="showLogin()">Log in</a></div>
+    </div>
   </div>
   <div class="login-kobe">"Be a lion, not a sheep.<br>Know your purpose and own it."<br>&mdash; Kobe Bryant #24</div>
 </div>
@@ -196,6 +215,36 @@ var currentUser = null;
 function photoUrl(id){ return 'https://cdn.nba.com/headshots/nba/latest/1040x760/'+id+'.png'; }
 function logoUrl(tid){ return 'https://cdn.nba.com/logos/nba/'+tid+'/global/L/logo.svg'; }
 
+// ---- AUTH TOGGLE ----
+function showJoin(){
+  document.getElementById('loginForm').style.display='none';
+  document.getElementById('joinForm').style.display='block';
+  document.getElementById('joinUser').focus();
+}
+function showLogin(){
+  document.getElementById('joinForm').style.display='none';
+  document.getElementById('loginForm').style.display='block';
+  document.getElementById('loginUser').focus();
+}
+function doJoin(){
+  var u=document.getElementById('joinUser').value.trim();
+  var p=document.getElementById('joinPass').value;
+  var p2=document.getElementById('joinPass2').value;
+  var err=document.getElementById('joinError');
+  var ok=document.getElementById('joinSuccess');
+  err.style.display='none'; ok.style.display='none';
+  if(!u||u.length<2){err.textContent='Username must be at least 2 characters';err.style.display='block';return;}
+  if(!p||p.length<3){err.textContent='Password must be at least 3 characters';err.style.display='block';return;}
+  if(p!==p2){err.textContent='Passwords do not match';err.style.display='block';return;}
+  if(u==='nick0'){err.textContent='That username is taken';err.style.display='block';return;}
+  var users=JSON.parse(localStorage.getItem('ssUsers')||'[]');
+  if(users.find(function(x){return x.username.toLowerCase()===u.toLowerCase();})){err.textContent='Username already taken';err.style.display='block';return;}
+  users.push({username:u,password:p,role:'user',created:new Date().toISOString().slice(0,10)});
+  localStorage.setItem('ssUsers',JSON.stringify(users));
+  ok.style.display='block';
+  setTimeout(function(){loginSuccess({username:u,role:'user'});},800);
+}
+
 // ---- AUTH ----
 function doLogin(){
   var u = document.getElementById('loginUser').value.trim();
@@ -228,7 +277,7 @@ function loginSuccess(user){
 function doLogout(){
   currentUser = null;
   localStorage.removeItem('ssUser');
-  document.getElemntById('app').style.display = 'none';
+  document.getElementById('app').style.display = 'none';
   document.getElementById('loginPage').style.display = 'flex';
   document.getElementById('adminGear').style.display = 'none';
   document.getElementById('loginUser').value = '';
@@ -402,6 +451,9 @@ window.addEventListener('DOMContentLoaded', function(){
   // Enter key on login
   document.getElementById('loginPass').addEventListener('keydown', function(e){
     if(e.key==='Enter') doLogin();
+  });
+  document.getElementById('joinPass2').addEventListener('keydown', function(e){
+    if(e.key==='Enter') doJoin();
   });
 });
 </script>
