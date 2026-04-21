@@ -258,7 +258,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--tex
   <!-- HEADER -->
   <div class="header">
     <div class="header-logo">
-      🏀 SPLASH <span>SEASON</span>
+      SPLASH <span>SEASON</span>
     </div>
     <div class="header-right">
       <button class="theme-toggle" onclick="toggleTheme()">💡</button>
@@ -567,7 +567,7 @@ async function sb(path, opts={}) {
 // ============================================
 // LOGIN
 // ============================================
-async function doLogin() {
+window.doLogin = async function doLogin() {
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
   if (!u || !p) return;
@@ -1132,268 +1132,191 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 </script>
+
 <script>
-(function() {
-  // 1. Font
-  var link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = 'https://fonts.googleapis.com/css2?family=Bebas+Neue:wght@400;700&display=swap';
-  document.head.appendChild(link);
-
-  // 2. Login fix + login screen upgrade
-  window.doLogin = function() {
-    var u = document.getElementById('loginUser').value.trim();
-    var p = document.getElementById('loginPass').value;
-    if (u === 'nick0' && p === '123') {
-      localStorage.setItem('ssUser', JSON.stringify({username:'nick0',role:'admin'}));
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      if (typeof initApp === 'function') initApp();
-    } else {
-      var err = document.getElementById('loginError');
-      if (err) { err.style.display='block'; err.textContent='Invalid credentials'; }
-    }
-  };
-
-  // 3. Upgrade login screen
-  document.addEventListener('DOMContentLoaded', function() {
-    var lp = document.getElementById('loginPage');
-    if (lp) {
-      var existing = lp.querySelector('.login-logo');
-      if (existing) {
-        var fireBanner = document.createElement('div');
-        fireBanner.style.cssText = 'text-align:center;margin-bottom:16px;';
-        fireBanner.innerHTML =
-          '<div style="font-size:64px;line-height:1;filter:drop-shadow(0 0 20px #FF6B00);">🔥🏀🔥</div>';
-        existing.parentNode.insertBefore(fireBanner, existing);
-        var splash = lp.querySelector('.splash');
-        if (splash) { splash.style.cssText='font-family:Bebas Neue,sans-serif;font-size:80px;font-weight:700;color:#FDB927;line-height:0.85;letter-spacing:6px;text-shadow:0 0 40px #FDB92755;display:block;'; }
-        var season = lp.querySelector('.season');
-        if (season) { season.style.cssText='font-family:Bebas Neue,sans-serif;font-size:50px;font-weight:700;color:#C99700;letter-spacing:14px;display:block;'; }
+(function(){
+  // Font
+  var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap';document.head.appendChild(l);
+  
+  // Login upgrade
+  document.addEventListener('DOMContentLoaded',function(){
+    var lp=document.getElementById('loginPage');
+    if(lp){
+      var c=lp.querySelector('.login-card')||lp.firstElementChild||lp;
+      if(c&&!document.getElementById('ssLogo')){
+        var d=document.createElement('div');
+        d.id='ssLogo';
+        d.style.cssText='text-align:center;margin-bottom:24px;';
+        d.innerHTML='<div style="font-size:64px">🔥🏀</div><div style="font-family:Bebas Neue,sans-serif;font-size:56px;font-weight:700;color:#FDB927;letter-spacing:4px">SPLASH SEASON</div><div style="color:#9b8fcf;font-size:13px;letter-spacing:2px;margin-top:4px">NBA PICKS 2026 • PLAYOFFS</div>';
+        c.insertBefore(d,c.firstChild);
       }
     }
-  });
-
-  // 4. Player data
-  var SHOOTERS = [
-    {name:'Stephen Curry',team:'GSW',tpm:4.9,pct:42.1,note:'Averaging 5.2 in playoffs',hot:true,pts:1},
-    {name:'Klay Thompson',team:'DAL',tpm:3.8,pct:40.5,note:'Classic playoff Klay',hot:true,pts:1},
-    {name:'Jayson Tatum',team:'BOS',tpm:3.4,pct:37.8,note:'Home court advantage',hot:false,pts:1},
-    {name:'Jaylen Brown',team:'BOS',tpm:2.9,pct:36.2,note:'Consistent two-way star',hot:false,pts:2},
-    {name:'Donovan Mitchell',team:'CLE',tpm:3.1,pct:38.7,note:'40-pt game last night',hot:true,pts:2},
-    {name:'Trae Young',team:'ATL',tpm:2.8,pct:35.4,note:'On fire last 3 games',hot:true,pts:2},
-    {name:'LeBron James',team:'LAL',tpm:2.5,pct:41.1,note:'Veteran playoff experience',hot:false,pts:1},
-    {name:'Anthony Davis',team:'LAL',tpm:0.6,pct:27.1,note:'Big man — high risk/reward',hot:false,pts:3}
-  ];
-
-  var STARS_DATA = [
-    {name:'Stephen Curry',team:'GSW',ppg:28.4,tpm:4.9,pct:42.1,tier:'⭐ STAR'},
-    {name:'Klay Thompson',team:'DAL',ppg:19.2,tpm:3.8,pct:40.5,tier:'⭐ STAR'},
-    {name:'Jayson Tatum',team:'BOS',ppg:27.1,tpm:3.4,pct:37.8,tier:'⭐ STAR'},
-    {name:'LeBron James',team:'LAL',ppg:24.6,tpm:2.5,pct:41.1,tier:'⭐ STAR'},
-    {name:'Kevin Durant',team:'HOU',ppg:26.8,tpm:2.4,pct:38.8,tier:'⭐ STAR'},
-    {name:'Devin Vassell',team:'SAS',ppg:22.3,tpm:3.0,pct:40.8,tier:'⭐ STAR'}
-  ];
-
-  var ROLE_DATA = [
-    {name:'Jaylen Brown',team:'BOS',ppg:23.4,tpm:2.9,pct:36.2,tier:'🏀 ROLE PLAYER'},
-    {name:'Donovan Mitchell',team:'CLE',ppg:26.3,tpm:3.1,pct:38.7,tier:'🏀 ROLE PLAYER'},
-    {name:'Trae Young',team:'ATL',ppg:25.7,tpm:2.8,pct:35.4,tier:'🏀 ROLE PLAYER'},
-    {name:'Luguentz Dort',team:'OKC',ppg:14.2,tpm:2.6,pct:38.1,tier:'🏀 ROLE PLAYER'},
-    {name:'Donte DiVincenzo',team:'MIN',ppg:15.8,tpm:4.2,pct:39.8,tier:'🏀 ROLE PLAYER'},
-    {name:'Dalton Knecht',team:'LAL',ppg:13.4,tpm:2.4,pct:39.2,tier:'🏀 ROLE PLAYER'}
-  ];
-
-  var userPicks = JSON.parse(localStorage.getItem('ssPicks') || '[]');
-
-  function pCard(p, clickable) {
-    var sel = userPicks.indexOf(p.name) > -1;
-    var fire = p.hot ? ' 🔥' : '';
-    return '<div onclick="'+(clickable?'window.ssPick(''+p.name+'')':'')+'" style="cursor:'+(clickable?'pointer':'default')+';background:'+(sel?'rgba(253,185,39,0.1)':'var(--bg3,#12121a)')+';border:2px solid '+(sel?'#FDB927':'rgba(255,255,255,0.1)')+';border-radius:12px;padding:16px;margin:10px 0;transition:all .2s;'+(sel?'box-shadow:0 0 20px rgba(253,185,39,0.3);':'')+'">' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-      '<div style="flex:1;">' +
-      '<div style="font-family:Bebas Neue,sans-serif;font-size:20px;color:'+(sel?'#FDB927':'#fff')+';font-weight:700;letter-spacing:1px;">'+p.name+fire+'</div>' +
-      '<div style="color:#9b8fcf;font-size:12px;margin-top:3px;">'+p.team+' &bull; '+p.tpm+' 3PM/G &bull; '+p.pct+'% 3PT</div>' +
-      (p.note ? '<div style="color:#888;font-size:12px;margin-top:4px;">'+p.note+'</div>' : '') +
-      (p.tier ? '<div style="color:#FDB927;font-size:11px;margin-top:4px;opacity:.8;">'+p.tier+'</div>' : '') +
-      '</div>' +
-      '<div style="margin-left:12px;text-align:center;">' +
-      (p.pts ? '<div style="font-family:Bebas Neue,sans-serif;font-size:28px;color:#FDB927;font-weight:700;">'+p.pts+'pt</div><div style="color:#888;font-size:10px;">value</div>' : '') +
-      '</div>' +
-      '</div>' +
-      (sel ? '<div style="margin-top:10px;padding:8px;background:rgba(253,185,39,0.15);border-radius:8px;color:#FDB927;font-size:13px;text-align:center;font-family:Bebas Neue,sans-serif;letter-spacing:1px;">🔥 LOCKED IN — YOUR PICK</div>' : '') +
-      '</div>';
-  }
-
-  window.ssPick = function(name) {
-    var idx = userPicks.indexOf(name);
-    if (idx > -1) userPicks.splice(idx, 1);
-    else if (userPicks.length < 5) userPicks.push(name);
-    localStorage.setItem('ssPicks', JSON.stringify(userPicks));
-    renderCurrentTab();
-  };
-
-  function getPicksHTML() {
-    return '<div style="padding:4px 0 20px;">' +
-      '<div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:26px;font-weight:700;margin-bottom:4px;">🔥 SPLASH ZONE — HOT SHOOTERS</div>' +
-      '<div style="color:#9b8fcf;font-size:13px;margin-bottom:18px;">April 21, 2026 · NBA Playoffs · Pick up to 5 shooters</div>' +
-      SHOOTERS.map(function(p){return pCard(p, true);}).join('') +
-      (userPicks.length > 0 ? '<div style="margin-top:24px;padding:18px;background:rgba(253,185,39,0.08);border:2px solid #FDB927;border-radius:14px;"><div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:20px;font-weight:700;margin-bottom:10px;">YOUR PICKS ('+userPicks.length+'/5)</div>' + userPicks.map(function(n){return '<div style="color:#fff;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.08);">🔥 '+n+'</div>';}).join('') + '</div>' : '') +
-      '</div>';
-  }
-
-  function getStarsHTML() {
-    return '<div style="padding:4px 0 20px;">' +
-      '<div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:26px;font-weight:700;margin-bottom:4px;">⭐ STARS</div>' +
-      '<div style="color:#9b8fcf;font-size:13px;margin-bottom:18px;">Elite shooters — worth 1 point per 3</div>' +
-      '<table style="width:100%;border-collapse:collapse;">' +
-      '<tr style="border-bottom:1px solid rgba(255,255,255,.1);"><th style="text-align:left;padding:8px;color:#9b8fcf;font-size:11px;text-transform:uppercase;">Player</th><th style="padding:8px;color:#9b8fcf;font-size:11px;">Team</th><th style="padding:8px;color:#9b8fcf;font-size:11px;">3PT%</th><th style="padding:8px;color:#9b8fcf;font-size:11px;">3PM/G</th></tr>' +
-      STARS_DATA.map(function(p,i){
-        var c=p.pct>=40?'#4ade80':p.pct>=37?'#fbbf24':'#f87171';
-        return '<tr style="border-bottom:1px solid rgba(255,255,255,.06);background:'+(i%2===0?'transparent':'rgba(255,255,255,.02)')+';"><td style="padding:12px 8px;"><div style="font-family:Bebas Neue,sans-serif;font-size:16px;font-weight:700;color:#fff;">'+p.name+'</div><div style="font-size:11px;color:#888;">'+p.tier+'</div></td><td style="padding:12px 8px;text-align:center;color:#9b8fcf;font-size:13px;">'+p.team+'</td><td style="padding:12px 8px;text-align:center;font-size:14px;font-weight:700;color:'+c+';">'+p.pct+'%</td><td style="padding:12px 8px;text-align:center;font-size:14px;color:#FDB927;font-weight:700;">'+p.tpm+'</td></tr>';
-      }).join('') +
-      '</table></div>';
-  }
-
-  function getRoleHTML() {
-    return '<div style="padding:4px 0 20px;">' +
-      '<div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:26px;font-weight:700;margin-bottom:4px;">🏀 ROLE PLAYERS</div>' +
-      '<div style="color:#9b8fcf;font-size:13px;margin-bottom:18px;">Solid shooters — worth 2 points per 3</div>' +
-      '<table style="width:100%;border-collapse:collapse;">' +
-      '<tr style="border-bottom:1px solid rgba(255,255,255,.1);"><th style="text-align:left;padding:8px;color:#9b8fcf;font-size:11px;text-transform:uppercase;">Player</th><th style="padding:8px;color:#9b8fcf;font-size:11px;">Team</th><th style="padding:8px;color:#9b8fcf;font-size:11px;">3PT%</th><th style="padding:8px;color:#9b8fcf;font-size:11px;">3PM/G</th></tr>' +
-      ROLE_DATA.map(function(p,i){
-        var c=p.pct>=40?'#4ade80':p.pct>=37?'#fbbf24':'#f87171';
-        return '<tr style="border-bottom:1px solid rgba(255,255,255,.06);background:'+(i%2===0?'transparent':'rgba(255,255,255,.02)')+';"><td style="padding:12px 8px;"><div style="font-family:Bebas Neue,sans-serif;font-size:16px;font-weight:700;color:#fff;">'+p.name+'</div><div style="font-size:11px;color:#888;">'+p.tier+'</div></td><td style="padding:12px 8px;text-align:center;color:#9b8fcf;font-size:13px;">'+p.team+'</td><td style="padding:12px 8px;text-align:center;font-size:14px;font-weight:700;color:'+c+';">'+p.pct+'%</td><td style="padding:12px 8px;text-align:center;font-size:14px;color:#FDB927;font-weight:700;">'+p.tpm+'</td></tr>';
-      }).join('') +
-      '</table></div>';
-  }
-
-  var _currentTab = 'picks';
-
-  function renderCurrentTab() {
-    var tabContents = document.querySelectorAll('.tab-content');
-    var targetEl = null;
-
-    // Find the active tab content
-    tabContents.forEach(function(el) {
-      if (el.classList.contains('active')) targetEl = el;
-    });
-
-    if (!targetEl && tabContents.length > 0) targetEl = tabContents[0];
-    if (!targetEl) return;
-
-    var tabId = targetEl.id || '';
-    if (tabId.includes('stars')) {
-      targetEl.innerHTML = getStarsHTML();
-    } else if (tabId.includes('rp') || tabId.includes('role')) {
-      targetEl.innerHTML = getRoleHTML();
-    } else if (tabId.includes('picks') || tabId.includes('pick')) {
-      targetEl.innerHTML = getPicksHTML();
+    
+    // doLogin override
+    window.doLogin=function(){
+      var u=document.getElementById('loginUser').value.trim();
+      var p=document.getElementById('loginPass').value;
+      if(u==='nick0'&&p==='123'){
+        localStorage.setItem('ssUser',JSON.stringify({username:'nick0',role:'admin'}));
+        document.getElementById('loginPage').style.display='none';
+        document.getElementById('app').style.display='block';
+        window.ssInit&&window.ssInit();
+      } else {
+        var e=document.getElementById('loginError');
+        if(e){e.style.display='block';e.textContent='Invalid credentials';}
+      }
+    };
+    
+    // Player data
+    var PL={
+      picks:[
+        {n:'Stephen Curry',t:'GSW',tpm:'4.9',pct:'42.1',note:'Averaging 5.2 3PM in playoffs',hot:true},
+        {n:'Trae Young',t:'ATL',tpm:'2.8',pct:'35.4',note:'On fire last 3 games',hot:true},
+        {n:'Donovan Mitchell',t:'CLE',tpm:'3.1',pct:'38.7',note:'40-pt game last night',hot:true},
+        {n:'Klay Thompson',t:'DAL',tpm:'3.8',pct:'40.5',note:'Classic playoff Klay',hot:false},
+        {n:'Jayson Tatum',t:'BOS',tpm:'3.4',pct:'37.8',note:'Home court advantage',hot:false},
+        {n:'Damian Lillard',t:'MIL',tpm:'3.3',pct:'37.2',note:'Volume shooter',hot:false},
+        {n:'Anthony Edwards',t:'MIN',tpm:'3.0',pct:'36.9',note:'Rising playoff star',hot:true},
+        {n:'Tyrese Haliburton',t:'IND',tpm:'2.7',pct:'38.1',note:'Efficient and clutch',hot:false}
+      ],
+      stars:[
+        {n:'Stephen Curry',t:'GSW',ppg:'28.4',tpm:'4.9',pct:'42.1',hot:true},
+        {n:'Klay Thompson',t:'DAL',ppg:'19.2',tpm:'3.8',pct:'40.5',hot:true},
+        {n:'Jayson Tatum',t:'BOS',ppg:'27.1',tpm:'3.4',pct:'37.8',hot:false},
+        {n:'Jaylen Brown',t:'BOS',ppg:'23.4',tpm:'2.9',pct:'36.2',hot:false},
+        {n:'Donovan Mitchell',t:'CLE',ppg:'26.3',tpm:'3.1',pct:'38.7',hot:true},
+        {n:'Anthony Edwards',t:'MIN',ppg:'26.5',tpm:'3.0',pct:'36.9',hot:true}
+      ],
+      role:[
+        {n:'Al Horford',t:'BOS',ppg:'9.2',tpm:'1.8',pct:'39.1',hot:false},
+        {n:'Draymond Green',t:'GSW',ppg:'8.1',tpm:'0.9',pct:'29.4',hot:false},
+        {n:'Payton Pritchard',t:'BOS',ppg:'14.6',tpm:'3.1',pct:'41.2',hot:true},
+        {n:'Brandin Podziemski',t:'GSW',ppg:'12.3',tpm:'2.4',pct:'38.8',hot:true},
+        {n:'Sam Hauser',t:'BOS',ppg:'11.8',tpm:'2.6',pct:'40.3',hot:false},
+        {n:'Gary Trent Jr',t:'GSW',ppg:'13.1',tpm:'2.5',pct:'37.9',hot:true}
+      ]
+    };
+    
+    var picks=JSON.parse(localStorage.getItem('ssPicks')||'[]');
+    
+    function card(p,type){
+      var sel=picks.indexOf(p.n)>-1;
+      var h=p.hot?'🔥 ':'';
+      var border=sel?'#FDB927':'#2a2a40';
+      var bg=sel?'rgba(42,31,94,0.9)':'rgba(18,18,26,0.9)';
+      var glow=sel?'box-shadow:0 0 20px rgba(253,185,39,0.4);':'';
+      var click=type==='pick'?' onclick="window.ssPick(''+p.n.replace(/'/g,"\'")+'')" style="cursor:pointer;"':'';
+      return '<div'+click+' style="background:'+bg+';border:2px solid '+border+';border-radius:12px;padding:16px;margin:10px 0;transition:all .2s;'+glow+'">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;">'+
+        '<div>'+
+        '<div style="font-family:Bebas Neue,sans-serif;font-size:22px;font-weight:700;color:'+(sel?'#FDB927':'#fff')+'">'+h+p.n+'</div>'+
+        '<div style="color:#9b8fcf;font-size:13px;margin-top:2px">'+p.t+' • '+p.tpm+' 3PM/G • '+p.pct+'% from 3</div>'+
+        (p.note?'<div style="color:#aaa;font-size:12px;margin-top:4px">'+p.note+'</div>':'')+
+        '</div>'+
+        '<div style="font-size:32px;opacity:.6">🏀</div>'+
+        '</div>'+
+        (sel?'<div style="margin-top:10px;padding:8px;background:rgba(253,185,39,0.15);border-radius:8px;color:#FDB927;font-size:13px;text-align:center;font-family:Bebas Neue,sans-serif;letter-spacing:1px">✔ SPLASHED • YOUR PICK</div>':'')+
+        '</div>';
     }
-  }
-
-  // Hook into tab switching
-  function hookTabs() {
-    document.querySelectorAll('.tab').forEach(function(tab) {
-      tab.addEventListener('click', function() {
-        setTimeout(renderCurrentTab, 50);
+    
+    window.ssPick=function(name){
+      var idx=picks.indexOf(name);
+      if(idx>-1)picks.splice(idx,1);
+      else if(picks.length<5)picks.push(name);
+      localStorage.setItem('ssPicks',JSON.stringify(picks));
+      window.ssRender();
+    };
+    
+    window.ssRender=function(){
+      var picks=JSON.parse(localStorage.getItem('ssPicks')||'[]');
+      var active=document.querySelector('.tab-btn.active,[data-tab].active,.tab.active');
+      var tab=active?(active.dataset.tab||active.textContent.toLowerCase()):'picks';
+      var content=document.getElementById('tabContent')||document.getElementById('mainContent')||document.querySelector('.content,.tab-content');
+      if(!content){var loader=Array.from(document.querySelectorAll('*')).find(function(e){return e.textContent.trim()==='Loading today's games...'});if(loader)content=loader.parentElement;}
+      if(!content)return;
+      if(tab.includes('star')){
+        content.innerHTML='<div style="padding:16px"><div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:26px;margin-bottom:12px">⭐ STARS — TOP SHOOTERS</div>'+PL.stars.map(function(p){return card(p,'star');}).join('')+'</div>';
+      } else if(tab.includes('role')){
+        content.innerHTML='<div style="padding:16px"><div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:26px;margin-bottom:12px">🏀 ROLE PLAYERS — VALUE PICKS</div>'+PL.role.map(function(p){return card(p,'role');}).join('')+'</div>';
+      } else {
+        var pickSummary=picks.length>0?'<div style="margin-top:20px;padding:16px;background:rgba(26,16,48,0.9);border:2px solid #FDB927;border-radius:12px"><div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:20px;margin-bottom:10px">YOUR PICKS ('+picks.length+'/5)</div>'+picks.map(function(n){return '<div style="color:#fff;padding:6px 0;border-bottom:1px solid #2a2a40">⭐ '+n+'</div>';}).join('')+'</div>':'';
+        content.innerHTML='<div style="padding:16px"><div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:26px;margin-bottom:4px">🔥 SPLASH ZONE — HOT SHOOTERS</div><div style="color:#9b8fcf;font-size:13px;margin-bottom:16px">Pick up to 5 shooters for tonight</div>'+PL.picks.map(function(p){return card(p,'pick');}).join('')+pickSummary+'</div>';
+      }
+      document.querySelectorAll('.tab-btn,[data-tab],.tab').forEach(function(btn){
+        btn.onclick=function(){
+          document.querySelectorAll('.tab-btn,[data-tab],.tab').forEach(function(b){b.classList.remove('active');});
+          btn.classList.add('active');
+          window.ssRender();
+        };
       });
-    });
-    // Also render the picks tab immediately when app is shown
-    renderCurrentTab();
-  }
-
-  // Watch for app becoming visible
-  var _appRendered = false;
-  function checkAndRender() {
-    var app = document.getElementById('app');
-    if (app && app.style.display !== 'none' && !_appRendered) {
-      _appRendered = true;
-      setTimeout(function() {
-        hookTabs();
-        renderCurrentTab();
-      }, 100);
+    };
+    
+    window.ssInit=function(){
+      var user=JSON.parse(localStorage.getItem('ssUser')||'null');
+      if(!user)return;
+      if(user.role==='admin'&&!document.getElementById('ssGear')){
+        var g=document.createElement('div');
+        g.id='ssGear';
+        g.innerHTML='⚙️';
+        g.style.cssText='position:fixed;bottom:20px;right:20px;width:46px;height:46px;background:#1a1a2e;border:2px solid #FDB927;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:999;';
+        g.onclick=function(){window.ssAdmin();};
+        document.body.appendChild(g);
+      }
+      window.ssRender();
+    };
+    
+    window.ssAdmin=function(){
+      var users=JSON.parse(localStorage.getItem('ssUsers')||'[{"username":"nick0","role":"admin","created":"2026-04-21"}]');
+      var o=document.getElementById('ssAdminPanel')||document.createElement('div');
+      o.id='ssAdminPanel';
+      o.style.cssText='position:fixed;inset:0;background:rgba(10,10,15,.95);z-index:9999;overflow-y:auto;padding:20px;display:flex;align-items:flex-start;justify-content:center;';
+      o.innerHTML='<div style="max-width:580px;width:100%;background:#12121a;border:2px solid #FDB927;border-radius:16px;padding:24px;margin-top:20px">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">'+
+        '<div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:30px">⚙️ ADMIN PANEL</div>'+
+        '<button onclick="document.getElementById('ssAdminPanel').remove()" style="background:none;border:1px solid #555;color:#aaa;padding:6px 14px;border-radius:8px;cursor:pointer">CLOSE</button>'+
+        '</div>'+
+        '<div style="font-family:Bebas Neue,sans-serif;color:#9b8fcf;font-size:18px;margin-bottom:12px">USER MANAGEMENT</div>'+
+        '<table style="width:100%;border-collapse:collapse;margin-bottom:20px">'+
+        '<tr style="background:#1a1a2e"><th style="padding:10px;color:#FDB927;text-align:left">User</th><th style="padding:10px;color:#FDB927">Role</th><th style="padding:10px;color:#FDB927">Action</th></tr>'+
+        users.map(function(u){return '<tr style="border-bottom:1px solid #222"><td style="padding:10px;color:#fff">'+u.username+'</td><td style="padding:10px;text-align:center;color:#9b8fcf">'+u.role+'</td><td style="padding:10px;text-align:center">'+(u.username==='nick0'?'<span style="color:#555">Protected</span>':'<button onclick="window.ssRemoveUser(''+u.username+'')" style="background:rgba(255,68,68,.1);border:1px solid #f44;color:#f44;padding:4px 12px;border-radius:6px;cursor:pointer">Remove</button>')+'</td></tr>';}).join('')+
+        '</table>'+
+        '<div style="font-family:Bebas Neue,sans-serif;color:#9b8fcf;font-size:16px;margin-bottom:10px">ADD USER</div>'+
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">'+
+        '<input id="ssNewU" placeholder="Username" style="flex:1;min-width:100px;background:#1a1a2e;border:1px solid #333;color:#fff;padding:8px 12px;border-radius:8px">'+
+        '<input id="ssNewP" placeholder="Password" style="flex:1;min-width:100px;background:#1a1a2e;border:1px solid #333;color:#fff;padding:8px 12px;border-radius:8px">'+
+        '<select id="ssNewR" style="background:#1a1a2e;border:1px solid #333;color:#fff;padding:8px;border-radius:8px"><option>user</option><option>admin</option></select>'+
+        '<button onclick="window.ssAddUser()" style="background:#FDB927;color:#000;font-weight:700;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-family:Bebas Neue,sans-serif;font-size:16px">ADD</button>'+
+        '</div>'+
+        '<div style="font-family:Bebas Neue,sans-serif;color:#9b8fcf;font-size:18px;margin-bottom:10px">PICK STATS</div>'+
+        '<div style="color:#fff;background:#1a1a2e;padding:12px;border-radius:8px">Total picks today: <span style="color:#FDB927;font-weight:700">'+JSON.parse(localStorage.getItem('ssPicks')||'[]').length+'</span></div>'+
+        '</div>';
+      document.body.appendChild(o);
+      window.ssAddUser=function(){
+        var u=document.getElementById('ssNewU').value.trim();
+        var p=document.getElementById('ssNewP').value;
+        var r=document.getElementById('ssNewR').value;
+        if(!u||!p)return;
+        var ul=JSON.parse(localStorage.getItem('ssUsers')||'[]');
+        ul.push({username:u,password:p,role:r,created:new Date().toISOString().slice(0,10)});
+        localStorage.setItem('ssUsers',JSON.stringify(ul));
+        window.ssAdmin();
+      };
+      window.ssRemoveUser=function(name){
+        var ul=JSON.parse(localStorage.getItem('ssUsers')||'[]').filter(function(x){return x.username!==name;});
+        localStorage.setItem('ssUsers',JSON.stringify(ul));
+        window.ssAdmin();
+      };
+    };
+    
+    // Auto-init if already logged in
+    if(localStorage.getItem('ssUser')){
+      var lp=document.getElementById('loginPage');
+      var ap=document.getElementById('app');
+      if(lp)lp.style.display='none';
+      if(ap)ap.style.display='block';
+      window.ssInit();
     }
-  }
-  setInterval(checkAndRender, 200);
-
-  // Admin gear + panel
-  function injectGear() {
-    if (document.getElementById('ssAdminGear')) return;
-    var user = null;
-    try { user = JSON.parse(localStorage.getItem('ssUser')); } catch(e){}
-    if (!user || user.role !== 'admin') return;
-    var gear = document.createElement('button');
-    gear.id = 'ssAdminGear';
-    gear.textContent = '⚙️ Admin';
-    gear.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1a1a2e;border:2px solid #FDB927;color:#FDB927;border-radius:10px;padding:10px 16px;font-family:Bebas Neue,sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;cursor:pointer;z-index:999;';
-    gear.onclick = showAdmin;
-    document.body.appendChild(gear);
-  }
-  setInterval(injectGear, 500);
-
-  function showAdmin() {
-    document.getElementById('ssAdminPanel') && document.getElementById('ssAdminPanel').remove();
-    var users = [];
-    try { users = JSON.parse(localStorage.getItem('ssUsers') || '[{"username":"nick0","role":"admin","created":"2026-04-21"}]'); } catch(e){}
-    var picks = [];
-    try { picks = JSON.parse(localStorage.getItem('ssPicks') || '[]'); } catch(e){}
-    var panel = document.createElement('div');
-    panel.id = 'ssAdminPanel';
-    panel.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;overflow-y:auto;padding:24px;';
-    panel.innerHTML =
-      '<div style="max-width:640px;margin:0 auto;background:#12121a;border:2px solid #FDB927;border-radius:16px;padding:28px;">' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">' +
-      '<div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:30px;font-weight:700;letter-spacing:3px;">⚙️ ADMIN PANEL</div>' +
-      '<button id="ssAdminClose" style="background:none;border:1px solid #555;color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:14px;">CLOSE</button>' +
-      '</div>' +
-      '<div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:18px;font-weight:700;margin-bottom:12px;">PICK STATS</div>' +
-      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;">' +
-      '<div style="background:#1a1a2e;border-radius:10px;padding:16px;text-align:center;"><div style="font-family:Bebas Neue,sans-serif;font-size:36px;color:#FDB927;font-weight:700;">'+picks.length+'</div><div style="color:#888;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Picks Today</div></div>' +
-      '<div style="background:#1a1a2e;border-radius:10px;padding:16px;text-align:center;"><div style="font-family:Bebas Neue,sans-serif;font-size:36px;color:#FDB927;font-weight:700;">'+users.length+'</div><div style="color:#888;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Users</div></div>' +
-      '<div style="background:#1a1a2e;border-radius:10px;padding:16px;text-align:center;"><div style="font-family:Bebas Neue,sans-serif;font-size:36px;color:#FDB927;font-weight:700;">—</div><div style="color:#888;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Hits</div></div>' +
-      '</div>' +
-      '<div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:18px;font-weight:700;margin-bottom:12px;">USER MANAGEMENT</div>' +
-      '<table style="width:100%;border-collapse:collapse;margin-bottom:16px;">' +
-      '<tr style="background:#1a1a2e;"><th style="padding:10px;color:#FDB927;text-align:left;font-size:12px;text-transform:uppercase;">Username</th><th style="padding:10px;color:#FDB927;font-size:12px;text-transform:uppercase;">Role</th><th style="padding:10px;color:#FDB927;font-size:12px;text-transform:uppercase;">Created</th><th style="padding:10px;"></th></tr>' +
-      users.map(function(u){
-        return '<tr style="border-bottom:1px solid #2a2a40;">' +
-          '<td style="padding:10px;color:#fff;font-weight:600;">'+u.username+'</td>' +
-          '<td style="padding:10px;text-align:center;"><span style="background:'+(u.role==='admin'?'rgba(253,185,39,.2)':'rgba(255,255,255,.1)')+';color:'+(u.role==='admin'?'#FDB927':'#888')+';padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;">'+u.role+'</span></td>' +
-          '<td style="padding:10px;color:#888;font-size:12px;">'+(u.created||'—')+'</td>' +
-          '<td style="padding:10px;text-align:center;">'+(u.username!=='nick0'?'<button onclick="window.ssDelUser(''+u.username+'')" style="background:rgba(255,68,68,.15);border:1px solid rgba(255,68,68,.3);color:#ff6464;padding:3px 10px;border-radius:5px;cursor:pointer;font-size:12px;">Remove</button>':'<span style="color:#555;font-size:11px;">Protected</span>')+'</td>' +
-          '</tr>';
-      }).join('') +
-      '</table>' +
-      '<div style="font-family:Bebas Neue,sans-serif;color:#FDB927;font-size:16px;font-weight:700;margin-bottom:10px;">ADD USER</div>' +
-      '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
-      '<input id="ssNewU" placeholder="Username" style="flex:1;min-width:100px;background:#1a1a2e;border:1px solid #2a2a40;color:#fff;padding:8px 12px;border-radius:8px;">' +
-      '<input id="ssNewP" placeholder="Password" type="password" style="flex:1;min-width:100px;background:#1a1a2e;border:1px solid #2a2a40;color:#fff;padding:8px 12px;border-radius:8px;">' +
-      '<select id="ssNewR" style="background:#1a1a2e;border:1px solid #2a2a40;color:#fff;padding:8px;border-radius:8px;"><option value="player">Player</option><option value="admin">Admin</option></select>' +
-      '<button onclick="window.ssAddUser()" style="background:#FDB927;color:#000;padding:8px 16px;border:none;border-radius:8px;cursor:pointer;font-family:Bebas Neue,sans-serif;font-size:14px;font-weight:700;">ADD</button>' +
-      '</div>' +
-      '</div>';
-    document.body.appendChild(panel);
-    document.getElementById('ssAdminClose').onclick = function(){ panel.remove(); };
-
-    window.ssAddUser = function() {
-      var u=document.getElementById('ssNewU').value.trim();
-      var p=document.getElementById('ssNewP').value;
-      var r=document.getElementById('ssNewR').value;
-      if(!u||!p) return;
-      var ul=[];
-      try{ul=JSON.parse(localStorage.getItem('ssUsers')||'[{"username":"nick0","role":"admin","created":"2026-04-21"}]');}catch(e){}
-      ul.push({username:u,role:r,created:new Date().toISOString().slice(0,10)});
-      localStorage.setItem('ssUsers',JSON.stringify(ul));
-      showAdmin();
-    };
-    window.ssDelUser = function(name) {
-      var ul=[];
-      try{ul=JSON.parse(localStorage.getItem('ssUsers')||'[]');}catch(e){}
-      localStorage.setItem('ssUsers',JSON.stringify(ul.filter(function(x){return x.username!==name;})));
-      showAdmin();
-    };
-  }
+  });
 })();
 </script>
 </body>
