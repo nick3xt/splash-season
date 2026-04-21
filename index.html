@@ -103,7 +103,7 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .stat-box .stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#FDB927;}
 </style>
 </head>
-<b=�y>
+<b=Ây>
 
 <!-- LOGIN -->
 <div id="loginPage">
@@ -274,7 +274,7 @@ function renderTab(tab){
     var sel = picks.indexOf(p.name) > -1;
     html += '<div class="player-card'+(sel?' selected':'')+'" onclick="togglePick(\''+tab+'\',\''+p.name.replace(/'/g,"\\'")+'\')">';
     html += '<div class="card-inner">';
-    html += '<img class="card-photo'+(sel?' selected-img':'')+'" src="'+plotoUrl(p.id)+'" onerror="this.style.background=\'#1a1a30\';this.src=\'\'" alt="'+p.name+'">';
+    html += '<img class="card-photo'+(sel?' selected-img':'')+'" src="'+photoUrl(p.id)+'" onerror="this.style.background=\'#1a1a30\';this.src=\'\'" alt="'+p.name+'">';
     html += '<div class="card-info">';
     html += '<div class="card-name'+(sel?' selected-name':'')+'">'+p.name+(p.hot?' &#128293;':'')+'</div>';
     html += '<div class="card-team">';
@@ -330,7 +330,7 @@ function renderAdmin(){
   html += '<h3>USER MANAGEMENT</h3>';
   html += '<table class="admin-table"><tr><th>Username</th><th>Role</th><th>Created</th><th>Action</th></tr>';
   allUsers.forEach(function(u){
-    html += '<tr><td>'+u.username+'</td><td style="color:#9b8fcf">'+u.role+'</td><td style="color:#5a5a7a">'+(u.created||'✔')+'</td><td>';
+    html += '<tr><td>'+u.username+'</td><td style="color:#9b8fcf">'+u.role+'</td><td style="color:#5a5a7a">'+(u.created||'Ã¢ÂÂ')+'</td><td>';
     html += u.username==='nick0' ? '<span style="color:#4a4a6a;font-size:12px">Protected</span>' : '<button class="btn-red" onclick="removeUser(\''+u.username+'\')">Remove</button>';
     html += '</td></tr>';
   });
