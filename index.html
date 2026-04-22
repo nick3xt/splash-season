@@ -81,7 +81,7 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .picks-intro-title{font-family:'Bebas Neue',sans-serif;font-size:16px;color:#FDB927;letter-spacing:2px;margin-bottom:4px;}
 .picks-intro-body{color:#c0b0e0;font-size:11px;line-height:1.6;}
 
-/* GAME CARD â BSH-style */
+/* GAME CARD &#xE2;&#x80;&#x94; BSH-style */
 .game-card{background:rgba(10,10,22,.98);border:1.5px solid #222240;border-radius:14px;margin-bottom:18px;overflow:hidden;transition:border-color .2s;}
 .game-card.has-pick{border-color:rgba(253,185,39,.5);}
 
@@ -164,6 +164,10 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 /* TOAST */
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a38;border:1px solid rgba(253,185,39,.4);color:#FDB927;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;padding:10px 20px;border-radius:10px;z-index:99999;pointer-events:none;opacity:0;transition:opacity .25s;}
 .toast.show{opacity:1;}
+
+.lock-pick-btn{display:block;width:100%;margin-top:10px;padding:11px 0;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:opacity 0.15s;}
+.lock-pick-btn:hover{opacity:0.82;}
+.lock-pick-btn:active{transform:scale(0.98);}
 </style>
 </head>
 <body>
@@ -227,16 +231,16 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 <div class="toast" id="toast"></div>
 
 <script>
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 //  SUPABASE CONFIG
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 const SUPABASE_URL = 'https://heykwxkyvbzffkhgrqgf.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_KvxJYevSYKP1Na_de5RCTQ_G9dDi0_L';
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-//  PASSWORD HASHING (PBKDF2 â same as BSH)
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
+//  PASSWORD HASHING (PBKDF2 &#xE2;&#x80;&#x94; same as BSH)
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 async function hashPassword(password, username) {
   const enc = new TextEncoder();
   const keyMat = await crypto.subtle.importKey(
@@ -250,9 +254,9 @@ async function hashPassword(password, username) {
   return [...new Uint8Array(bits)].map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-//  2026 NBA PLAYOFFS â TEAM REGISTRY
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
+//  2026 NBA PLAYOFFS &#xE2;&#x80;&#x94; TEAM REGISTRY
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 function photoUrl(id){ return 'https://cdn.nba.com/headshots/nba/latest/1040x760/'+id+'.png'; }
 function logoUrl(tid){ return 'https://cdn.nba.com/logos/nba/'+tid+'/global/L/logo.svg'; }
 
@@ -288,7 +292,7 @@ const ALL_PLAYERS = [
   {id:101141,name:'Nikola Vucevic',team:'BOS',ppg:14.2,tpm:1.6,pct:36.8,pts:2,note:'Stretch C, deadline add'},
   {id:1630559,name:'Neemias Queta',team:'BOS',ppg:6.8,tpm:0.1,pct:20.0,pts:3,note:'Backup center'},
   // PHILADELPHIA 76ERS
-  {id:1630178,name:'Tyrese Maxey',team:'PHI',ppg:28.3,tpm:2.8,pct:37.4,pts:1,note:'PHI #1 â PROBABLE (finger)'},
+  {id:1630178,name:'Tyrese Maxey',team:'PHI',ppg:28.3,tpm:2.8,pct:37.4,pts:1,note:'PHI #1 &#xE2;&#x80;&#x94; PROBABLE (finger)'},
   {id:203081,name:'Paul George',team:'PHI',ppg:17.3,tpm:1.8,pct:36.1,pts:1,note:'17 pts Game 1'},
   {id:1642845,name:'VJ Edgecombe',team:'PHI',ppg:14.2,tpm:1.9,pct:36.1,pts:1,note:'2025 #3 pick, explosive'},
   {id:1628403,name:'Quentin Grimes',team:'PHI',ppg:13.1,tpm:2.3,pct:37.8,pts:2,note:'Floor spacer'},
@@ -329,7 +333,7 @@ const ALL_PLAYERS = [
   {id:1630560,name:'Dalton Knecht',team:'LAL',ppg:8.9,tpm:1.8,pct:36.2,pts:2,note:'Young shooter'},
   {id:1629138,name:'Cam Reddish',team:'LAL',ppg:9.2,tpm:1.4,pct:33.8,pts:2,note:'Wing defender'},
   {id:203076,name:'Anthony Davis',team:'LAL',ppg:21.8,tpm:0.3,pct:26.0,pts:3,note:'Frontcourt anchor'},
-  {id:1629028,name:'Deandre Ayton',team:'LAL',ppg:12.5,tpm:0.2,pct:28.4,pts:3,note:'Starting C'},
+  {id:1629028,name:team:'LAL',ppg:12.5,tpm:0.2,pct:28.4,pts:3,note:'Starting C'},
   // OKLAHOMA CITY THUNDER
   {id:1628983,name:'Shai Gilgeous-Alexander',team:'OKC',ppg:31.1,tpm:1.8,pct:36.4,pts:1,note:'2x MVP finalist, Finals MVP'},
   {id:1631114,name:'Jalen Williams',team:'OKC',ppg:17.1,tpm:1.4,pct:35.2,pts:1,note:'Returned from wrist surgery'},
@@ -356,7 +360,7 @@ const ALL_PLAYERS = [
   {id:1629625,name:'Julian Strawther',team:'DEN',ppg:9.6,tpm:1.8,pct:38.2,pts:2,note:'Young shooter'},
   {id:202329,name:'JaVale McGee',team:'DEN',ppg:6.2,tpm:0.0,pct:0.0,pts:3,note:'Backup center'},
   // MINNESOTA TIMBERWOLVES
-  {id:1630162,name:'Anthony Edwards',team:'MIN',ppg:28.8,tpm:3.4,pct:36.9,pts:1,note:'3.4 3PM/G â extraordinary'},
+  {id:1630162,name:'Anthony Edwards',team:'MIN',ppg:28.8,tpm:3.4,pct:36.9,pts:1,note:'3.4 3PM/G &#xE2;&#x80;&#x94; extraordinary'},
   {id:1628967,name:'Donte DiVincenzo',team:'MIN',ppg:12.8,tpm:2.0,pct:38.4,pts:2,note:'Starting SG, reliable shooter'},
   {id:1630217,name:'Jaden McDaniels',team:'MIN',ppg:14.8,tpm:1.6,pct:35.4,pts:2,note:'Defensive wing'},
   {id:1629612,name:'Naz Reid',team:'MIN',ppg:13.6,tpm:1.4,pct:36.2,pts:2,note:'Versatile big off bench'},
@@ -411,17 +415,18 @@ const ALL_PLAYERS = [
   {id:1631105,name:'Jalen Duren',team:'DET',ppg:19.2,tpm:0.0,pct:0.0,pts:3,note:'Team rebounding leader'}
 ];
 
-// Reference lists sorted by volume Ã efficiency
+// Reference lists sorted by volume &#xC3;&#x97; efficiency
 const STARS_LIST = ALL_PLAYERS.filter(p=>p.pts===1).sort((a,b)=>b.tpm-a.tpm).slice(0,20);
 const ROLE_LIST  = ALL_PLAYERS.filter(p=>p.pts===2).sort((a,b)=>(b.tpm*b.pct)-(a.tpm*a.pct));
 const BRICK_LIST = ALL_PLAYERS.filter(p=>p.pts===3).sort((a,b)=>b.ppg-a.ppg);
 
 function findPlayer(name){ return ALL_PLAYERS.find(p=>p.name===name)||null; }
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-//  TODAY'S GAMES â April 21, 2026
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-const GAMES = [
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
+//  TODAY'S GAMES &#xE2;&#x80;&#x94; April 21, 2026
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
+const SCHEDULE = {
+  '2026-04-21': [
   {
     id:'phi_bos_g2', away:'PHI', home:'BOS',
     time:'7:00 PM ET', series:'Game 2 \u2022 BOS leads 1-0',
@@ -441,13 +446,19 @@ const GAMES = [
     time:'10:30 PM ET', series:'Game 2 \u2022 Series tied 1-1',
     tipoff: 1776825000000, // 10:30pm ET Apr 21 2026
     awayPlayers:['Kevin Durant','Reed Sheppard','Jabari Smith Jr.','Dorian Finney-Smith','Tari Eason','Fred VanVleet','Alperen Sengun','Amen Thompson'],
-    homePlayers:['LeBron James',"D'Angelo Russell",'Rui Hachimura','Bronny James','Dalton Knecht','Anthony Davis','Deandre Ayton']
+    homePlayers:['LeBron James',"D'Angelo Russell",'Rui Hachimura','Bronny James','Dalton Knecht','Anthony Davis']
   }
-];
+],
+  // Add future playoff dates here as '2026-04-22': [...], etc.
+};
+// Get today in Eastern Time (EDT = UTC-4)
+const _etMs = Date.now() - 4 * 3600 * 1000;
+const _todayET = new Date(_etMs).toISOString().slice(0, 10);
+const GAMES = SCHEDULE[_todayET] || [];
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-//  PICKS â Supabase-backed (falls back to localStorage)
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
+//  PICKS &#xE2;&#x80;&#x94; Supabase-backed (falls back to localStorage)
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 let currentUser = null;
 let ssData = { game_picks:{}, all_picked:[], scores:{} }; // all_picked = names picked across all time
 
@@ -496,9 +507,9 @@ async function clearGamePick(gameId) {
   await setGamePick(gameId, null);
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 //  AUTH
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 function showJoin(){document.getElementById('loginForm').style.display='none';document.getElementById('joinForm').style.display='block';document.getElementById('joinUser').focus();}
 function showLogin(){document.getElementById('joinForm').style.display='none';document.getElementById('loginForm').style.display='block';document.getElementById('loginUser').focus();}
 
@@ -512,11 +523,11 @@ async function doLogin(){
   btn.disabled=true; btn.textContent='LOADING...';
   // Admin shortcut
   if(u==='nick0'&&p==='123'){
-    await loginSuccess({username:'nick0',role:'ss_admin'}); btn.disabled=false; btn.textContent="LET'S SPLASH ð"; return;
+    await loginSuccess({username:'nick0',role:'ss_admin'}); btn.disabled=false; btn.textContent="LET'S SPLASH &#xF0;&#x9F;&#x8F;&#x80;"; return;
   }
   try {
     const {data:rows} = await db.from('ss_users').select('*').eq('username',u).single();
-    if(!rows){errEl.textContent='Invalid username or password';errEl.style.display='block';btn.disabled=false;btn.textContent="LET'S SPLASH ð";return;}
+    if(!rows){errEl.textContent='Invalid username or password';errEl.style.display='block';btn.disabled=false;btn.textContent="LET'S SPLASH &#xF0;&#x9F;&#x8F;&#x80;";return;}
     // Check password
     let ok=false;
     if(rows.password_hash){
@@ -525,12 +536,12 @@ async function doLogin(){
     } else if(rows.plain_password){
       ok=(p===rows.plain_password);
     }
-    if(!ok){errEl.textContent='Invalid username or password';errEl.style.display='block';btn.disabled=false;btn.textContent="LET'S SPLASH ð";return;}
+    if(!ok){errEl.textContent='Invalid username or password';errEl.style.display='block';btn.disabled=false;btn.textContent="LET'S SPLASH &#xF0;&#x9F;&#x8F;&#x80;";return;}
     await loginSuccess({username:u, role:rows.role||'ss_user'});
   } catch(e){
-    errEl.textContent='Connection error â try again';errEl.style.display='block';
+    errEl.textContent='Connection error &#xE2;&#x80;&#x94; try again';errEl.style.display='block';
   }
-  btn.disabled=false; btn.textContent="LET'S SPLASH ð";
+  btn.disabled=false; btn.textContent="LET'S SPLASH &#xF0;&#x9F;&#x8F;&#x80;";
 }
 
 async function doJoin(){
@@ -587,9 +598,9 @@ function doLogout(){
   document.getElementById('loginError').style.display='none';
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 //  TABS
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 let currentTab='picks';
 function switchTab(tab,btn){
   currentTab=tab;
@@ -599,31 +610,31 @@ function switchTab(tab,btn){
 }
 function renderTab(tab){
   if(tab==='picks') renderPicksTab();
-  else if(tab==='stars') renderRefTab(STARS_LIST,'â­ STARS â TOP SHOOTERS',1);
-  else if(tab==='role') renderRefTab(ROLE_LIST,'ð ROLE PLAYERS',2);
-  else if(tab==='brick') renderRefTab(BRICK_LIST,'ð§± BRICK CITY â HIGH REWARD',3);
+  else if(tab==='stars') renderRefTab(STARS_LIST,'&#xE2;&#xAD;&#x90; STARS &#xE2;&#x80;&#x94; TOP SHOOTERS',1);
+  else if(tab==='role') renderRefTab(ROLE_LIST,'&#xF0;&#x9F;&#x8F;&#x80; ROLE PLAYERS',2);
+  else if(tab==='brick') renderRefTab(BRICK_LIST,'&#xF0;&#x9F;&#xA7;&#xB1; BRICK CITY &#xE2;&#x80;&#x94; HIGH REWARD',3);
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 //  TODAY'S PICKS TAB
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 function renderPicksTab(){
   let html='';
   html+="<div class='picks-intro'>";
-  html+="<div class='picks-intro-title'>ð TODAY'S PICKS â APR 21</div>";
+  html+="<div class='picks-intro-title'>&#xF0;&#x9F;&#x93;&#x85; TODAY'S PICKS &#xE2;&#x80;&#x94; APR 21</div>";
   html+="<div class='picks-intro-body'>Pick <strong style='color:#FDB927'>1 player per game</strong> from either team's dropdown. ";
   html+="Once picked, that player is <strong style='color:#f88'>locked for your entire playoffs</strong>. ";
-  html+="â­ Stars = 1PT &bull; ð Role Players = 2PT &bull; ð§± Brick City = 3PT</div></div>";
+  html+="&#xE2;&#xAD;&#x90; Stars = 1PT &bull; &#xF0;&#x9F;&#x8F;&#x80; Role Players = 2PT &bull; &#xF0;&#x9F;&#xA7;&#xB1; Brick City = 3PT</div></div>";
 
   GAMES.forEach(g=>{ html+=buildGameCard(g); });
 
   // Summary
   const picked=Object.entries(ssData.game_picks||{}).filter(([,v])=>!!v);
   if(picked.length>0){
-    html+="<div class='picks-summary'><h3>â YOUR PICKS TODAY ("+picked.length+"/"+GAMES.length+")</h3>";
+    html+="<div class='picks-summary'><h3>&#xE2;&#x9C;&#x85; YOUR PICKS TODAY ("+picked.length+"/"+GAMES.length+")</h3>";
     picked.forEach(([gid,pname])=>{
       const p=findPlayer(pname); if(!p) return;
-      const ptsLbl=p.pts===1?'â­ 1PT':p.pts===2?'ð 2PT':'ð§± 3PT';
+      const ptsLbl=p.pts===1?'&#xE2;&#xAD;&#x90; 1PT':p.pts===2?'&#xF0;&#x9F;&#x8F;&#x80; 2PT':'&#xF0;&#x9F;&#xA7;&#xB1; 3PT';
       const ptsCls='pts-'+p.pts;
       html+="<div class='pick-row'>";
       html+="<img class='pr-photo' src='"+photoUrl(p.id)+"' onerror=\"this.style.background='#1a1a30';this.src=''\" alt='"+pname+"'>";
@@ -670,7 +681,7 @@ function buildGameCard(game){
   // Dropdowns or locked message
   if(!hasPick){
     if(locked){
-      html+="<div class='game-locked-bar'>ð GAME LOCKED â TIPOFF PASSED</div>";
+      html+="<div class='game-locked-bar'>&#xF0;&#x9F;&#x94;&#x92; GAME LOCKED &#xE2;&#x80;&#x94; TIPOFF PASSED</div>";
     } else {
       html+="<div class='game-drops'>";
       html+=buildDropdown(game,'away',awT,pickedAll);
@@ -683,7 +694,7 @@ function buildGameCard(game){
   if(hasPick){
     const p=findPlayer(pick);
     if(p){
-      const ptsLbl=p.pts===1?'â­ 1PT':p.pts===2?'ð 2PT':'ð§± 3PT';
+      const ptsLbl=p.pts===1?'&#xE2;&#xAD;&#x90; 1PT':p.pts===2?'&#xF0;&#x9F;&#x8F;&#x80; 2PT':'&#xF0;&#x9F;&#xA7;&#xB1; 3PT';
       const ptsCls='pts-'+p.pts;
       const pTeam=TEAMS[p.team]||{id:0,full:p.team};
       html+="<div class='pick-confirm show'><div class='pick-confirm-row'>";
@@ -695,7 +706,7 @@ function buildGameCard(game){
       html+="<span class='pick-team-name'>"+pTeam.full+"</span></div>";
       html+="<div class='pick-stats'>"+p.tpm+" 3PM/G &bull; "+p.pct+"% 3PT &bull; "+p.ppg+" PPG</div>";
       html+="<div class='pick-badges'>";
-      html+="<span class='pick-tag'>â YOUR PICK</span>";
+      html+="<span class='pick-tag'>&#xE2;&#x9C;&#x93; YOUR PICK</span>";
       html+="<span class='pts-chip "+ptsCls+"'>"+ptsLbl+"</span>";
       if(!locked) html+="<button class='pick-change-btn' id='clr_"+game.id+"'>Change pick</button>";
       html+="</div></div></div></div>";
@@ -715,9 +726,9 @@ function buildDropdown(game, side, team, pickedAll){
   names.forEach(pname=>{
     const p=findPlayer(pname); if(!p) return;
     const used=pickedAll.includes(pname);
-    const ptsLbl=p.pts===1?'â­ 1PT':p.pts===2?'ð 2PT':'ð§± 3PT';
+    const ptsLbl=p.pts===1?'&#xE2;&#xAD;&#x90; 1PT':p.pts===2?'&#xF0;&#x9F;&#x8F;&#x80; 2PT':'&#xF0;&#x9F;&#xA7;&#xB1; 3PT';
     html+="<option value='"+pname+"'"+(used?' disabled':'')+">";
-    html+=pname+" â "+ptsLbl+(used?' (USED)':'');
+    html+=pname+" &#xE2;&#x80;&#x94; "+ptsLbl+(used?' (USED)':'');
     html+="</option>";
   });
   html+="</select></div>";
@@ -731,15 +742,15 @@ async function onPickPlayer(gameId, playerName){
   renderPicksTab();
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 //  REFERENCE TABS
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 function renderRefTab(players, label, pts){
   const ptsLbl=pts===1?'1PT':pts===2?'2PT':'3PT';
   const ptsCls='pts-'+pts;
-  const desc=pts===1?'High-volume 3PT shooters & primary scorers â sorted by shooting value.':
-             pts===2?'Moderate shooters & bench contributors â good value picks.':
-             'Centers & low-usage players â low odds but max reward.';
+  const desc=pts===1?'High-volume 3PT shooters & primary scorers &#xE2;&#x80;&#x94; sorted by shooting value.':
+             pts===2?'Moderate shooters & bench contributors &#xE2;&#x80;&#x94; good value picks.':
+             'Centers & low-usage players &#xE2;&#x80;&#x94; low odds but max reward.';
   let html='';
   html+="<div class='rules-banner'><div class='pts-badge-lbl'>"+ptsLbl+"</div><p><strong style='color:#FDB927'>"+label+"</strong><br>"+desc+" Pick these in <strong>TODAY'S PICKS</strong>.</p></div>";
   html+="<div class='section-header'>"+label+"</div>";
@@ -750,19 +761,19 @@ function renderRefTab(players, label, pts){
     html+="<div class='player-card'><div class='card-inner'>";
     html+="<img class='card-photo' src='"+photoUrl(p.id)+"' onerror=\"this.style.background='#1a1a30';this.src=''\" alt='"+p.name+"'>";
     html+="<div class='card-info'>";
-    html+="<div class='card-name'>"+(i<3?"ð¥ ":"")+p.name+"</div>";
+    html+="<div class='card-name'>"+(i<3?"&#xF0;&#x9F;&#x94;&#xA5; ":"")+p.name+"</div>";
     html+="<div class='card-team'><img class='team-logo-sm' src='"+logoUrl(t.id)+"' onerror=\"this.style.display='none'\" alt='"+p.team+"'><span class='card-team-name'>"+t.full+"</span></div>";
     html+="<div class='card-stats'>"+p.tpm+" 3PM/G &bull; "+p.pct+"% 3PT &bull; "+p.ppg+" PPG</div>";
     if(p.note) html+="<div class='card-note'>"+p.note+"</div>";
-    html+="</div><div class='card-right'><div class='pts-chip "+ptsCls+"'>"+(pts===1?'â­':pts===2?'ð':'ð§±')+" "+ptsLbl+"</div></div></div></div>";
+    html+="</div><div class='card-right'><div class='pts-chip "+ptsCls+"'>"+(pts===1?'&#xE2;&#xAD;&#x90;':pts===2?'&#xF0;&#x9F;&#x8F;&#x80;':'&#xF0;&#x9F;&#xA7;&#xB1;')+" "+ptsLbl+"</div></div></div></div>";
   });
 
   document.getElementById('tabContent').innerHTML=html;
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 //  ADMIN PANEL
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 let adminView='users';
 
 function openAdmin(){
@@ -775,12 +786,12 @@ function setAdminView(v){adminView=v;renderAdmin();}
 
 async function renderAdmin(){
   const el=document.getElementById('adminPanel');
-  el.innerHTML="<div class='admin-header'>âï¸ ADMIN <button class='btn-close' onclick='closeAdmin()'>â CLOSE</button></div>"+
+  el.innerHTML="<div class='admin-header'>&#xE2;&#x9A;&#x99;&#xEF;&#xB8;&#x8F; ADMIN <button class='btn-close' onclick='closeAdmin()'>&#xE2;&#x9C;&#x95; CLOSE</button></div>"+
     "<div class='admin-nav'>"+
-    "<button class='admin-nav-btn"+(adminView==='users'?' active':'')+"' onclick=\"setAdminView('users')\">ð¥ USERS</button>"+
-    "<button class='admin-nav-btn"+(adminView==='picks'?' active':'')+"' onclick=\"setAdminView('picks')\">ð¯ ALL PICKS</button>"+
-    "<button class='admin-nav-btn"+(adminView==='score'?' active':'')+"' onclick=\"setAdminView('score')\">ð SCORING</button>"+
-    "<button class='admin-nav-btn"+(adminView==='games'?' active':'')+"' onclick=\"setAdminView('games')\">ð GAMES</button>"+
+    "<button class='admin-nav-btn"+(adminView==='users'?' active':'')+"' onclick=\"setAdminView('users')\">&#xF0;&#x9F;&#x91;&#xA5; USERS</button>"+
+    "<button class='admin-nav-btn"+(adminView==='picks'?' active':'')+"' onclick=\"setAdminView('picks')\">&#xF0;&#x9F;&#x8E;&#xAF; ALL PICKS</button>"+
+    "<button class='admin-nav-btn"+(adminView==='score'?' active':'')+"' onclick=\"setAdminView('score')\">&#xF0;&#x9F;&#x93;&#x8A; SCORING</button>"+
+    "<button class='admin-nav-btn"+(adminView==='games'?' active':'')+"' onclick=\"setAdminView('games')\">&#xF0;&#x9F;&#x8F;&#x80; GAMES</button>"+
     "</div><div id='adminContent'>Loading...</div>";
 
   if(adminView==='users') await renderAdminUsers();
@@ -850,7 +861,7 @@ async function renderAdminPicks(){
         const p=findPlayer(pname);
         const pts=p?p.pts:0;
         const score=d.scores?.[gid]||'pending';
-        const scoreLbl=score==='made'?'<span style="color:#5fe89a">â MADE</span>':score==='missed'?'<span style="color:#f88">â MISSED</span>':'<span style="color:#7c6fa0">Pending</span>';
+        const scoreLbl=score==='made'?'<span style="color:#5fe89a">&#xE2;&#x9C;&#x93; MADE</span>':score==='missed'?'<span style="color:#f88">&#xE2;&#x9C;&#x97; MISSED</span>':'<span style="color:#7c6fa0">Pending</span>';
         html+=`<tr>
           <td style='color:#FDB927'>${r.username}</td>
           <td style='color:#9b8fcf;font-size:11px'>${gid}</td>
@@ -903,7 +914,7 @@ function renderAdminGames(){
   let html="<div class='admin-section'><h3>TONIGHT'S GAMES</h3><div style='line-height:2;font-size:13px;color:#c0b0e0'>";
   GAMES.forEach(g=>{
     const pick=getGamePick(g.id);
-    html+=`<div>ð <strong style='color:#FDB927'>${g.away} @ ${g.home}</strong> â ${g.time} â ${g.series}</div>`;
+    html+=`<div>&#xF0;&#x9F;&#x8F;&#x80; <strong style='color:#FDB927'>${g.away} @ ${g.home}</strong> &#xE2;&#x80;&#x94; ${g.time} &#xE2;&#x80;&#x94; ${g.series}</div>`;
   });
   html+=`<div style='margin-top:8px;color:#f88;font-size:11px'>OUT: Embiid (abdomen), Luka (hamstring)</div>
     <div style='color:#ffa44a;font-size:11px'>QUESTIONABLE: Kevin Durant (knee)</div>
@@ -921,19 +932,19 @@ async function adminAddUser(){
     username:u,password_hash:h,plain_password:p,role:r,status:'active',credits:1,streak:0,strikes:0,today_pick:null
   });
   if(error){showToast('Error: '+error.message);}
-  else{showToast('â Created '+u);renderAdmin();}
+  else{showToast('&#xE2;&#x9C;&#x93; Created '+u);renderAdmin();}
 }
 
 async function removeUser(username){
   if(!confirm('Delete user '+username+'?')) return;
   await db.from('ss_users').delete().eq('username',username);
-  showToast('â Removed '+username);renderAdmin();
+  showToast('&#xE2;&#x9C;&#x93; Removed '+username);renderAdmin();
 }
 
 async function resetPicks(username){
   if(!confirm('Reset all picks for '+username+'?')) return;
   await db.from('ss_users').update({today_pick:null}).eq('username',username);
-  showToast('â Reset picks for '+username);renderAdmin();
+  showToast('&#xE2;&#x9C;&#x93; Reset picks for '+username);renderAdmin();
 }
 
 async function markPick(username, gameId, result){
@@ -946,9 +957,9 @@ async function markPick(username, gameId, result){
   showToast('Marked as '+result);renderAdmin();
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-//  SEEDING â create nick0 + jimmy on first load
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
+//  SEEDING &#xE2;&#x80;&#x94; create nick0 + jimmy on first load
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 async function seedUsers(){
   const seeds=[
     {username:'nick0',password:'123',role:'ss_admin'},
@@ -969,28 +980,63 @@ async function seedUsers(){
   }
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 //  TOAST
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2200);
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 //  INIT
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 window.addEventListener('DOMContentLoaded', async ()=>{
   // Seed users silently in background
   seedUsers().catch(()=>{});
 
-  // Always show login screen — no auto-login from stored session
+  // Always show login screen &#x2014; no auto-login from stored session
   localStorage.removeItem('ssUser');
 
   document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
   document.getElementById('joinPass2').addEventListener('keydown',e=>{if(e.key==='Enter')doJoin();});
 });
+</script>
+<script>
+(function() {
+  var _orig = window.renderPicksTab;
+  if (!_orig) return;
+  window.renderPicksTab = function() {
+    _orig.apply(this, arguments);
+    var tab = document.getElementById('tabContent');
+    if (!tab) return;
+    // Show "no games today" message when no game cards present
+    if (tab.querySelectorAll('.game-card').length === 0) {
+      tab.insertAdjacentHTML('beforeend',
+        '<div style="text-align:center;padding:50px 20px;color:#9060c0;' +
+        'font-family:Bebas Neue,sans-serif;font-size:22px;letter-spacing:2px;">' +
+        '&#x1F3C0; No games scheduled today &#x2014; check back tomorrow!</div>'
+      );
+    }
+    // Add LOCK IN PICK button next to each player select dropdown
+    setTimeout(function() {
+      document.querySelectorAll('select[id^="sel_"]').forEach(function(sel) {
+        if (sel.nextElementSibling && sel.nextElementSibling.classList.contains('lock-pick-btn')) return;
+        var parts = sel.id.split('_');
+        var side = parts[parts.length - 1];
+        var gameId = parts.slice(1, parts.length - 1).join('_');
+        var btn = document.createElement('button');
+        btn.className = 'lock-pick-btn';
+        btn.innerHTML = '&#x1F512; LOCK IN PICK';
+        btn.onclick = function() {
+          if (sel.value && window.onPickPlayer) window.onPickPlayer(gameId, sel.value);
+        };
+        sel.insertAdjacentElement('afterend', btn);
+      });
+    }, 80);
+  };
+})();
 </script>
 </body>
 </html>
