@@ -17,8 +17,7 @@ const PLAYERS = [
     {id:1631103,name:'Jabari Smith Jr.',team:'HOU',ppg:12.8,tpm:1.6,pct:35.6,pts:2,note:'Stretch PF'},
     {id:1628396,name:'Dorian Finney-Smith',team:'HOU',ppg:9.8,tpm:1.9,pct:37.1,pts:2,note:'3&D wing'},
     {id:1631111,name:'Tari Eason',team:'HOU',ppg:11.2,tpm:1.1,pct:33.2,pts:2,note:'Energy wing'},
-    {id:1627832,name:'Fred VanVleet',team:'HOU',ppg:12.6,tpm:1.6,pct:36.4,pts:2,note:'Veteran PG'},
-    {id:1630578,name:'Alperen Sengun',team:'HOU',ppg:20.3,tpm:0.4,pct:28.1,pts:3,note:'Skilled big, rare 3s'},
+      {id:1630578,name:'Alperen Sengun',team:'HOU',ppg:20.3,tpm:0.4,pct:28.1,pts:3,note:'Skilled big, rare 3s'},
     {id:1641706,name:'Amen Thompson',team:'HOU',ppg:18.0,tpm:0.8,pct:29.4,pts:3,note:'Elite athlete, low 3PT%'},
     {id:2544,name:'LeBron James',team:'LAL',ppg:20.9,tpm:1.4,pct:31.7,pts:1,note:'1st father-son playoff duo'},
     {id:1629060,name:'Rui Hachimura',team:'LAL',ppg:11.5,tpm:1.6,pct:35.2,pts:2,note:'Elevated role'},
@@ -182,7 +181,6 @@ const ALL_PLAYERS = [
   {id:1631103,name:'Jabari Smith Jr.',team:'HOU',ppg:12.8,tpm:1.6,pct:35.6,pts:2,note:'Stretch PF'},
   {id:1628396,name:'Dorian Finney-Smith',team:'HOU',ppg:9.8,tpm:1.9,pct:37.1,pts:2,note:'3&D wing'},
   {id:1631111,name:'Tari Eason',team:'HOU',ppg:11.2,tpm:1.1,pct:33.2,pts:2,note:'Energy wing'},
-  {id:1627832,name:'Fred VanVleet',team:'HOU',ppg:12.6,tpm:1.6,pct:36.4,pts:2,note:'Veteran PG'},
   {id:1630578,name:'Alperen Sengun',team:'HOU',ppg:20.3,tpm:0.4,pct:28.1,pts:3,note:'Skilled big, rare 3s'},
   {id:1641706,name:'Amen Thompson',team:'HOU',ppg:18.0,tpm:0.8,pct:29.4,pts:3,note:'Elite athlete, low 3PT%'},
   // LOS ANGELES LAKERS
@@ -370,27 +368,27 @@ const SCHEDULE = {
     time:'8:00 PM ET', series:'Game 2 \u2022 SAS leads 1-0',
     tipoff: 1776816000000, // 8pm ET Apr 21 2026
     awayPlayers:['Deni Avdija','Shaedon Sharpe','Jerami Grant','Jrue Holiday','Scoot Henderson','Toumani Camara','Donovan Clingan'],
-    homePlayers:['Victor Wembanyama','"DeAaron Fox"','Devin Vassell','Stephon Castle','Harrison Barnes','Jeremy Sochan','Dylan Harper','Luke Kornet']
+    homePlayers:['Victor Wembanyama','De\'Aaron Fox','Devin Vassell','Stephon Castle','Harrison Barnes','Jeremy Sochan','Dylan Harper','Luke Kornet']
   },
   {
     id:'hou_lal_g2', away:'HOU', home:'LAL',
     time:'10:30 PM ET', series:'Game 2 \u2022 Series tied 1-1',
     tipoff: 1776825000000, // 10:30pm ET Apr 21 2026
-    awayPlayers:['Kevin Durant','Reed Sheppard','Jabari Smith Jr.','Dorian Finney-Smith','Tari Eason','Fred VanVleet','Alperen Sengun','Amen Thompson'],
-    homePlayers:['LeBron James','Rui Hachimura','Bronny James','Dalton Knecht','Deandre Ayton','"DAngelo Russell"']
+    awayPlayers:['Kevin Durant','Reed Sheppard','Jabari Smith Jr.','Dorian Finney-Smith','Tari Eason','Alperen Sengun','Amen Thompson'],
+    homePlayers:['LeBron James','Rui Hachimura','Bronny James','Dalton Knecht','Deandre Ayton','D\'Angelo Russell']
   }
 ],
   '2026-04-22': [
     {
-      id:'orl_det_g1', away:'ORL', home:'DET',
-      time:'4:00 PM ET', series:'Game 2 • OKC leads 1-0',
+      id:'orl_det_g2', away:'ORL', home:'DET',
+      time:'4:00 PM ET', series:'Game 2 • ORL leads 1-0',
       tipoff: 1776888000000,
       awayPlayers:['Paolo Banchero','Franz Wagner','Desmond Bane','Gary Harris','Jonathan Isaac','Jalen Suggs','Anthony Black','Cole Anthony','Jevon Carter','Wendell Carter Jr.','Goga Bitadze','Tristan da Silva'],
       homePlayers:['Cade Cunningham','Marcus Sasser','Duncan Robinson','Tobias Harris','Ausar Thompson','Ron Holland','Bojan Bogdanovic','Jaden Ivey','Kevin Huerter','Daniss Jenkins','Jalen Duren','Isaiah Stewart']
     },
     {
       id:'phx_okc_g2', away:'PHX', home:'OKC',
-      time:'6:30 PM ET', series:'Game 2 • OKC leads 1-0',
+      time:'6:30 PM ET', series:'Game 2 • ORL leads 1-0',
       tipoff: 1776897000000,
       awayPlayers:['Devin Booker','Dillon Brooks','Jusuf Nurkic','Nick Richards','Royce O\'Neale','Jalen Green','Grayson Allen','Ryan Dunn','Bradley Beal','Collin Gillespie','Jordan Goodwin','Mark Williams'],
       homePlayers:['Shai Gilgeous-Alexander','Jalen Williams','Chet Holmgren','Kenrich Williams','Jaylin Williams','Lu Dort','Isaiah Joe','Aaron Wiggins','Alex Caruso','Cason Wallace','Ajay Mitchell','Jared McCain','Isaiah Hartenstein']
@@ -412,8 +410,8 @@ const SCHEDULE = {
       homePlayers:['RJ Barrett','Scottie Barnes','Immanuel Quickley','Jakob Poeltl','Gradey Dick','Ochai Agbaji','Jonathan Mogbo']
     },
     {
-      id:'den_min_g2', away:'DEN', home:'MIN',
-      time:'6:30 PM ET', series:'Game 2 • Series tied 1-1',
+      id:'den_min_g3', away:'DEN', home:'MIN',
+      time:'6:30 PM ET', series:'Game 3 • Series tied 1-1',
       tipoff: 1776983400000,
       awayPlayers:['Nikola Jokic','Jamal Murray','Aaron Gordon','Christian Braun','Cameron Johnson','Peyton Watson','Bruce Brown','Jonas Valanciunas','Spencer Jones'],
       homePlayers:['Anthony Edwards','Julius Randle','Jaden McDaniels','Rudy Gobert','Naz Reid','Mike Conley','Ayo Dosunmu','Bones Hyland']
