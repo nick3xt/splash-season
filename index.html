@@ -729,6 +729,7 @@ async function clearGamePick(gameId) {
 function showJoin(){document.getElementById('loginForm').style.display='none';document.getElementById('joinForm').style.display='block';document.getElementById('joinUser').focus();}
 function showLogin(){document.getElementById('joinForm').style.display='none';document.getElementById('loginForm').style.display='block';document.getElementById('loginUser').focus();}
 
+
 async function doLogin(){
   const u=document.getElementById('loginUser').value.trim();
   const p=document.getElementById('loginPass').value;
@@ -836,7 +837,7 @@ function renderTab(tab){
 function renderPicksTab(){
   let html='';
   html+="<div class='picks-intro'>";
-  (()=>{const _td=getTodayET(),_p=_td.split('-'),_mn=['','JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];html+="<div class='picks-intro-title'>TODAY'S PICKS "+_mn[+_p[1]]+" "+parseInt(_p[2])+"</div>";})();
+  html+="<div class='picks-intro-title'>TODAY'S PICKS APR 21</div>";
   html+="<div class='picks-intro-body'>Pick <strong style='color:#FDB927'>1 player per game</strong> from either team's dropdown. ";
   html+="Once picked, that player is <strong style='color:#f88'>locked for your entire playoffs</strong>. ";
   html+="&#x2B50; Stars = 1PT &bull; &#x1F3C0; Role Players = 2PT &bull; &#x1F9F1; Brick City = 3PT</div></div>";GAMES.forEach(g=>{ html+=buildGameCard(g); });
@@ -860,11 +861,13 @@ function renderPicksTab(){
 
   document.getElementById('tabContent').innerHTML=html;
 
-  // Attach change-pick listeners
-  GAMES.forEach(function(g){
+  // Attach listeners after renderGAMES.forEach(g=>{
+    ['away','home'].forEach(side=>{
+      const sel=document.getElementById('sel_'+g.id+'_'+side);
+      if(sel) sel.addEventListener('change',function(){onPickPlayer(g.id,this.value);});
+    });
     const clr=document.getElementById('clr_'+g.id);
-    if(clr) clr.addEventListener('click',function(){clearGamePick(g.id).then(function(){renderPicksTab();});});
-  });
+    if(clr) clr.addEventListener('click',()=>{clearGamePick(g.id).then(()=>renderPicksTab());});
 }
 
 function buildGameCard(game){
@@ -893,7 +896,8 @@ function buildGameCard(game){
       html+="<div class='game-locked-bar'>GAME LOCKED TIPOFF PASSED</div>";
     } else {
       html+="<div class='game-drops'>";
-      html+=buildCustomPicker(game,awT,hmT,pickedAll);
+      html+=buildDropdown(game,'away',awT,pickedAll);
+      html+=buildDropdown(game,'home',hmT,pickedAll);
       html+="</div>";
     }
   }
@@ -925,69 +929,22 @@ function buildGameCard(game){
   return html;
 }
 
-const _pickerState={};
-
-function _initPicker(gid){
-  if(!_pickerState[gid]) _pickerState[gid]={side:'away',selected:null};
-}
-
-function switchPickerTab(gid,side){
-  _initPicker(gid);
-  _pickerState[gid].side=side;
-  const g=GAMES.find(x=>x.id===gid); if(!g) return;
-  const cnt=document.getElementById('picker_'+gid); if(!cnt) return;
-  cnt.innerHTML=_buildPickerInner(g,TEAMS[g.away],TEAMS[g.home],getAllPicked());
-}
-
-function selectPickerPlayer(gid,pname){
-  _initPicker(gid);
-  _pickerState[gid].selected=pname;
-  const g=GAMES.find(x=>x.id===gid); if(!g) return;
-  const cnt=document.getElementById('picker_'+gid); if(!cnt) return;
-  cnt.innerHTML=_buildPickerInner(g,TEAMS[g.away],TEAMS[g.home],getAllPicked());
-}
-
-function _buildPickerInner(game,awT,hmT,pickedAll){
-  const st=_pickerState[game.id]||{side:'away',selected:null};
-  const side=st.side, sel=st.selected;
-  const activePlayers=side==='away'?game.awayPlayers:game.homePlayers;
-  let h='';
-  h+="<div class='team-tabs'>";
-  h+="<div class='team-tab"+(side==='away'?' active':'')+"' onclick=\"switchPickerTab('"+game.id+"','away')\">";
-  h+="<img src='"+logoUrl(awT.id)+"' style='width:13px;height:13px;vertical-align:middle;margin-right:4px;' onerror=\"this.style.display='none'\">"+awT.abbr+" "+awT.name.toUpperCase()+"</div>";
-  h+="<div class='team-tab"+(side==='home'?' active':'')+"' onclick=\"switchPickerTab('"+game.id+"','home')\">";
-  h+="<img src='"+logoUrl(hmT.id)+"' style='width:13px;height:13px;vertical-align:middle;margin-right:4px;' onerror=\"this.style.display='none'\">"+hmT.abbr+" "+hmT.name.toUpperCase()+"</div>";
-  h+="</div>";
-  h+="<div class='player-list'>";
-  activePlayers.forEach(function(pname){
+function buildDropdown(game, side, team, pickedAll){
+  const names=side==='away'?game.awayPlayers:game.homePlayers;
+  let html="<div class='drop-section'>";
+  html+="<div class='drop-label'><img class='drop-logo' src='"+logoUrl(team.id)+"' onerror=\"this.style.display='none'\" alt='"+team.abbr+"'> "+team.abbr+" "+team.name.toUpperCase()+"</div>";
+  html+="<select class='player-select' id='sel_"+game.id+"_"+side+"'>";
+  html+="<option value=''>Pick a "+team.name+"...</option>";
+  names.forEach(pname=>{
     const p=findPlayer(pname); if(!p) return;
     const used=pickedAll.includes(pname);
-    const isSel=(sel===pname);
-    const ptsCls='pts-'+p.pts;
     const ptsLbl=p.pts===1?'1PT':p.pts===2?'2PT':'3PT';
-    let rowCls='player-row'+(isSel?' selected':'')+(used?' used':'');
-    const clickAttr=used?'':" onclick=\"selectPickerPlayer('"+game.id+"','"+pname.replace(/'/g,"\\'")+"')\"";
-    h+="<div class='"+rowCls+"'"+clickAttr+">";
-    h+="<img class='player-headshot' src='"+photoUrl(p.id)+"' onerror=\"this.src='https://via.placeholder.com/44x44/333/fff?text='+encodeURIComponent('"+pname[0]+"')\">";
-    h+="<span class='player-name'>"+pname+"</span>";
-    if(used){ h+="<span class='used-badge'>&#x2713; Used</span>"; }
-    else { h+="<span class='pts-badge "+ptsCls+"'>"+ptsLbl+"</span>"; }
-    h+="</div>";
+    html+="<option value='"+pname+"'"+(used?' disabled':'')+">";
+    html+=pname+" &#xE2;&#x80;&#x94; "+ptsLbl+(used?' (USED)':'');
+    html+="</option>";
   });
-  h+="</div>";
-  h+="<div class='pick-summary'>";
-  if(sel){ const sp=findPlayer(sel); if(sp){ const pl=sp.pts===1?'1PT':sp.pts===2?'2PT':'3PT'; h+="Selected: <span class='selected-name'>"+sel+"</span> <span class='pts-badge pts-"+sp.pts+"'>"+pl+"</span>"; } }
-  else { h+="Select a player above to pick"; }
-  h+="</div>";
-  h+="<div class='pick-footer'>";
-  h+="<button class='pick-btn-new' "+(sel?"":"disabled ")+"onclick=\"onPickPlayer('"+game.id+"','"+( sel||''  )+"')\">PICK</button>";
-  h+="</div>";
-  return h;
-}
-
-function buildCustomPicker(game,awT,hmT,pickedAll){
-  _initPicker(game.id);
-  return "<div class='picker-container' id='picker_"+game.id+"'>"+_buildPickerInner(game,awT,hmT,pickedAll)+"</div>";
+  html+="</select></div>";
+  return html;
 }
 
 async function onPickPlayer(gameId, playerName){
@@ -1273,12 +1230,24 @@ window.addEventListener('DOMContentLoaded', async ()=>{
         '&#x1F3C0; No games scheduled today &#x2014; check back tomorrow!</div>'
       );
     }
-    // Custom picker uses inline onclick handlers — no select injection needed
+    // Add PICK button next to each player select dropdown
+    setTimeout(function() {
+      document.querySelectorAll('select[id^="sel_"]').forEach(function(sel) {
+        if (sel.nextElementSibling && sel.nextElementSibling.classList.contains('lock-pick-btn')) return;
+        var parts = sel.id.split('_');
+        var side = parts[parts.length - 1];
+        var gameId = parts.slice(1, parts.length - 1).join('_');
+        var btn = document.createElement('button');
+        btn.className = 'lock-pick-btn';
+        btn.innerHTML = 'PICK';
+        btn.onclick = function() {
+          if (sel.value && window.onPickPlayer) window.onPickPlayer(gameId, sel.value);
+        };
+        sel.insertAdjacentElement('afterend', btn);
+      });
+    }, 80);
   };
 })();
-</script>
-</body>
-</html>
 
 </script>
 </body>
