@@ -651,7 +651,6 @@ function renderPicksTab(){
     });
     const clr=document.getElementById('clr_'+g.id);
     if(clr) clr.addEventListener('click',()=>{clearGamePick(g.id).then(()=>renderPicksTab());});
-  });
 }
 
 function buildGameCard(game){
