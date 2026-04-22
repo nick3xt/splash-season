@@ -758,13 +758,15 @@ function renderPicksTab(){
 
   document.getElementById('tabContent').innerHTML=html;
 
-  // Attach listeners after renderGAMES.forEach(g=>{
+  // Attach listeners after render
+  GAMES.forEach(g=>{
     ['away','home'].forEach(side=>{
       const sel=document.getElementById('sel_'+g.id+'_'+side);
       if(sel) sel.addEventListener('change',function(){onPickPlayer(g.id,this.value);});
     });
     const clr=document.getElementById('clr_'+g.id);
     if(clr) clr.addEventListener('click',()=>{clearGamePick(g.id).then(()=>renderPicksTab());});
+  });
 }
 
 function buildGameCard(game){
