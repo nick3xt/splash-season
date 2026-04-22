@@ -10,7 +10,7 @@ const PLAYERS = [
     {id:203081,name:'Paul George',team:'PHI',ppg:17.3,tpm:1.8,pct:36.1,pts:1,note:'17 pts Game 1'},
     {id:1642355,name:'VJ Edgecombe',team:'PHI',ppg:14.2,tpm:1.9,pct:36.1,pts:1,note:'2025 #3 pick, explosive'},
     {id:1629666,name:'Quentin Grimes',team:'PHI',ppg:13.1,tpm:2.3,pct:37.8,pts:2,note:'Floor spacer'},
-    {id:1642356,name:'Jared McCain',team:'PHI',ppg:11.6,tpm:2.0,pct:36.8,pts:2,note:'Rookie sharpshooter'},
+    {id:1642356,name:'Jared McCain',team:'OKC',ppg:11.6,tpm:2.0,pct:36.8,pts:2,note:'Rookie sharpshooter'},
     {id:200768,name:'Kyle Lowry',team:'PHI',ppg:9.4,tpm:1.2,pct:34.6,pts:2,note:'Veteran backup PG'},
     {id:201142,name:'Kevin Durant',team:'HOU',ppg:25.9,tpm:1.6,pct:38.1,pts:1,note:'QUESTIONABLE (knee)'},
     {id:1642263,name:'Reed Sheppard',team:'HOU',ppg:13.8,tpm:2.2,pct:38.4,pts:2,note:'Hot rookie, 38.4% from 3'},
@@ -90,7 +90,8 @@ const PLAYERS = [
     {id:201935,name:'James Harden',team:'CLE',ppg:18.5,tpm:2.8,pct:37.2,pts:1,note:'Veteran PG'},
     {id:1631128,name:'Christian Braun',team:'DEN',ppg:10.2,tpm:1.8,pct:38.5,pts:2,note:'Versatile wing'},
     {id:1629661,name:'Cameron Johnson',team:'DEN',ppg:16.4,tpm:2.9,pct:40.2,pts:2,note:'Stretch forward'},
-    {id:1628971,name:'Bruce Brown',team:'DEN',ppg:7.8,tpm:0.9,pct:33.5,pts:2,note:'Two-way guard'},
+    {id:202704,name:'Reggie Jackson',team:'DEN',ppg:9.8,tpm:0.8,pct:35.2,pts:2,note:'Veteran backup PG'},
+  {id:1628971,name:'Bruce Brown',team:'DEN',ppg:7.8,tpm:0.9,pct:33.5,pts:2,note:'Two-way guard'},
     {id:202685,name:'Jonas Valanciunas',team:'DEN',ppg:12.4,tpm:0.2,pct:58.5,pts:3,note:'Big man anchor'},
     {id:1642461,name:'Spencer Jones',team:'DEN',ppg:6.5,tpm:1.8,pct:38.2,pts:3,note:'Young wing'},
     {id:1630245,name:'Ayo Dosunmu',team:'MIN',ppg:14.8,tpm:2.1,pct:43.9,pts:2,note:'Key acquisition'},
@@ -173,7 +174,7 @@ const ALL_PLAYERS = [
   {id:203081,name:'Paul George',team:'PHI',ppg:17.3,tpm:1.8,pct:36.1,pts:1,note:'17 pts Game 1'},
   {id:1642355,name:'VJ Edgecombe',team:'PHI',ppg:14.2,tpm:1.9,pct:36.1,pts:1,note:'2025 #3 pick, explosive'},
   {id:1629666,name:'Quentin Grimes',team:'PHI',ppg:13.1,tpm:2.3,pct:37.8,pts:2,note:'Floor spacer'},
-  {id:1642356,name:'Jared McCain',team:'PHI',ppg:11.6,tpm:2.0,pct:36.8,pts:2,note:'Rookie sharpshooter'},
+  {id:1642356,name:'Jared McCain',team:'OKC',ppg:11.6,tpm:2.0,pct:36.8,pts:2,note:'Rookie sharpshooter'},
   {id:200768,name:'Kyle Lowry',team:'PHI',ppg:9.4,tpm:1.2,pct:34.6,pts:2,note:'Veteran backup PG'},
   {id:203083,name:'Andre Drummond',team:'PHI',ppg:11.2,tpm:0.0,pct:0.0,pts:3,note:'Filling Embiid\'s role'},
   // HOUSTON ROCKETS
@@ -313,7 +314,8 @@ const ALL_PLAYERS = [
   ,{id:201935,name:'James Harden',team:'CLE',ppg:18.5,tpm:2.8,pct:37.2,pts:1,note:'Veteran PG'}
   ,{id:1631128,name:'Christian Braun',team:'DEN',ppg:10.2,tpm:1.8,pct:38.5,pts:2,note:'Versatile wing'}
   ,{id:1629661,name:'Cameron Johnson',team:'DEN',ppg:16.4,tpm:2.9,pct:40.2,pts:2,note:'Stretch forward'}
-  ,{id:1628971,name:'Bruce Brown',team:'DEN',ppg:7.8,tpm:0.9,pct:33.5,pts:2,note:'Two-way guard'}
+  ,{id:202704,name:'Reggie Jackson',team:'DEN',ppg:9.8,tpm:0.8,pct:35.2,pts:2,note:'Veteran backup PG'},
+  {id:1628971,name:'Bruce Brown',team:'DEN',ppg:7.8,tpm:0.9,pct:33.5,pts:2,note:'Two-way guard'}
   ,{id:202685,name:'Jonas Valanciunas',team:'DEN',ppg:12.4,tpm:0.2,pct:58.5,pts:3,note:'Big man anchor'}
   ,{id:1642461,name:'Spencer Jones',team:'DEN',ppg:6.5,tpm:1.8,pct:38.2,pts:3,note:'Young wing'}
   ,{id:1630245,name:'Ayo Dosunmu',team:'MIN',ppg:14.8,tpm:2.1,pct:43.9,pts:2,note:'Key acquisition'}
@@ -336,7 +338,7 @@ const SCHEDULE = {
     id:'phi_bos_g2', away:'PHI', home:'BOS',
     time:'7:00 PM ET', series:'Game 2 \u2022 BOS leads 1-0',
     tipoff: 1776812400000, // 7pm ET Apr 21 2026
-    awayPlayers:['Tyrese Maxey','Paul George','VJ Edgecombe','Quentin Grimes','Jared McCain','Kyle Lowry','Andre Drummond'],
+    awayPlayers:['Tyrese Maxey','Paul George','VJ Edgecombe','Quentin Grimes','Kyle Lowry','Andre Drummond'],
     homePlayers:['Jayson Tatum','Jaylen Brown','Payton Pritchard','Sam Hauser','Derrick White','Baylor Scheierman','Anfernee Simons','Nikola Vucevic']
   }
   // ORL additional rotation
@@ -383,17 +385,17 @@ const SCHEDULE = {
   '2026-04-22': [
     {
       id:'orl_det_g1', away:'ORL', home:'DET',
-      time:'4:00 PM ET', series:'Game 1',
+      time:'4:00 PM ET', series:'Game 2 • OKC leads 1-0',
       tipoff: 1776888000000,
       awayPlayers:['Paolo Banchero','Franz Wagner','Desmond Bane','Gary Harris','Jonathan Isaac','Jalen Suggs','Anthony Black','Cole Anthony','Jevon Carter','Wendell Carter Jr.','Goga Bitadze','Tristan da Silva'],
       homePlayers:['Cade Cunningham','Marcus Sasser','Duncan Robinson','Tobias Harris','Ausar Thompson','Ron Holland','Bojan Bogdanovic','Jaden Ivey','Kevin Huerter','Daniss Jenkins','Jalen Duren','Isaiah Stewart']
     },
     {
-      id:'phx_okc_g1', away:'PHX', home:'OKC',
-      time:'6:30 PM ET', series:'Game 1',
+      id:'phx_okc_g2', away:'PHX', home:'OKC',
+      time:'6:30 PM ET', series:'Game 2 • OKC leads 1-0',
       tipoff: 1776897000000,
       awayPlayers:['Devin Booker','Dillon Brooks','Jusuf Nurkic','Nick Richards','Royce O\'Neale','Jalen Green','Grayson Allen','Ryan Dunn','Bradley Beal','Collin Gillespie','Jordan Goodwin','Mark Williams'],
-      homePlayers:['Shai Gilgeous-Alexander','Jalen Williams','Chet Holmgren','Kenrich Williams','Jaylin Williams','Lu Dort','Isaiah Joe','Aaron Wiggins','Alex Caruso','Cason Wallace','Ajay Mitchell','Isaiah Hartenstein']
+      homePlayers:['Shai Gilgeous-Alexander','Jalen Williams','Chet Holmgren','Kenrich Williams','Jaylin Williams','Lu Dort','Isaiah Joe','Aaron Wiggins','Alex Caruso','Cason Wallace','Ajay Mitchell','Jared McCain','Isaiah Hartenstein']
     }
   ],
   '2026-04-23': [
@@ -415,7 +417,7 @@ const SCHEDULE = {
       id:'den_min_g2', away:'DEN', home:'MIN',
       time:'6:30 PM ET', series:'Game 2 • Series tied 1-1',
       tipoff: 1776983400000,
-      awayPlayers:['Nikola Jokic','Jamal Murray','Aaron Gordon','Christian Braun','Cameron Johnson','Peyton Watson','Bruce Brown','Jonas Valanciunas','Spencer Jones'],
+      awayPlayers:['Nikola Jokic','Jamal Murray','Aaron Gordon','Christian Braun','Cameron Johnson','Peyton Watson','Bruce Brown','Reggie Jackson','Jonas Valanciunas','Spencer Jones'],
       homePlayers:['Anthony Edwards','Julius Randle','Jaden McDaniels','Rudy Gobert','Naz Reid','Mike Conley','Ayo Dosunmu','Bones Hyland']
     }
   ]
