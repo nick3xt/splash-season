@@ -727,7 +727,7 @@ function renderRefTab(players, label, pts){
     html+="<div class='card-team'><img class='team-logo-sm' src='"+logoUrl(t.id)+"' onerror=\"this.style.display='none'\" alt='"+p.team+"'><span class='card-team-name'>"+t.full+"</span></div>";
     html+="<div class='card-stats'>"+p.tpm+" 3PM/G &bull; "+p.pct+"% 3PT &bull; "+p.ppg+" PPG</div>";
     if(p.note) html+="<div class='card-note'>"+p.note+"</div>";
-    html+="</div><div class='card-right'><div class='pts-chip "+ptsCls+"'">"+ptsLbl+"</div></div></div></div>";
+    html+="</div><div class='card-right'><div class='pts-chip "+ptsCls+"'>"+ptsLbl+"</div></div></div></div>";
   });
 
   document.getElementById('tabContent').innerHTML=html;
