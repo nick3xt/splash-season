@@ -6,6 +6,7 @@
 <title>SPLASH SEASON</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;}
@@ -22,6 +23,7 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .login-card input::placeholder{color:#4a4a6a;}
 .login-btn{width:100%;background:linear-gradient(135deg,#FDB927,#f0a800);color:#000;border:none;padding:14px;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:20px;font-weight:700;letter-spacing:2px;cursor:pointer;margin-top:4px;transition:opacity .2s;}
 .login-btn:hover{opacity:.9;}
+.login-btn:disabled{opacity:.5;cursor:not-allowed;}
 .login-error{display:none;background:rgba(255,68,68,.15);border:1px solid #f44;color:#f88;padding:10px;border-radius:8px;font-size:13px;text-align:center;margin-top:10px;}
 .login-kobe{text-align:center;margin-top:20px;color:#5a4a70;font-size:12px;font-style:italic;line-height:1.5;}
 .join-toggle{text-align:center;margin-top:14px;color:#7c6fa0;font-size:13px;}
@@ -35,77 +37,133 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .app-header{background:linear-gradient(90deg,#0a0a1a,#1a0a30);border-bottom:2px solid rgba(253,185,39,0.3);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
 .app-header h1{font-family:'Bebas Neue',sans-serif;font-size:26px;font-weight:700;color:#FDB927;letter-spacing:3px;}
 .header-actions{display:flex;align-items:center;gap:12px;}
-.logout-btn{background:none;border:1px solid #333;color:#aaa;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;}
+.logout-btn{background:none;border:1px solid #333;color:#aaa;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;}
 .logout-btn:hover{border-color:#FDB927;color:#FDB927;}
 
 /* TABS */
 .tabs{display:flex;background:#0d0d1a;border-bottom:1px solid #1a1a30;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.tab-btn{flex:1;min-width:90px;padding:12px 8px 10px;text-align:center;cursor:pointer;border:none;background:none;color:#6a6a8a;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab-btn{flex:1;min-width:80px;padding:10px 6px 8px;text-align:center;cursor:pointer;border:none;background:none;color:#6a6a8a;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:.5px;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
 .tab-btn.active{color:#FDB927;border-bottom-color:#FDB927;}
-.tab-btn .tab-pts{display:block;font-family:'Inter',sans-serif;font-size:10px;color:#FDB927;opacity:.7;margin-top:2px;font-weight:600;}
+.tab-btn .tab-pts{display:block;font-family:'Inter',sans-serif;font-size:9px;color:#FDB927;opacity:.7;margin-top:1px;font-weight:600;}
 .tab-btn.active .tab-pts{opacity:1;}
 
 /* CONTENT */
-.tab-content{padding:16px;max-width:600px;margin:0 auto;}
+.tab-content{padding:12px;max-width:600px;margin:0 auto;}
 
 /* RULES BANNER */
-.rules-banner{background:rgba(253,185,39,.08);border:1px solid rgba(253,185,39,.25);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
-.rules-banner .pts-badge{background:#FDB927;color:#000;font-family:'Bebas Neue',sans-serif;font-size:18px;font-weight:700;padding:4px 10px;border-radius:6px;white-space:nowrap;}
-.rules-banner p{color:#c0b0e0;font-size:13px;line-height:1.4;}
+.rules-banner{background:rgba(253,185,39,.08);border:1px solid rgba(253,185,39,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.rules-banner .pts-badge-lbl{background:#FDB927;color:#000;font-family:'Bebas Neue',sans-serif;font-size:16px;padding:3px 8px;border-radius:6px;white-space:nowrap;}
+.rules-banner p{color:#c0b0e0;font-size:12px;line-height:1.4;}
 
 /* SECTION HEADER */
-.section-header{font-family:'Bebas Neue',sans-serif;font-size:22px;color:#FDB927;letter-spacing:2px;margin-bottom:4px;}
-.section-sub{color:#7c6fa0;font-size:13px;margin-bottom:16px;}
+.section-header{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#FDB927;letter-spacing:2px;margin-bottom:4px;}
+.section-sub{color:#7c6fa0;font-size:12px;margin-bottom:12px;}
 
-/* PLAYER CARD */
-.player-card{background:rgba(14,14,28,.9);border:2px solid #1e1e36;border-radius:14px;padding:0;margin-bottom:12px;cursor:pointer;transition:all .25s;overflow:hidden;}
-.player-card:hover{border-color:#3a3a5a;transform:translateY(-1px);}
-.player-card.selected{border-color:#FDB927;background:rgba(30,20,60,.95);box-shadow:0 0 20px rgba(253,185,39,.25);}
-.card-inner{display:flex;align-items:center;gap:0;padding:14px;}
-.card-photo{width:60px;height:60px;border-radius:10px;object-fit:cover;object-position:top;background:#1a1a30;flex-shrink:0;border:2px solid #2a2a40;}
-.card-photo.selected-img{border-color:#FDB927;}
-.card-info{flex:1;padding:0 12px;}
-.card-name{font-family:'Bebas Neue',sans-serif;font-size:19px;font-weight:700;color:#fff;letter-spacing:.5px;line-height:1.1;}
-.card-name.selected-name{color:#FDB927;}
-.card-team{display:flex;align-items:center;gap:6px;margin-top:3px;}
-.team-logo{width:20px;height:20px;object-fit:contain;}
-.card-team-name{color:#9b8fcf;font-size:12px;font-weight:500;}
-.card-stats{color:#9b8fcf;font-size:12px;margin-top:4px;}
-.card-note{color:#7a7a9a;font-size:11px;margin-top:3px;font-style:italic;}
-.card-right{display:flex;flex-direction:column;align-items:center;gap:6px;padding-right:4px;}
-.hot-badge{font-size:18px;}
-.pts-chip{background:rgba(253,185,39,.15);color:#FDB927;font-family:'Bebas Neue',sans-serif;font-size:14px;padding:3px 8px;border-radius:6px;border:1px solid rgba(253,185,39,.3);}
-.selected-tag{background:rgba(253,185,39,.12);border-top:1px solid rgba(253,185,39,.2);padding:8px 14px;display:flex;align-items:center;gap:6px;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#FDB927;letter-spacing:1px;}
+/* PLAYER CARD (reference tabs) */
+.player-card{background:rgba(14,14,28,.9);border:2px solid #1e1e36;border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.card-inner{display:flex;align-items:center;padding:12px;gap:0;}
+.card-photo{width:54px;height:54px;border-radius:8px;object-fit:cover;object-position:top;background:#1a1a30;flex-shrink:0;border:2px solid #2a2a40;}
+.card-info{flex:1;padding:0 10px;}
+.card-name{font-family:'Bebas Neue',sans-serif;font-size:17px;color:#fff;letter-spacing:.5px;line-height:1.1;}
+.card-team{display:flex;align-items:center;gap:5px;margin-top:2px;}
+.team-logo-sm{width:18px;height:18px;object-fit:contain;}
+.card-team-name{color:#9b8fcf;font-size:11px;}
+.card-stats{color:#9b8fcf;font-size:11px;margin-top:3px;}
+.card-note{color:#7a7a9a;font-size:10px;margin-top:2px;font-style:italic;}
+.card-right{display:flex;flex-direction:column;align-items:center;gap:5px;padding-right:4px;}
+.pts-chip{font-family:'Bebas Neue',sans-serif;font-size:13px;padding:3px 8px;border-radius:6px;border:1px solid;white-space:nowrap;}
+.pts-1{background:rgba(253,185,39,.15);color:#FDB927;border-color:rgba(253,185,39,.3);}
+.pts-2{background:rgba(160,112,224,.15);color:#a070e0;border-color:rgba(160,112,224,.3);}
+.pts-3{background:rgba(100,180,255,.12);color:#64b4ff;border-color:rgba(100,180,255,.25);}
 
-/* PICKS SUMMARY */
-.picks-summary{margin-top:20px;background:rgba(20,10,40,.9);border:2px solid #FDB927;border-radius:12px;padding:16px;}
-.picks-summary h3{font-family:'Bebas Neue',sans-serif;color:#FDB927;font-size:20px;margin-bottom:10px;letter-spacing:1px;}
-.pick-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+/* ===== TODAY'S PICKS ===== */
+.picks-intro{background:linear-gradient(135deg,rgba(253,185,39,.1),rgba(160,112,224,.06));border:1px solid rgba(253,185,39,.2);border-radius:12px;padding:12px 16px;margin-bottom:16px;}
+.picks-intro-title{font-family:'Bebas Neue',sans-serif;font-size:16px;color:#FDB927;letter-spacing:2px;margin-bottom:4px;}
+.picks-intro-body{color:#c0b0e0;font-size:11px;line-height:1.6;}
+
+/* GAME CARD — BSH-style */
+.game-card{background:rgba(10,10,22,.98);border:1.5px solid #222240;border-radius:14px;margin-bottom:18px;overflow:hidden;transition:border-color .2s;}
+.game-card.has-pick{border-color:rgba(253,185,39,.5);}
+
+.game-header{display:flex;align-items:center;padding:12px 16px;background:linear-gradient(135deg,#0e0e24,#110a28);border-bottom:1px solid #1c1c38;}
+.gh-team{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.gh-team.away{align-items:flex-start;}
+.gh-team.home{align-items:flex-end;}
+.gh-logo{width:36px;height:36px;object-fit:contain;}
+.gh-abbr{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1.5px;color:#fff;}
+.gh-full{font-size:9px;color:#5a5a7a;margin-top:-1px;}
+.gh-meta{text-align:center;padding:0 10px;flex:0 0 auto;}
+.gh-time{font-family:'Bebas Neue',sans-serif;font-size:18px;color:#FDB927;letter-spacing:.5px;}
+.gh-series{font-size:9px;color:#7c6fa0;margin-top:1px;white-space:nowrap;}
+.gh-vs{font-size:11px;color:#333358;font-weight:700;margin-bottom:1px;}
+
+/* Dropdowns area */
+.game-drops{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 14px;}
+.drop-section{}
+.drop-label{font-family:'Bebas Neue',sans-serif;font-size:10px;color:#9b8fcf;letter-spacing:1px;margin-bottom:5px;display:flex;align-items:center;gap:4px;}
+.drop-logo{width:13px;height:13px;object-fit:contain;}
+.player-select{width:100%;background:#0e0e20;border:1px solid #262650;color:#b0a0d0;padding:8px 28px 8px 10px;border-radius:8px;font-size:11px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%236a6a8a'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;transition:border-color .2s;}
+.player-select:focus{border-color:#FDB927;}
+.player-select:disabled{opacity:.35;cursor:not-allowed;}
+.player-select option:disabled{color:#444;}
+
+/* Pick confirmation */
+.pick-confirm{display:none;border-top:1px solid rgba(253,185,39,.12);padding:12px 14px;background:linear-gradient(135deg,rgba(28,18,56,.9),rgba(18,10,40,.9));}
+.pick-confirm.show{display:block;}
+.pick-confirm-row{display:flex;align-items:center;gap:12px;}
+.pick-photo{width:58px;height:58px;border-radius:10px;object-fit:cover;object-position:top;border:2px solid #FDB927;background:#1a1a30;flex-shrink:0;}
+.pick-info{flex:1;}
+.pick-name{font-family:'Bebas Neue',sans-serif;font-size:19px;color:#FDB927;letter-spacing:.5px;line-height:1.1;}
+.pick-team-row{display:flex;align-items:center;gap:4px;margin-top:3px;}
+.pick-team-logo{width:14px;height:14px;object-fit:contain;}
+.pick-team-name{color:#9b8fcf;font-size:11px;}
+.pick-stats{color:#9b8fcf;font-size:11px;margin-top:3px;}
+.pick-badges{display:flex;align-items:center;gap:6px;margin-top:7px;flex-wrap:wrap;}
+.pick-tag{background:rgba(253,185,39,.12);border:1px solid rgba(253,185,39,.3);color:#FDB927;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;padding:3px 8px;border-radius:6px;}
+.pick-change-btn{background:none;border:1px solid #2a2a48;color:#6a6a8a;font-size:10px;padding:3px 8px;border-radius:6px;cursor:pointer;}
+.pick-change-btn:hover{border-color:#a070e0;color:#a070e0;}
+
+.game-locked-bar{padding:8px 14px;color:#cc4444;font-size:11px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;background:rgba(60,10,10,.4);border-top:1px solid rgba(80,20,20,.4);}
+
+/* Picks summary */
+.picks-summary{background:rgba(20,10,44,.9);border:1.5px solid rgba(253,185,39,.3);border-radius:12px;padding:14px;margin-top:4px;margin-bottom:16px;}
+.picks-summary h3{font-family:'Bebas Neue',sans-serif;color:#FDB927;font-size:17px;margin-bottom:10px;letter-spacing:1px;}
+.pick-row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);}
 .pick-row:last-child{border-bottom:none;}
-.pick-row-name{color:#fff;font-size:14px;}
-.pick-row-pts{color:#FDB927;font-family:'Bebas Neue',sans-serif;font-size:14px;}
+.pr-photo{width:30px;height:30px;border-radius:6px;object-fit:cover;object-position:top;background:#1a1a30;border:1px solid #2a2a40;}
+.pr-name{flex:1;color:#fff;font-size:12px;}
+.pr-pts{font-family:'Bebas Neue',sans-serif;font-size:12px;}
 
-/* ADMIN GEAR */
-#adminGear{position:fixed;bottom:24px;right:20px;width:48px;height:48px;background:#12122a;border:2px solid #FDB927;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;z-index:500;box-shadow:0 4px 16px rgba(0,0,0,.4);}
-
-/* ADMIN OVERLAY */
-#adminOverlay{position:fixed;inset:0;background:rgba(5,5,15,.97);z-index:9999;overflow-y:auto;padding:20px;display:none;}
-.admin-panel{max-width:580px;margin:0 auto;background:#0e0e1e;border:2px solid rgba(253,185,39,.4);border-radius:16px;padding:24px;}
-.admin-title{font-family:'Bebas Neue',sans-serif;color:#FDB927;font-size:30px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;}
-.admin-section{margin-bottom:24px;}
-.admin-section h3{font-family:'Bebas Neue',sans-serif;color:#9b8fcf;font-size:18px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1a1a30;}
+/* ADMIN */
+#adminGear{position:fixed;bottom:24px;right:20px;width:44px;height:44px;background:#12122a;border:2px solid #FDB927;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:18px;cursor:pointer;z-index:500;box-shadow:0 4px 16px rgba(0,0,0,.4);}
+#adminOverlay{position:fixed;inset:0;background:rgba(4,4,14,.98);z-index:9999;overflow-y:auto;padding:16px;display:none;}
+.admin-panel{max-width:640px;margin:0 auto;}
+.admin-header{font-family:'Bebas Neue',sans-serif;color:#FDB927;font-size:28px;letter-spacing:3px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.admin-nav{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.admin-nav-btn{background:#12122a;border:1px solid #2a2a40;color:#9b8fcf;padding:8px 14px;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:13px;cursor:pointer;letter-spacing:.5px;transition:all .15s;}
+.admin-nav-btn.active,.admin-nav-btn:hover{border-color:#FDB927;color:#FDB927;}
+.admin-section{background:#0e0e1e;border:1.5px solid #1e1e36;border-radius:12px;padding:16px;margin-bottom:16px;}
+.admin-section h3{font-family:'Bebas Neue',sans-serif;color:#9b8fcf;font-size:15px;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1a1a30;}
 .admin-table{width:100%;border-collapse:collapse;}
-.admin-table th{padding:10px;color:#FDB927;text-align:left;background:#12122a;font-size:13px;font-weight:600;}
-.admin-table td{padding:10px;border-bottom:1px solid #181828;font-size:14px;}
+.admin-table th{padding:8px;color:#FDB927;text-align:left;background:#12122a;font-size:11px;font-weight:600;letter-spacing:.5px;}
+.admin-table td{padding:8px;border-bottom:1px solid #151528;font-size:12px;color:#c0b0e0;}
 .admin-table tr:last-child td{border-bottom:none;}
-.admin-inputs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
-.admin-inputs input,.admin-inputs select{flex:1;min-width:100px;background:#12122a;border:1px solid #2a2a40;color:#fff;padding:9px 12px;border-radius:8px;font-size:14px;outline:none;}
+.admin-table tr:hover td{background:rgba(253,185,39,.03);}
+.admin-inputs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.admin-inputs input,.admin-inputs select{flex:1;min-width:90px;background:#12122a;border:1px solid #2a2a40;color:#fff;padding:8px 10px;border-radius:8px;font-size:13px;outline:none;}
 .admin-inputs input:focus,.admin-inputs select:focus{border-color:#FDB927;}
-.btn-gold{background:#FDB927;color:#000;border:none;padding:9px 18px;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;cursor:pointer;font-weight:700;}
-.btn-red{background:rgba(255,68,68,.1);border:1px solid #f44;color:#f44;padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;}
-.btn-close{background:none;border:1px solid #333;color:#aaa;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:14px;}
-.stat-box{background:#12122a;padding:14px;border-radius:10px;display:flex;align-items:center;justify-content:space-between;}
-.stat-box .stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#FDB927;}
+.btn-gold{background:#FDB927;color:#000;border:none;padding:8px 16px;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:14px;cursor:pointer;}
+.btn-red{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.4);color:#f88;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;}
+.btn-green{background:rgba(39,200,100,.1);border:1px solid rgba(39,200,100,.4);color:#5fe89a;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;}
+.btn-close{background:none;border:1px solid #333;color:#aaa;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;}
+.stat-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.stat-box{background:#12122a;border:1px solid #1e1e36;border-radius:10px;padding:12px 16px;flex:1;min-width:80px;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:#FDB927;}
+.stat-lbl{font-size:10px;color:#6a6a8a;margin-top:1px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a38;border:1px solid rgba(253,185,39,.4);color:#FDB927;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;padding:10px 20px;border-radius:10px;z-index:99999;pointer-events:none;opacity:0;transition:opacity .25s;}
+.toast.show{opacity:1;}
 </style>
 </head>
 <body>
@@ -118,23 +176,21 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
     <div class="tagline">NBA Picks 2026 &bull; Playoffs</div>
   </div>
   <div class="login-card">
-    <!-- LOGIN FORM -->
     <div id="loginForm">
       <input type="text" id="loginUser" placeholder="Username" autocomplete="off">
       <input type="password" id="loginPass" placeholder="Password">
-      <button class="login-btn" onclick="doLogin()">LET'S SPLASH</button>
-      <div class="login-error" id="loginError">Invalid credentials</div>
+      <button class="login-btn" id="loginBtn" onclick="doLogin()">LET'S SPLASH &#127936;</button>
+      <div class="login-error" id="loginError">Invalid username or password</div>
       <div class="join-toggle">New here? <a onclick="showJoin()">Create account</a></div>
     </div>
-    <!-- JOIN FORM -->
     <div id="joinForm" class="join-form">
       <input type="text" id="joinUser" placeholder="Choose a username" autocomplete="off">
       <input type="password" id="joinPass" placeholder="Choose a password">
       <input type="password" id="joinPass2" placeholder="Confirm password">
-      <button class="login-btn" onclick="doJoin()">JOIN THE SPLASH</button>
+      <button class="login-btn" id="joinBtn" onclick="doJoin()">JOIN THE SPLASH</button>
       <div class="login-error" id="joinError">Error</div>
-      <div class="success-msg" id="joinSuccess">Account created! Logging you in...</div>
-      <div class="join-toggle">Already have an account? <a onclick="showLogin()">Log in</a></div>
+      <div class="success-msg" id="joinSuccess">Account created!</div>
+      <div class="join-toggle">Have an account? <a onclick="showLogin()">Log in</a></div>
     </div>
   </div>
   <div class="login-kobe">"Be a lion, not a sheep.<br>Know your purpose and own it."<br>&mdash; Kobe Bryant #24</div>
@@ -149,312 +205,785 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
       <button class="logout-btn" onclick="doLogout()">Logout</button>
     </div>
   </div>
-
   <div class="tabs">
     <button class="tab-btn active" data-tab="picks" onclick="switchTab('picks',this)">
-      &#128293; HOT SHOOTERS
-      <span class="tab-pts">3 PTS EACH</span>
+      &#127936; TODAY'S PICKS<span class="tab-pts">PICK NOW</span>
     </button>
     <button class="tab-btn" data-tab="stars" onclick="switchTab('stars',this)">
-      &#11088; STARS
-      <span class="tab-pts">2 PTS EACH</span>
+      &#11088; STARS<span class="tab-pts">1 PT</span>
     </button>
     <button class="tab-btn" data-tab="role" onclick="switchTab('role',this)">
-      &#127936; ROLE PLAYERS
-      <span class="tab-pts">1 PT EACH</span>
+      &#127936; ROLE PLAYERS<span class="tab-pts">2 PT</span>
+    </button>
+    <button class="tab-btn" data-tab="brick" onclick="switchTab('brick',this)">
+      &#129408; BRICK CITY<span class="tab-pts">3 PT</span>
     </button>
   </div>
-
   <div id="tabContent" class="tab-content"></div>
 </div>
 
-<!-- ADMIN GEAR -->
-<div id="adminGear" style="display:none;" onclick="openAdmin()">&#9881;&#65039;</div>
-
-<!-- ADMIN OVERLAY -->
-<div id="adminOverlay">
-  <div class="admin-panel" id="adminPanel"></div>
-</div>
+<div id="adminGear" onclick="openAdmin()">&#9881;&#65039;</div>
+<div id="adminOverlay"><div class="admin-panel" id="adminPanel"></div></div>
+<div class="toast" id="toast"></div>
 
 <script>
-// ---- DATA ----
-var PLAYERS = {
-  picks: [
-    {id:201939, name:'Stephen Curry',   team:'GSW', teamId:1610612744, ppg:28.4, tpm:4.9, pct:42.1, note:'Averaging 5.2 3PM in playoffs', hot:true},
-    {id:1629029,name:'Trae Young',      team:'ATL', teamId:1610612737, ppg:25.7, tpm:2.8, pct:35.4, note:'On fire last 3 games', hot:true},
-    {id:1628378,name:'Donovan Mitchell',team:'CLE', teamId:1610612739, ppg:26.3, tpm:3.1, pct:38.7, note:'40-pt game last night', hot:true},
-    {id:202691, name:'Klay Thompson',   team:'DAL', teamId:1610612742, ppg:19.2, tpm:3.8, pct:40.5, note:'Classic playoff Klay', hot:false},
-    {id:1628369,name:'Jayson Tatum',    team:'BOS', teamId:1610612738, ppg:27.1, tpm:3.4, pct:37.8, note:'Home court advantage', hot:false},
-    {id:203081, name:'Damian Lillard',  team:'MIL', teamId:1610612749, ppg:24.8, tpm:3.3, pct:37.2, note:'Volume shooter', hot:false},
-    {id:1630162,name:'Anthony Edwards', team:'MIN', teamId:1610612750, ppg:26.5, tpm:3.0, pct:36.9, note:'Rising playoff star', hot:true},
-    {id:1630169,name:'Tyrese Haliburton',team:'IND',teamId:1610612754, ppg:20.1, tpm:2.7, pct:38.1, note:'Efficient and clutch', hot:false}
-  ],
-  stars: [
-    {id:201939, name:'Stephen Curry',   team:'GSW', teamId:1610612744, ppg:28.4, tpm:4.9, pct:42.1, hot:true},
-    {id:202691, name:'Klay Thompson',   team:'DAL', teamId:1610612742, ppg:19.2, tpm:3.8, pct:40.5, hot:true},
-    {id:1628369,name:'Jayson Tatum',    team:'BOS', teamId:1610612738, ppg:27.1, tpm:3.4, pct:37.8, hot:false},
-    {id:1627759,name:'Jaylen Brown',    team:'BOS', teamId:1610612738, ppg:23.4, tpm:2.9, pct:36.2, hot:false},
-    {id:1628378,name:'Donovan Mitchell',team:'CLE', teamId:1610612739, ppg:26.3, tpm:3.1, pct:38.7, hot:true},
-    {id:1630162,name:'Anthony Edwards', team:'MIN', teamId:1610612750, ppg:26.5, tpm:3.0, pct:36.9, hot:true}
-  ],
-  role: [
-    {id:201143, name:'Al Horford',          team:'BOS', teamId:1610612738, ppg:9.2,  tpm:1.8, pct:39.1, hot:false},
-    {id:203110, name:'Draymond Green',       team:'GSW', teamId:1610612744, ppg:8.1,  tpm:0.9, pct:29.4, hot:false},
-    {id:1630202,name:'Payton Pritchard',     team:'BOS', teamId:1610612738, ppg:14.6, tpm:3.1, pct:41.2, hot:true},
-    {id:1641706,name:'Brandin Podziemski',   team:'GSW', teamId:1610612744, ppg:12.3, tpm:2.4, pct:38.8, hot:true},
-    {id:1630573,name:'Sam Hauser',           team:'BOS', teamId:1610612738, ppg:11.8, tpm:2.6, pct:40.3, hot:false},
-    {id:1629636,name:'Gary Trent Jr',        team:'GSW', teamId:1610612744, ppg:13.1, tpm:2.5, pct:37.9, hot:true}
-  ]
-};
+// ═══════════════════════════════════════════════════════
+//  SUPABASE CONFIG
+// ═══════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://heykwxkyvbzffkhgrqgf.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_KvxJYevSYKP1Na_de5RCTQ_G9dDi0_L';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-var TAB_PTS = {picks:3, stars:2, role:1};
-var TAB_LABELS = {picks:'Hot Shooters', stars:'Stars', role:'Role Players'};
-var currentTab = 'picks';
-var currentUser = null;
+// ═══════════════════════════════════════════════════════
+//  PASSWORD HASHING (PBKDF2 — same as BSH)
+// ═══════════════════════════════════════════════════════
+async function hashPassword(password, username) {
+  const enc = new TextEncoder();
+  const keyMat = await crypto.subtle.importKey(
+    'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']
+  );
+  const bits = await crypto.subtle.deriveBits(
+    { name:'PBKDF2', salt: enc.encode('bsh42_' + username.toLowerCase()),
+      iterations: 100000, hash: 'SHA-256' },
+    keyMat, 256
+  );
+  return [...new Uint8Array(bits)].map(b => b.toString(16).padStart(2,'0')).join('');
+}
 
+// ═══════════════════════════════════════════════════════
+//  2026 NBA PLAYOFFS — TEAM REGISTRY
+// ═══════════════════════════════════════════════════════
 function photoUrl(id){ return 'https://cdn.nba.com/headshots/nba/latest/1040x760/'+id+'.png'; }
 function logoUrl(tid){ return 'https://cdn.nba.com/logos/nba/'+tid+'/global/L/logo.svg'; }
 
-// ---- AUTH TOGGLE ----
-function showJoin(){
-  document.getElementById('loginForm').style.display='none';
-  document.getElementById('joinForm').style.display='block';
-  document.getElementById('joinUser').focus();
-}
-function showLogin(){
-  document.getElementById('joinForm').style.display='none';
-  document.getElementById('loginForm').style.display='block';
-  document.getElementById('loginUser').focus();
-}
-function doJoin(){
-  var u=document.getElementById('joinUser').value.trim();
-  var p=document.getElementById('joinPass').value;
-  var p2=document.getElementById('joinPass2').value;
-  var err=document.getElementById('joinError');
-  var ok=document.getElementById('joinSuccess');
-  err.style.display='none'; ok.style.display='none';
-  if(!u||u.length<2){err.textContent='Username must be at least 2 characters';err.style.display='block';return;}
-  if(!p||p.length<3){err.textContent='Password must be at least 3 characters';err.style.display='block';return;}
-  if(p!==p2){err.textContent='Passwords do not match';err.style.display='block';return;}
-  if(u==='nick0'){err.textContent='That username is taken';err.style.display='block';return;}
-  var users=JSON.parse(localStorage.getItem('ssUsers')||'[]');
-  if(users.find(function(x){return x.username.toLowerCase()===u.toLowerCase();})){err.textContent='Username already taken';err.style.display='block';return;}
-  users.push({username:u,password:p,role:'user',created:new Date().toISOString().slice(0,10)});
-  localStorage.setItem('ssUsers',JSON.stringify(users));
-  ok.style.display='block';
-  setTimeout(function(){loginSuccess({username:u,role:'user'});},800);
+const TEAMS = {
+  BOS:{abbr:'BOS',name:'Celtics',full:'Boston Celtics',id:1610612738},
+  PHI:{abbr:'PHI',name:'76ers',full:'Philadelphia 76ers',id:1610612755},
+  SAS:{abbr:'SAS',name:'Spurs',full:'San Antonio Spurs',id:1610612759},
+  POR:{abbr:'POR',name:'Trail Blazers',full:'Portland Trail Blazers',id:1610612757},
+  HOU:{abbr:'HOU',name:'Rockets',full:'Houston Rockets',id:1610612745},
+  LAL:{abbr:'LAL',name:'Lakers',full:'Los Angeles Lakers',id:1610612747},
+  OKC:{abbr:'OKC',name:'Thunder',full:'Oklahoma City Thunder',id:1610612760},
+  PHX:{abbr:'PHX',name:'Suns',full:'Phoenix Suns',id:1610612756},
+  DEN:{abbr:'DEN',name:'Nuggets',full:'Denver Nuggets',id:1610612743},
+  MIN:{abbr:'MIN',name:'Timberwolves',full:'Minnesota Timberwolves',id:1610612750},
+  NYK:{abbr:'NYK',name:'Knicks',full:'New York Knicks',id:1610612752},
+  ATL:{abbr:'ATL',name:'Hawks',full:'Atlanta Hawks',id:1610612737},
+  CLE:{abbr:'CLE',name:'Cavaliers',full:'Cleveland Cavaliers',id:1610612739},
+  TOR:{abbr:'TOR',name:'Raptors',full:'Toronto Raptors',id:1610612761},
+  ORL:{abbr:'ORL',name:'Magic',full:'Orlando Magic',id:1610612753},
+  DET:{abbr:'DET',name:'Pistons',full:'Detroit Pistons',id:1610612765}
+};
+
+// pts: 1=Star(1PT), 2=Role(2PT), 3=Brick(3PT)
+const ALL_PLAYERS = [
+  // BOSTON CELTICS
+  {id:1628369,name:'Jayson Tatum',team:'BOS',ppg:21.8,tpm:2.8,pct:37.2,pts:1,note:'Achilles return, 25/11/7 Game 1'},
+  {id:1627759,name:'Jaylen Brown',team:'BOS',ppg:28.7,tpm:2.4,pct:35.8,pts:1,note:'BOS leading scorer'},
+  {id:1630202,name:'Payton Pritchard',team:'BOS',ppg:17.0,tpm:3.2,pct:41.5,pts:1,note:'League leader 3PM/G'},
+  {id:1630573,name:'Sam Hauser',team:'BOS',ppg:11.8,tpm:2.6,pct:39.3,pts:2,note:'Elite catch-and-shoot'},
+  {id:1629001,name:'Derrick White',team:'BOS',ppg:12.4,tpm:1.8,pct:37.1,pts:2,note:'Two-way starter'},
+  {id:1641709,name:'Baylor Scheierman',team:'BOS',ppg:8.4,tpm:2.1,pct:40.2,pts:2,note:'40% from deep, sophomore'},
+  {id:1629651,name:'Anfernee Simons',team:'BOS',ppg:16.4,tpm:2.0,pct:37.8,pts:2,note:'Mid-season acquisition'},
+  {id:101141,name:'Nikola Vucevic',team:'BOS',ppg:14.2,tpm:1.6,pct:36.8,pts:2,note:'Stretch C, deadline add'},
+  {id:1630559,name:'Neemias Queta',team:'BOS',ppg:6.8,tpm:0.1,pct:20.0,pts:3,note:'Backup center'},
+  // PHILADELPHIA 76ERS
+  {id:1628969,name:'Tyrese Maxey',team:'PHI',ppg:28.3,tpm:2.8,pct:37.4,pts:1,note:'PHI #1 — PROBABLE (finger)'},
+  {id:203081,name:'Paul George',team:'PHI',ppg:17.3,tpm:1.8,pct:36.1,pts:1,note:'17 pts Game 1'},
+  {id:1641751,name:'VJ Edgecombe',team:'PHI',ppg:14.2,tpm:1.9,pct:36.1,pts:1,note:'2025 #3 pick, explosive'},
+  {id:1628403,name:'Quentin Grimes',team:'PHI',ppg:13.1,tpm:2.3,pct:37.8,pts:2,note:'Floor spacer'},
+  {id:1631190,name:'Jared McCain',team:'PHI',ppg:11.6,tpm:2.0,pct:36.8,pts:2,note:'Rookie sharpshooter'},
+  {id:200768,name:'Kyle Lowry',team:'PHI',ppg:9.4,tpm:1.2,pct:34.6,pts:2,note:'Veteran backup PG'},
+  {id:203083,name:'Andre Drummond',team:'PHI',ppg:11.2,tpm:0.0,pct:0.0,pts:3,note:'Filling Embiid\'s role'},
+  // SAN ANTONIO SPURS
+  {id:1641705,name:'Victor Wembanyama',team:'SAS',ppg:25.0,tpm:1.8,pct:34.9,pts:1,note:'35 pts & 5 threes Game 1!'},
+  {id:1628368,name:"De'Aaron Fox",team:'SAS',ppg:22.4,tpm:1.8,pct:34.2,pts:1,note:'Trade deadline star'},
+  {id:1630175,name:'Devin Vassell',team:'SAS',ppg:18.2,tpm:2.4,pct:38.1,pts:1,note:'4-9 from 3 in Game 1'},
+  {id:1631115,name:'Stephon Castle',team:'SAS',ppg:15.6,tpm:1.4,pct:33.8,pts:2,note:'ROY candidate'},
+  {id:203084,name:'Harrison Barnes',team:'SAS',ppg:12.4,tpm:1.8,pct:37.2,pts:2,note:'Veteran wing'},
+  {id:1631105,name:'Jeremy Sochan',team:'SAS',ppg:10.8,tpm:1.2,pct:33.4,pts:2,note:'Versatile PF'},
+  {id:1642353,name:'Dylan Harper',team:'SAS',ppg:9.6,tpm:0.8,pct:31.8,pts:2,note:'2025 #2 overall pick'},
+  {id:1629123,name:'Luke Kornet',team:'SAS',ppg:7.2,tpm:1.0,pct:34.8,pts:3,note:'Backup C, spells Wemby'},
+  // PORTLAND TRAIL BLAZERS
+  {id:1630166,name:'Deni Avdija',team:'POR',ppg:24.2,tpm:2.1,pct:36.4,pts:1,note:'2026 All-Star'},
+  {id:1631109,name:'Shaedon Sharpe',team:'POR',ppg:20.8,tpm:2.6,pct:37.2,pts:1,note:'Explosive scorer'},
+  {id:203924,name:'Jerami Grant',team:'POR',ppg:18.6,tpm:1.8,pct:36.2,pts:1,note:'Portland third scorer'},
+  {id:201950,name:'Jrue Holiday',team:'POR',ppg:16.3,tpm:1.6,pct:35.8,pts:2,note:'Veteran leader'},
+  {id:1631108,name:'Scoot Henderson',team:'POR',ppg:14.1,tpm:1.5,pct:33.6,pts:2,note:'Developing PG'},
+  {id:1641756,name:'Toumani Camara',team:'POR',ppg:11.2,tpm:1.4,pct:34.6,pts:2,note:'Athletic wing'},
+  {id:1642349,name:'Donovan Clingan',team:'POR',ppg:9.8,tpm:0.2,pct:22.0,pts:3,note:'2024 #7 pick, rim protector'},
+  // HOUSTON ROCKETS
+  {id:201142,name:'Kevin Durant',team:'HOU',ppg:25.9,tpm:1.6,pct:38.1,pts:1,note:'QUESTIONABLE (knee)'},
+  {id:1641755,name:'Reed Sheppard',team:'HOU',ppg:13.8,tpm:2.2,pct:38.4,pts:2,note:'Hot rookie, 38.4% from 3'},
+  {id:1631103,name:'Jabari Smith Jr.',team:'HOU',ppg:12.8,tpm:1.6,pct:35.6,pts:2,note:'Stretch PF'},
+  {id:1628396,name:'Dorian Finney-Smith',team:'HOU',ppg:9.8,tpm:1.9,pct:37.1,pts:2,note:'3&D wing'},
+  {id:1631111,name:'Tari Eason',team:'HOU',ppg:11.2,tpm:1.1,pct:33.2,pts:2,note:'Energy wing'},
+  {id:1627832,name:'Fred VanVleet',team:'HOU',ppg:12.6,tpm:1.6,pct:36.4,pts:2,note:'Veteran PG'},
+  {id:1630578,name:'Alperen Sengun',team:'HOU',ppg:20.3,tpm:0.4,pct:28.1,pts:3,note:'Skilled big, rare 3s'},
+  {id:1630174,name:'Amen Thompson',team:'HOU',ppg:18.0,tpm:0.8,pct:29.4,pts:3,note:'Elite athlete, low 3PT%'},
+  // LOS ANGELES LAKERS
+  {id:2544,name:'LeBron James',team:'LAL',ppg:20.9,tpm:1.4,pct:31.7,pts:1,note:'1st father-son playoff duo'},
+  {id:1626156,name:"D'Angelo Russell",team:'LAL',ppg:14.6,tpm:2.0,pct:36.4,pts:2,note:'Starting PG'},
+  {id:1629060,name:'Rui Hachimura',team:'LAL',ppg:11.5,tpm:1.6,pct:35.2,pts:2,note:'Elevated role'},
+  {id:1642355,name:'Bronny James',team:'LAL',ppg:7.2,tpm:1.1,pct:33.4,pts:2,note:'Historic father-son duo'},
+  {id:1630560,name:'Dalton Knecht',team:'LAL',ppg:8.9,tpm:1.8,pct:36.2,pts:2,note:'Young shooter'},
+  {id:1629138,name:'Cam Reddish',team:'LAL',ppg:9.2,tpm:1.4,pct:33.8,pts:2,note:'Wing defender'},
+  {id:203076,name:'Anthony Davis',team:'LAL',ppg:21.8,tpm:0.3,pct:26.0,pts:3,note:'Frontcourt anchor'},
+  {id:1629082,name:'Deandre Ayton',team:'LAL',ppg:12.5,tpm:0.2,pct:28.4,pts:3,note:'Starting C'},
+  // OKLAHOMA CITY THUNDER
+  {id:1628983,name:'Shai Gilgeous-Alexander',team:'OKC',ppg:31.1,tpm:1.8,pct:36.4,pts:1,note:'2x MVP finalist, Finals MVP'},
+  {id:1630582,name:'Jalen Williams',team:'OKC',ppg:17.1,tpm:1.4,pct:35.2,pts:1,note:'Returned from wrist surgery'},
+  {id:1631096,name:'Chet Holmgren',team:'OKC',ppg:17.1,tpm:2.1,pct:37.9,pts:1,note:'All-Star stretch 5'},
+  {id:1629632,name:'Lu Dort',team:'OKC',ppg:10.1,tpm:2.1,pct:41.2,pts:2,note:'41% 3PT, elite defender'},
+  {id:1630529,name:'Isaiah Joe',team:'OKC',ppg:11.1,tpm:2.4,pct:40.8,pts:2,note:'Bench sharpshooter'},
+  {id:1630690,name:'Aaron Wiggins',team:'OKC',ppg:9.4,tpm:1.6,pct:38.2,pts:2,note:'3&D rotation piece'},
+  {id:1629690,name:'Isaiah Hartenstein',team:'OKC',ppg:10.4,tpm:0.4,pct:28.6,pts:3,note:'9.4 RPG rim protector'},
+  // PHOENIX SUNS
+  {id:1626164,name:'Devin Booker',team:'PHX',ppg:26.1,tpm:1.9,pct:33.0,pts:1,note:'PHX leader vs OKC'},
+  {id:1629020,name:'Dillon Brooks',team:'PHX',ppg:20.2,tpm:2.1,pct:36.4,pts:1,note:'Acquired in KD trade'},
+  {id:1629684,name:'Jalen Green',team:'PHX',ppg:17.8,tpm:2.3,pct:35.9,pts:2,note:'Acquired in KD trade'},
+  {id:1628464,name:'Royce O\'Neale',team:'PHX',ppg:9.8,tpm:2.2,pct:40.8,pts:2,note:'40.8% 3PT, floor spacer'},
+  {id:1629633,name:'Grayson Allen',team:'PHX',ppg:11.4,tpm:2.6,pct:38.9,pts:2,note:'Veteran sharpshooter'},
+  {id:1629750,name:'Ryan Dunn',team:'PHX',ppg:8.6,tpm:1.2,pct:33.1,pts:2,note:'Young wing defender'},
+  {id:1629167,name:'Mark Williams',team:'PHX',ppg:11.2,tpm:0.1,pct:18.0,pts:3,note:'Starting center'},
+  // DENVER NUGGETS
+  {id:203999,name:'Nikola Jokic',team:'DEN',ppg:27.7,tpm:1.4,pct:38.0,pts:1,note:'4x MVP, league APG leader'},
+  {id:1627750,name:'Jamal Murray',team:'DEN',ppg:25.4,tpm:2.1,pct:37.8,pts:1,note:'First All-Star season'},
+  {id:1628873,name:'Aaron Gordon',team:'DEN',ppg:16.2,tpm:2.0,pct:44.1,pts:2,note:'Career-high 44.1% from 3'},
+  {id:1630174,name:'Christian Braun',team:'DEN',ppg:15.4,tpm:1.8,pct:37.6,pts:2,note:'MIP finalist'},
+  {id:1641711,name:'Cam Johnson',team:'DEN',ppg:17.2,tpm:2.4,pct:39.6,pts:2,note:'Replaced MPJ, strong shooter'},
+  {id:1628994,name:'Tim Hardaway Jr.',team:'DEN',ppg:13.5,tpm:2.2,pct:37.8,pts:2,note:'Bench shooter'},
+  {id:1629625,name:'Julian Strawther',team:'DEN',ppg:9.6,tpm:1.8,pct:38.2,pts:2,note:'Young shooter'},
+  {id:202329,name:'JaVale McGee',team:'DEN',ppg:6.2,tpm:0.0,pct:0.0,pts:3,note:'Backup center'},
+  // MINNESOTA TIMBERWOLVES
+  {id:1630162,name:'Anthony Edwards',team:'MIN',ppg:28.8,tpm:3.4,pct:36.9,pts:1,note:'3.4 3PM/G — extraordinary'},
+  {id:1629628,name:'Donte DiVincenzo',team:'MIN',ppg:12.8,tpm:2.0,pct:38.4,pts:2,note:'Starting SG, reliable shooter'},
+  {id:1630217,name:'Jaden McDaniels',team:'MIN',ppg:14.8,tpm:1.6,pct:35.4,pts:2,note:'Defensive wing'},
+  {id:1629612,name:'Naz Reid',team:'MIN',ppg:13.6,tpm:1.4,pct:36.2,pts:2,note:'Versatile big off bench'},
+  {id:203944,name:'Julius Randle',team:'MIN',ppg:21.1,tpm:1.8,pct:34.6,pts:2,note:'Game 2 comeback hero'},
+  {id:1629640,name:'Ayo Dosunmu',team:'MIN',ppg:14.4,tpm:1.9,pct:36.8,pts:2,note:'19 pts comeback Game 2'},
+  {id:203497,name:'Rudy Gobert',team:'MIN',ppg:10.9,tpm:0.0,pct:0.0,pts:3,note:'11.5 RPG rim anchor'},
+  // NEW YORK KNICKS
+  {id:1628384,name:'Jalen Brunson',team:'NYK',ppg:26.0,tpm:1.8,pct:35.4,pts:1,note:'28 pts Game 1'},
+  {id:1626157,name:'Karl-Anthony Towns',team:'NYK',ppg:20.1,tpm:2.2,pct:38.4,pts:1,note:'25 pts/8 reb Game 1'},
+  {id:1628371,name:'OG Anunoby',team:'NYK',ppg:16.7,tpm:1.9,pct:36.8,pts:1,note:'Two-way wing'},
+  {id:1626169,name:'Mikal Bridges',team:'NYK',ppg:14.4,tpm:1.6,pct:36.2,pts:2,note:'Two-way wing'},
+  {id:1628391,name:'Josh Hart',team:'NYK',ppg:12.0,tpm:1.2,pct:34.6,pts:2,note:'Hustle machine'},
+  {id:1629611,name:'Miles McBride',team:'NYK',ppg:8.6,tpm:1.4,pct:36.8,pts:2,note:'Backup PG'},
+  {id:1629186,name:'Landry Shamet',team:'NYK',ppg:9.8,tpm:2.3,pct:39.2,pts:2,note:'Floor spacer'},
+  // ATLANTA HAWKS
+  {id:1630244,name:'Jalen Johnson',team:'ATL',ppg:22.5,tpm:1.4,pct:33.6,pts:1,note:'1st All-Star, Game 2 hero'},
+  {id:1630574,name:'Nickeil Alexander-Walker',team:'ATL',ppg:20.8,tpm:2.7,pct:38.4,pts:1,note:'32 pts Game 2 comeback'},
+  {id:1629006,name:'CJ McCollum',team:'ATL',ppg:19.4,tpm:2.5,pct:37.8,pts:1,note:'Acquired in Trae trade'},
+  {id:1629009,name:'Corey Kispert',team:'ATL',ppg:12.1,tpm:2.0,pct:38.6,pts:2,note:'Came with CJ, sniper'},
+  {id:1629627,name:'Dyson Daniels',team:'ATL',ppg:14.2,tpm:1.6,pct:35.4,pts:2,note:'Defensive specialist'},
+  {id:1641742,name:'Zaccharie Risacher',team:'ATL',ppg:12.6,tpm:1.8,pct:36.2,pts:2,note:'2024 #1 pick, developing'},
+  {id:1629012,name:'Onyeka Okongwu',team:'ATL',ppg:11.4,tpm:0.4,pct:27.8,pts:3,note:'Athletic C vs NYK'},
+  // CLEVELAND CAVALIERS
+  {id:1628378,name:'Donovan Mitchell',team:'CLE',ppg:27.9,tpm:2.4,pct:36.8,pts:1,note:'32 pts G2, CLE leads 2-0'},
+  {id:201935,name:'James Harden',team:'CLE',ppg:20.6,tpm:3.1,pct:37.7,pts:1,note:'10+ 3PA/G, 29 pts G2'},
+  {id:1629008,name:'Evan Mobley',team:'CLE',ppg:18.3,tpm:1.6,pct:37.1,pts:1,note:'25 pts G2, expanding range'},
+  {id:1629613,name:'Keon Ellis',team:'CLE',ppg:8.6,tpm:1.4,pct:36.4,pts:2,note:'Defensive specialist'},
+  {id:1629638,name:'Dean Wade',team:'CLE',ppg:9.2,tpm:1.6,pct:37.8,pts:2,note:'Starting SF'},
+  {id:1627738,name:'Jarrett Allen',team:'CLE',ppg:12.4,tpm:0.0,pct:0.0,pts:3,note:'Rim protector'},
+  // TORONTO RAPTORS
+  {id:1630567,name:'Scottie Barnes',team:'TOR',ppg:18.1,tpm:1.2,pct:32.8,pts:1,note:'Supermax extension, 26 G2'},
+  {id:1629628,name:'RJ Barrett',team:'TOR',ppg:19.1,tpm:1.8,pct:36.2,pts:1,note:'22 pts/9 reb Game 2'},
+  {id:1629731,name:'Brandon Ingram',team:'TOR',ppg:21.5,tpm:1.6,pct:35.4,pts:1,note:'TOR leader, down 0-2'},
+  {id:1630530,name:'Immanuel Quickley',team:'TOR',ppg:16.6,tpm:2.0,pct:36.4,pts:2,note:'Starting PG'},
+  {id:1641756,name:"Ja'Kobe Walter",team:'TOR',ppg:11.4,tpm:2.4,pct:40.1,pts:2,note:'40.1% shooter'},
+  {id:1641748,name:'Colin Murray-Boyles',team:'TOR',ppg:9.2,tpm:1.0,pct:33.2,pts:2,note:'2025 #9 pick'},
+  {id:202685,name:'Jakob Poeltl',team:'TOR',ppg:9.8,tpm:0.0,pct:0.0,pts:3,note:'Starting center'},
+  // ORLANDO MAGIC
+  {id:1631094,name:'Paolo Banchero',team:'ORL',ppg:22.3,tpm:1.6,pct:34.2,pts:1,note:'23 pts Game 1 upset'},
+  {id:1631107,name:'Franz Wagner',team:'ORL',ppg:20.4,tpm:2.1,pct:35.8,pts:1,note:'19 pts Game 1'},
+  {id:1629635,name:'Desmond Bane',team:'ORL',ppg:20.5,tpm:2.8,pct:38.6,pts:1,note:'17 pts Game 1'},
+  {id:1630530,name:'Jalen Suggs',team:'ORL',ppg:13.7,tpm:1.9,pct:36.1,pts:2,note:'Defensive spark plug'},
+  {id:1629637,name:'Anthony Black',team:'ORL',ppg:15.1,tpm:1.4,pct:34.8,pts:2,note:'Starting PG'},
+  {id:1631098,name:'Wendell Carter Jr.',team:'ORL',ppg:10.4,tpm:0.8,pct:31.2,pts:3,note:'Starting C'},
+  {id:1629607,name:'Goga Bitadze',team:'ORL',ppg:8.6,tpm:0.4,pct:28.4,pts:3,note:'Shot-blocker off bench'},
+  // DETROIT PISTONS
+  {id:1630595,name:'Cade Cunningham',team:'DET',ppg:26.1,tpm:1.8,pct:34.8,pts:1,note:'39 pts in Game 1 loss'},
+  {id:1628461,name:'Duncan Robinson',team:'DET',ppg:13.8,tpm:2.8,pct:39.4,pts:2,note:'Starting SG, elite sniper'},
+  {id:1629688,name:'Tobias Harris',team:'DET',ppg:17.4,tpm:1.6,pct:35.8,pts:2,note:'17 pts Game 1'},
+  {id:1629035,name:'Ausar Thompson',team:'DET',ppg:12.4,tpm:0.8,pct:29.8,pts:2,note:'Athletic wing'},
+  {id:1641741,name:'Ron Holland',team:'DET',ppg:10.6,tpm:1.2,pct:33.4,pts:2,note:'2024 #5 pick'},
+  {id:1631086,name:'Jalen Duren',team:'DET',ppg:19.2,tpm:0.0,pct:0.0,pts:3,note:'Team rebounding leader'}
+];
+
+// Reference lists sorted by volume × efficiency
+const STARS_LIST = ALL_PLAYERS.filter(p=>p.pts===1).sort((a,b)=>(b.tpm*b.pct)-(a.tpm*a.pct));
+const ROLE_LIST  = ALL_PLAYERS.filter(p=>p.pts===2).sort((a,b)=>(b.tpm*b.pct)-(a.tpm*a.pct));
+const BRICK_LIST = ALL_PLAYERS.filter(p=>p.pts===3).sort((a,b)=>b.ppg-a.ppg);
+
+function findPlayer(name){ return ALL_PLAYERS.find(p=>p.name===name)||null; }
+
+// ═══════════════════════════════════════════════════════
+//  TODAY'S GAMES — April 21, 2026
+// ═══════════════════════════════════════════════════════
+const GAMES = [
+  {
+    id:'phi_bos_g2', away:'PHI', home:'BOS',
+    time:'7:00 PM ET', series:'Game 2 \u2022 BOS leads 1-0',
+    tipoff: 1745283600000, // 7pm ET Apr 21
+    awayPlayers:['Tyrese Maxey','Paul George','VJ Edgecombe','Quentin Grimes','Jared McCain','Kyle Lowry','Andre Drummond'],
+    homePlayers:['Jayson Tatum','Jaylen Brown','Payton Pritchard','Sam Hauser','Derrick White','Baylor Scheierman','Anfernee Simons','Nikola Vucevic']
+  },
+  {
+    id:'por_sas_g2', away:'POR', home:'SAS',
+    time:'8:00 PM ET', series:'Game 2 \u2022 SAS leads 1-0',
+    tipoff: 1745287200000,
+    awayPlayers:['Deni Avdija','Shaedon Sharpe','Jerami Grant','Jrue Holiday','Scoot Henderson','Toumani Camara','Donovan Clingan'],
+    homePlayers:['Victor Wembanyama',"De'Aaron Fox",'Devin Vassell','Stephon Castle','Harrison Barnes','Jeremy Sochan','Dylan Harper','Luke Kornet']
+  },
+  {
+    id:'hou_lal_g2', away:'HOU', home:'LAL',
+    time:'10:30 PM ET', series:'Game 2 \u2022 Series tied 1-1',
+    tipoff: 1745296200000,
+    awayPlayers:['Kevin Durant','Reed Sheppard','Jabari Smith Jr.','Dorian Finney-Smith','Tari Eason','Fred VanVleet','Alperen Sengun','Amen Thompson'],
+    homePlayers:['LeBron James',"D'Angelo Russell",'Rui Hachimura','Bronny James','Dalton Knecht','Anthony Davis','Deandre Ayton']
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+//  PICKS — Supabase-backed (falls back to localStorage)
+// ═══════════════════════════════════════════════════════
+let currentUser = null;
+let ssData = { game_picks:{}, all_picked:[], scores:{} }; // all_picked = names picked across all time
+
+async function loadSSData() {
+  if(!currentUser) return;
+  try {
+    const {data} = await db.from('players').select('today_pick').eq('username', currentUser.username).single();
+    if(data && data.today_pick) {
+      try { ssData = {...ssData, ...JSON.parse(data.today_pick)}; } catch(e){}
+    }
+  } catch(e) {
+    // fall back to local
+    const local = localStorage.getItem('ss_data_'+currentUser.username);
+    if(local) try { ssData = {...ssData, ...JSON.parse(local)}; } catch(e2){}
+  }
 }
 
-// ---- AUTH ----
-function doLogin(){
-  var u = document.getElementById('loginUser').value.trim();
-  var p = document.getElementById('loginPass').value;
-  // Check built-in admin
-  if(u === 'nick0' && p === '123'){
-    loginSuccess({username:'nick0', role:'admin'});
-    return;
+async function saveSSData() {
+  if(!currentUser) return;
+  const json = JSON.stringify(ssData);
+  localStorage.setItem('ss_data_'+currentUser.username, json);
+  try {
+    await db.from('players').update({today_pick: json}).eq('username', currentUser.username);
+  } catch(e){}
+}
+
+function getGamePick(gameId){ return ssData.game_picks[gameId]||null; }
+function getAllPicked(){ return ssData.all_picked||[]; }
+
+async function setGamePick(gameId, playerName) {
+  const prev = ssData.game_picks[gameId];
+  if(prev) {
+    ssData.all_picked = (ssData.all_picked||[]).filter(n=>n!==prev);
   }
-  // Check stored users
-  var users = JSON.parse(localStorage.getItem('ssUsers') || '[]');
-  var match = users.find(function(x){ return x.username === u && x.password === p; });
-  if(match){
-    loginSuccess({username:match.username, role:match.role});
+  if(playerName) {
+    ssData.game_picks[gameId] = playerName;
+    if(!ssData.all_picked) ssData.all_picked=[];
+    if(!ssData.all_picked.includes(playerName)) ssData.all_picked.push(playerName);
   } else {
-    document.getElementById('loginError').style.display = 'block';
+    delete ssData.game_picks[gameId];
   }
+  await saveSSData();
 }
 
-function loginSuccess(user){
-  currentUser = user;
-  localStorage.setItem('ssUser', JSON.stringify(user));
-  document.getElementById('loginPage').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('userLabel').textContent = user.username.toUpperCase();
-  if(user.role === 'admin') document.getElementById('adminGear').style.display = 'flex';
-  renderTab(currentTab);
+async function clearGamePick(gameId) {
+  await setGamePick(gameId, null);
+}
+
+// ═══════════════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════════════
+function showJoin(){document.getElementById('loginForm').style.display='none';document.getElementById('joinForm').style.display='block';document.getElementById('joinUser').focus();}
+function showLogin(){document.getElementById('joinForm').style.display='none';document.getElementById('loginForm').style.display='block';document.getElementById('loginUser').focus();}
+
+async function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  const btn=document.getElementById('loginBtn');
+  const errEl=document.getElementById('loginError');
+  errEl.style.display='none';
+  if(!u||!p) return;
+  btn.disabled=true; btn.textContent='LOADING...';
+  // Admin shortcut
+  if(u==='nick0'&&p==='123'){
+    await loginSuccess({username:'nick0',role:'ss_admin'}); btn.disabled=false; btn.textContent="LET'S SPLASH 🏀"; return;
+  }
+  try {
+    const {data:rows} = await db.from('players').select('*').eq('username',u).single();
+    if(!rows){errEl.textContent='Invalid username or password';errEl.style.display='block';btn.disabled=false;btn.textContent="LET'S SPLASH 🏀";return;}
+    // Check password
+    let ok=false;
+    if(rows.password_hash){
+      const h=await hashPassword(p,u);
+      ok=(h===rows.password_hash);
+    } else if(rows.plain_password){
+      ok=(p===rows.plain_password);
+    }
+    if(!ok){errEl.textContent='Invalid username or password';errEl.style.display='block';btn.disabled=false;btn.textContent="LET'S SPLASH 🏀";return;}
+    await loginSuccess({username:u, role:rows.role||'ss_user'});
+  } catch(e){
+    errEl.textContent='Connection error — try again';errEl.style.display='block';
+  }
+  btn.disabled=false; btn.textContent="LET'S SPLASH 🏀";
+}
+
+async function doJoin(){
+  const u=document.getElementById('joinUser').value.trim();
+  const p=document.getElementById('joinPass').value;
+  const p2=document.getElementById('joinPass2').value;
+  const errEl=document.getElementById('joinError');
+  const okEl=document.getElementById('joinSuccess');
+  const btn=document.getElementById('joinBtn');
+  errEl.style.display='none'; okEl.style.display='none';
+  if(!u||u.length<2){errEl.textContent='Username must be at least 2 chars';errEl.style.display='block';return;}
+  if(!p||p.length<3){errEl.textContent='Password must be at least 3 chars';errEl.style.display='block';return;}
+  if(p!==p2){errEl.textContent='Passwords do not match';errEl.style.display='block';return;}
+  btn.disabled=true; btn.textContent='CREATING...';
+  try {
+    const h=await hashPassword(p,u);
+    const {error}=await db.from('players').insert({
+      username:u, password_hash:h, plain_password:p,
+      role:'ss_user', status:'active', credits:1, streak:0, strikes:0, today_pick:null
+    });
+    if(error){errEl.textContent=error.message.includes('duplicate')?'Username already taken':'Error creating account';errEl.style.display='block';btn.disabled=false;btn.textContent='JOIN THE SPLASH';return;}
+    okEl.style.display='block';
+    setTimeout(()=>loginSuccess({username:u,role:'ss_user'}),700);
+  } catch(e){errEl.textContent='Connection error';errEl.style.display='block';}
+  btn.disabled=false; btn.textContent='JOIN THE SPLASH';
+}
+
+async function loginSuccess(user){
+  currentUser=user;
+  ssData={game_picks:{},all_picked:[],scores:{}};
+  await loadSSData();
+  localStorage.setItem('ssUser',JSON.stringify(user));
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('userLabel').textContent=user.username.toUpperCase();
+  if(user.role==='ss_admin'||user.role==='admin') document.getElementById('adminGear').style.display='flex';
+  renderTab('picks');
 }
 
 function doLogout(){
-  currentUser = null;
+  currentUser=null; ssData={game_picks:{},all_picked:[],scores:{}};
   localStorage.removeItem('ssUser');
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('loginPage').style.display = 'flex';
-  document.getElementById('adminGear').style.display = 'none';
-  document.getElementById('loginUser').value = '';
-  document.getElementById('loginPass').value = '';
-  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('app').style.display='none';
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('adminGear').style.display='none';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+  document.getElementById('loginError').style.display='none';
 }
 
-// ---- PICKS ----
-function getPicks(tab){ return JSON.parse(localStorage.getItem('ssPicks_'+tab) || '[]'); }
-function savePicks(tab, arr){ localStorage.setItem('ssPicks_'+tab, JSON.stringify(arr)); }
-
-function togglePick(tab, name){
-  var picks = getPicks(tab);
-  var idx = picks.indexOf(name);
-  if(idx > -1){ picks.splice(idx,1); }
-  else if(picks.length < 5){ picks.push(name); }
-  savePicks(tab, picks);
-  renderTab(tab);
-}
-
-// ---- TABS ----
-function switchTab(tab, btn){
-  currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+// ═══════════════════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════════════════
+let currentTab='picks';
+function switchTab(tab,btn){
+  currentTab=tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderTab(tab);
 }
-
 function renderTab(tab){
-  var players = PLAYERS[tab];
-  var picks = getPicks(tab);
-  var pts = TAB_PTS[tab];
-  var label = TAB_LABELS[tab];
-  var html = '';
+  if(tab==='picks') renderPicksTab();
+  else if(tab==='stars') renderRefTab(STARS_LIST,'⭐ STARS — TOP SHOOTERS',1);
+  else if(tab==='role') renderRefTab(ROLE_LIST,'🏀 ROLE PLAYERS',2);
+  else if(tab==='brick') renderRefTab(BRICK_LIST,'🧱 BRICK CITY — HIGH REWARD',3);
+}
 
-  // Rules banner
-  html += '<div class="rules-banner">';
-  html += '<div class="pts-badge">'+pts+' PT'+(pts>1?'S':'')+'</div>';
-  html += '<p><strong style="color:#FDB927">'+label+'</strong> &mdash; Pick up to 5 players. Earn <strong style="color:#FDB927">'+pts+' point'+(pts>1?'s':'')+' each</strong> when your shooter drains a three. Max 5 picks per tab.</p>';
-  html += '</div>';
+// ═══════════════════════════════════════════════════════
+//  TODAY'S PICKS TAB
+// ═══════════════════════════════════════════════════════
+function renderPicksTab(){
+  let html='';
+  html+="<div class='picks-intro'>";
+  html+="<div class='picks-intro-title'>📅 TODAY'S PICKS — APR 21</div>";
+  html+="<div class='picks-intro-body'>Pick <strong style='color:#FDB927'>1 player per game</strong> from either team's dropdown. ";
+  html+="Once picked, that player is <strong style='color:#f88'>locked for your entire playoffs</strong>. ";
+  html+="⭐ Stars = 1PT &bull; 🏀 Role Players = 2PT &bull; 🧱 Brick City = 3PT</div></div>";
 
-  html += '<div class="section-header">&#128293; '+label.toUpperCase()+'</div>';
-  html += '<div class="section-sub">Tap a player to add them to your picks</div>';
+  GAMES.forEach(g=>{ html+=buildGameCard(g); });
 
-  players.forEach(function(p){
-    var sel = picks.indexOf(p.name) > -1;
-    html += '<div class="player-card'+(sel?' selected':'')+'" onclick="togglePick(\''+tab+'\',\''+p.name.replace(/'/g,"\\'")+'\')">';
-    html += '<div class="card-inner">';
-    html += '<img class="card-photo'+(sel?' selected-img':'')+'" src="'+photoUrl(p.id)+'" onerror="this.style.background=\'#1a1a30\';this.src=\'\'" alt="'+p.name+'">';
-    html += '<div class="card-info">';
-    html += '<div class="card-name'+(sel?' selected-name':'')+'">'+p.name+(p.hot?' &#128293;':'')+'</div>';
-    html += '<div class="card-team">';
-    html += '<img class="team-logo" src="'+logoUrl(p.teamId)+'" onerror="this.style.display=\'none\'" alt="'+p.team+'">';
-    html += '<span class="card-team-name">'+p.team+'</span>';
-    html += '</div>';
-    html += '<div class="card-stats">'+p.tpm+' 3PM/G &bull; '+p.pct+'% 3PT &bull; '+p.ppg+' PPG</div>';
-    if(p.note) html += '<div class="card-note">'+p.note+'</div>';
-    html += '</div>';
-    html += '<div class="card-right">';
-    html += '<div class="hot-badge">'+(p.hot?'&#128293;':'&#127936;')+'</div>';
-    html += '<div class="pts-chip">'+pts+'PT</div>';
-    html += '</div>';
-    html += '</div>';
-    if(sel){
-      html += '<div class="selected-tag">&#10004; SPLASHED &bull; YOUR PICK &bull; +'+pts+' PT'+(pts>1?'S':'')+'</div>';
-    }
-    html += '</div>';
-  });
-
-  // Picks summary
-  if(picks.length > 0){
-    html += '<div class="picks-summary">';
-    html += '<h3>YOUR PICKS ('+picks.length+'/5)</h3>';
-    picks.forEach(function(name){
-      var p = players.find(function(x){ return x.name === name; });
-      html += '<div class="pick-row">';
-      html += '<span class="pick-row-name">&#11088; '+name+'</span>';
-      html += '<span class="pick-row-pts">+'+pts+' PT'+(pts>1?'S':'')+'</span>';
-      html += '</div>';
+  // Summary
+  const picked=Object.entries(ssData.game_picks||{}).filter(([,v])=>!!v);
+  if(picked.length>0){
+    html+="<div class='picks-summary'><h3>✅ YOUR PICKS TODAY ("+picked.length+"/"+GAMES.length+")</h3>";
+    picked.forEach(([gid,pname])=>{
+      const p=findPlayer(pname); if(!p) return;
+      const ptsLbl=p.pts===1?'⭐ 1PT':p.pts===2?'🏀 2PT':'🧱 3PT';
+      const ptsCls='pts-'+p.pts;
+      html+="<div class='pick-row'>";
+      html+="<img class='pr-photo' src='"+photoUrl(p.id)+"' onerror=\"this.style.background='#1a1a30';this.src=''\" alt='"+pname+"'>";
+      html+="<span class='pr-name'>"+pname+"</span>";
+      html+="<span class='pr-pts pts-chip "+ptsCls+"'>"+ptsLbl+"</span>";
+      html+="</div>";
     });
-    html += '</div>';
+    html+="</div>";
   }
 
-  document.getElementById('tabContent').innerHTML = html;
-}
+  document.getElementById('tabContent').innerHTML=html;
 
-// ---- ADMIN ----
-function openAdmin(){
-  document.getElementById('adminOverlay').style.display = 'block';
-  renderAdmin();
-}
-function closeAdmin(){
-  document.getElementById('adminOverlay').style.display = 'none';
-}
-
-function renderAdmin(){
-  var users = JSON.parse(localStorage.getItem('ssUsers') || '[]');
-  var allUsers = [{username:'nick0',role:'admin',created:'2026-04-21'}].concat(users);
-  var totalPicks = (getPicks('picks').length + getPicks('stars').length + getPicks('role').length);
-
-  var html = '<div class="admin-title">&#9881; ADMIN PANEL <button class="btn-close" onclick="closeAdmin()">CLOSE</button></div>';
-
-  html += '<div class="admin-section">';
-  html += '<h3>USER MANAGEMENT</h3>';
-  html += '<table class="admin-table"><tr><th>Username</th><th>Role</th><th>Created</th><th>Action</th></tr>';
-  allUsers.forEach(function(u){
-    html += '<tr><td>'+u.username+'</td><td style="color:#9b8fcf">'+u.role+'</td><td style="color:#5a5a7a">'+(u.created||'—')+'</td><td>';
-    html += u.username==='nick0' ? '<span style="color:#4a4a6a;font-size:12px">Protected</span>' : '<button class="btn-red" onclick="removeUser(\''+u.username+'\')">Remove</button>';
-    html += '</td></tr>';
+  // Attach listeners after render
+  GAMES.forEach(g=>{
+    ['away','home'].forEach(side=>{
+      const sel=document.getElementById('sel_'+g.id+'_'+side);
+      if(sel) sel.addEventListener('change',function(){onPickPlayer(g.id,this.value);});
+    });
+    const clr=document.getElementById('clr_'+g.id);
+    if(clr) clr.addEventListener('click',()=>{clearGamePick(g.id).then(()=>renderPicksTab());});
   });
-  html += '</table>';
-  html += '<h3 style="margin-top:16px">ADD USER</h3>';
-  html += '<div class="admin-inputs">';
-  html += '<input id="anU" placeholder="Username">';
-  html += '<input id="anP" placeholder="Password" type="password">';
-  html += '<select id="anR"><option value="user">user</option><option value="admin">admin</option></select>';
-  html += '<button class="btn-gold" onclick="addUser()">ADD</button>';
-  html += '</div>';
-  html += '</div>';
-
-  html += '<div class="admin-section">';
-  html += '<h3>TODAY\'S PICK STATS</h3>';
-  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">';
-  html += '<div class="stat-box"><div><div style="color:#9b8fcf;font-size:11px">HOT SHOOTERS</div><div class="stat-val">'+getPicks('picks').length+'</div></div></div>';
-  html += '<div class="stat-box"><div><div style="color:#9b8fcf;font-size:11px">STARS</div><div class="stat-val">'+getPicks('stars').length+'</div></div></div>';
-  html += '<div class="stat-box"><div><div style="color:#9b8fcf;font-size:11px">ROLE PLAYERS</div><div class="stat-val">'+getPicks('role').length+'</div></div></div>';
-  html += '</div>';
-  html += '</div>';
-
-  html += '<div class="admin-section">';
-  html += '<h3>SCORING RULES</h3>';
-  html += '<div style="background:#12122a;padding:14px;border-radius:10px;line-height:1.8;font-size:14px;color:#c0b0e0">';
-  html += '<div>&#128293; <strong style="color:#FDB927">Hot Shooters</strong> = 3 points per correct pick</div>';
-  html += '<div>&#11088; <strong style="color:#FDB927">Stars</strong> = 2 points per correct pick</div>';
-  html += '<div>&#127936; <strong style="color:#FDB927">Role Players</strong> = 1 point per correct pick</div>';
-  html += '<div style="margin-top:8px;color:#7a7a9a;font-size:12px">Max 5 picks per tab &bull; Pick locks at game time</div>';
-  html += '</div>';
-  html += '</div>';
-
-  document.getElementById('adminPanel').innerHTML = html;
 }
 
-function addUser(){
-  var u = document.getElementById('anU').value.trim();
-  var p = document.getElementById('anP').value;
-  var r = document.getElementById('anR').value;
-  if(!u || !p) return;
-  var users = JSON.parse(localStorage.getItem('ssUsers') || '[]');
-  if(users.find(function(x){return x.username===u;}) || u==='nick0'){ alert('Username taken'); return; }
-  users.push({username:u, password:p, role:r, created:new Date().toISOString().slice(0,10)});
-  localStorage.setItem('ssUsers', JSON.stringify(users));
-  renderAdmin();
-}
+function buildGameCard(game){
+  const awT=TEAMS[game.away], hmT=TEAMS[game.home];
+  const pick=getGamePick(game.id);
+  const pickedAll=getAllPicked();
+  const locked=Date.now()>game.tipoff;
+  const hasPick=!!pick;
 
-function removeUser(name){
-  var users = JSON.parse(localStorage.getItem('ssUsers') || '[]').filter(function(x){return x.username!==name;});
-  localStorage.setItem('ssUsers', JSON.stringify(users));
-  renderAdmin();
-}
+  let html="<div class='game-card"+(hasPick?' has-pick':'')+"' id='card_"+game.id+"'>";
 
-// ---- INIT ----
-window.addEventListener('DOMContentLoaded', function(){
-  var saved = localStorage.getItem('ssUser');
-  if(saved){
-    try {
-      loginSuccess(JSON.parse(saved));
-    } catch(e) {
-      localStorage.removeItem('ssUser');
+  // Header
+  html+="<div class='game-header'>";
+  html+="<div class='gh-team away'>";
+  html+="<img class='gh-logo' src='"+logoUrl(awT.id)+"' onerror=\"this.style.display='none'\" alt='"+awT.abbr+"'>";
+  html+="<div class='gh-abbr'>"+awT.abbr+"</div><div class='gh-full'>"+awT.name+"</div></div>";
+  html+="<div class='gh-meta'><div class='gh-vs'>@</div><div class='gh-time'>"+game.time+"</div><div class='gh-series'>"+game.series+"</div></div>";
+  html+="<div class='gh-team home'>";
+  html+="<img class='gh-logo' src='"+logoUrl(hmT.id)+"' onerror=\"this.style.display='none'\" alt='"+hmT.abbr+"'>";
+  html+="<div class='gh-abbr'>"+hmT.abbr+"</div><div class='gh-full'>"+hmT.name+"</div></div>";
+  html+="</div>";
+
+  // Dropdowns or locked message
+  if(!hasPick){
+    if(locked){
+      html+="<div class='game-locked-bar'>🔒 GAME LOCKED — TIPOFF PASSED</div>";
+    } else {
+      html+="<div class='game-drops'>";
+      html+=buildDropdown(game,'away',awT,pickedAll);
+      html+=buildDropdown(game,'home',hmT,pickedAll);
+      html+="</div>";
     }
   }
-  // Enter key on login
-  document.getElementById('loginPass').addEventListener('keydown', function(e){
-    if(e.key==='Enter') doLogin();
+
+  // Pick confirmation
+  if(hasPick){
+    const p=findPlayer(pick);
+    if(p){
+      const ptsLbl=p.pts===1?'⭐ 1PT':p.pts===2?'🏀 2PT':'🧱 3PT';
+      const ptsCls='pts-'+p.pts;
+      const pTeam=TEAMS[p.team]||{id:0,full:p.team};
+      html+="<div class='pick-confirm show'><div class='pick-confirm-row'>";
+      html+="<img class='pick-photo' src='"+photoUrl(p.id)+"' onerror=\"this.style.background='#1a1a30';this.src=''\" alt='"+p.name+"'>";
+      html+="<div class='pick-info'>";
+      html+="<div class='pick-name'>"+p.name+"</div>";
+      html+="<div class='pick-team-row'>";
+      html+="<img class='pick-team-logo' src='"+logoUrl(pTeam.id)+"' onerror=\"this.style.display='none'\" alt='"+p.team+"'>";
+      html+="<span class='pick-team-name'>"+pTeam.full+"</span></div>";
+      html+="<div class='pick-stats'>"+p.tpm+" 3PM/G &bull; "+p.pct+"% 3PT &bull; "+p.ppg+" PPG</div>";
+      html+="<div class='pick-badges'>";
+      html+="<span class='pick-tag'>✓ YOUR PICK</span>";
+      html+="<span class='pts-chip "+ptsCls+"'>"+ptsLbl+"</span>";
+      if(!locked) html+="<button class='pick-change-btn' id='clr_"+game.id+"'>Change pick</button>";
+      html+="</div></div></div></div>";
+    }
+  }
+
+  html+="</div>";
+  return html;
+}
+
+function buildDropdown(game, side, team, pickedAll){
+  const names=side==='away'?game.awayPlayers:game.homePlayers;
+  let html="<div class='drop-section'>";
+  html+="<div class='drop-label'><img class='drop-logo' src='"+logoUrl(team.id)+"' onerror=\"this.style.display='none'\" alt='"+team.abbr+"'> "+team.abbr+" "+team.name.toUpperCase()+"</div>";
+  html+="<select class='player-select' id='sel_"+game.id+"_"+side+"'>";
+  html+="<option value=''>Pick a "+team.name+"...</option>";
+  names.forEach(pname=>{
+    const p=findPlayer(pname); if(!p) return;
+    const used=pickedAll.includes(pname);
+    const ptsLbl=p.pts===1?'⭐ 1PT':p.pts===2?'🏀 2PT':'🧱 3PT';
+    html+="<option value='"+pname+"'"+(used?' disabled':'')+">";
+    html+=pname+" — "+ptsLbl+(used?' (USED)':'');
+    html+="</option>";
   });
-  document.getElementById('joinPass2').addEventListener('keydown', function(e){
-    if(e.key==='Enter') doJoin();
+  html+="</select></div>";
+  return html;
+}
+
+async function onPickPlayer(gameId, playerName){
+  if(!playerName) return;
+  await setGamePick(gameId, playerName);
+  showToast('PICKED: '+playerName+'!');
+  renderPicksTab();
+}
+
+// ═══════════════════════════════════════════════════════
+//  REFERENCE TABS
+// ═══════════════════════════════════════════════════════
+function renderRefTab(players, label, pts){
+  const ptsLbl=pts===1?'1PT':pts===2?'2PT':'3PT';
+  const ptsCls='pts-'+pts;
+  const desc=pts===1?'High-volume 3PT shooters & primary scorers — sorted by shooting value.':
+             pts===2?'Moderate shooters & bench contributors — good value picks.':
+             'Centers & low-usage players — low odds but max reward.';
+  let html='';
+  html+="<div class='rules-banner'><div class='pts-badge-lbl'>"+ptsLbl+"</div><p><strong style='color:#FDB927'>"+label+"</strong><br>"+desc+" Pick these in <strong>TODAY'S PICKS</strong>.</p></div>";
+  html+="<div class='section-header'>"+label+"</div>";
+  html+="<div class='section-sub'>"+players.length+" players &bull; 2026 Playoffs only &bull; Ranked by shooting value</div>";
+
+  players.forEach((p,i)=>{
+    const t=TEAMS[p.team]||{id:0,full:p.team};
+    html+="<div class='player-card'><div class='card-inner'>";
+    html+="<img class='card-photo' src='"+photoUrl(p.id)+"' onerror=\"this.style.background='#1a1a30';this.src=''\" alt='"+p.name+"'>";
+    html+="<div class='card-info'>";
+    html+="<div class='card-name'>"+(i<3?"🔥 ":"")+p.name+"</div>";
+    html+="<div class='card-team'><img class='team-logo-sm' src='"+logoUrl(t.id)+"' onerror=\"this.style.display='none'\" alt='"+p.team+"'><span class='card-team-name'>"+t.full+"</span></div>";
+    html+="<div class='card-stats'>"+p.tpm+" 3PM/G &bull; "+p.pct+"% 3PT &bull; "+p.ppg+" PPG</div>";
+    if(p.note) html+="<div class='card-note'>"+p.note+"</div>";
+    html+="</div><div class='card-right'><div class='pts-chip "+ptsCls+"'>"+(pts===1?'⭐':pts===2?'🏀':'🧱')+" "+ptsLbl+"</div></div></div></div>";
   });
+
+  document.getElementById('tabContent').innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════════
+//  ADMIN PANEL
+// ═══════════════════════════════════════════════════════
+let adminView='users';
+
+function openAdmin(){
+  if(!currentUser||!(currentUser.role==='ss_admin'||currentUser.role==='admin')) return;
+  document.getElementById('adminOverlay').style.display='block';
+  renderAdmin();
+}
+function closeAdmin(){document.getElementById('adminOverlay').style.display='none';}
+function setAdminView(v){adminView=v;renderAdmin();}
+
+async function renderAdmin(){
+  const el=document.getElementById('adminPanel');
+  el.innerHTML="<div class='admin-header'>⚙️ ADMIN <button class='btn-close' onclick='closeAdmin()'>✕ CLOSE</button></div>"+
+    "<div class='admin-nav'>"+
+    "<button class='admin-nav-btn"+(adminView==='users'?' active':'')+"' onclick=\"setAdminView('users')\">👥 USERS</button>"+
+    "<button class='admin-nav-btn"+(adminView==='picks'?' active':'')+"' onclick=\"setAdminView('picks')\">🎯 ALL PICKS</button>"+
+    "<button class='admin-nav-btn"+(adminView==='score'?' active':'')+"' onclick=\"setAdminView('score')\">📊 SCORING</button>"+
+    "<button class='admin-nav-btn"+(adminView==='games'?' active':'')+"' onclick=\"setAdminView('games')\">🏀 GAMES</button>"+
+    "</div><div id='adminContent'>Loading...</div>";
+
+  if(adminView==='users') await renderAdminUsers();
+  else if(adminView==='picks') await renderAdminPicks();
+  else if(adminView==='score') await renderAdminScore();
+  else if(adminView==='games') renderAdminGames();
+}
+
+async function renderAdminUsers(){
+  let rows=[];
+  try {
+    const {data}=await db.from('players').select('*').in('role',['ss_user','ss_admin','admin','player']);
+    rows=data||[];
+  } catch(e){}
+
+  // Add nick0 if not in list
+  if(!rows.find(r=>r.username==='nick0')) rows.unshift({username:'nick0',role:'ss_admin',status:'active',created:'2026-04-21'});
+
+  let html="<div class='admin-section'><h3>USER ACCOUNTS ("+rows.length+")</h3>";
+  const statRow=`<div class='stat-row'>
+    <div class='stat-box'><div class='stat-val'>${rows.length}</div><div class='stat-lbl'>USERS</div></div>
+    <div class='stat-box'><div class='stat-val'>${rows.filter(r=>r.status==='active').length}</div><div class='stat-lbl'>ACTIVE</div></div>
+  </div>`;
+  html+=statRow;
+  html+="<table class='admin-table'><tr><th>USERNAME</th><th>ROLE</th><th>STATUS</th><th>PICKS</th><th>ACTIONS</th></tr>";
+  rows.forEach(r=>{
+    let picks={};
+    try{picks=JSON.parse(r.today_pick||'{}');}catch(e){}
+    const pickCount=Object.keys(picks.game_picks||{}).length;
+    html+=`<tr><td style='color:#FDB927'>${r.username}</td>
+      <td style='color:#9b8fcf'>${r.role||'ss_user'}</td>
+      <td style='color:${r.status==='active'?'#5fe89a':'#f88'}'>${r.status||'active'}</td>
+      <td>${pickCount} picks</td>
+      <td style='display:flex;gap:6px'>
+        ${r.username==='nick0'?'<span style="color:#444;font-size:11px">Protected</span>':
+          `<button class='btn-red' onclick="removeUser('${r.username}')">Delete</button>
+           <button class='btn-green' onclick="resetPicks('${r.username}')">Reset</button>`}
+      </td></tr>`;
+  });
+  html+="</table>";
+  html+=`<h3 style='margin-top:16px'>ADD USER</h3>
+    <div class='admin-inputs'>
+      <input id='anU' placeholder='Username'>
+      <input id='anP' placeholder='Password' type='password'>
+      <select id='anR'><option value='ss_user'>Regular User</option><option value='ss_admin'>Admin</option></select>
+      <button class='btn-gold' onclick='adminAddUser()'>ADD</button>
+    </div></div>`;
+
+  document.getElementById('adminContent').innerHTML=html;
+}
+
+async function renderAdminPicks(){
+  let rows=[];
+  try {
+    const {data}=await db.from('players').select('username,today_pick').not('today_pick','is',null);
+    rows=data||[];
+  } catch(e){}
+
+  let html="<div class='admin-section'><h3>ALL USER PICKS</h3>";
+  if(rows.length===0){html+="<p style='color:#5a5a7a;font-size:13px'>No picks yet.</p>";html+="</div>";}
+  else {
+    html+="<table class='admin-table'><tr><th>USER</th><th>GAME</th><th>PLAYER</th><th>PTS</th><th>RESULT</th></tr>";
+    rows.forEach(r=>{
+      let d={game_picks:{},scores:{}};
+      try{d=JSON.parse(r.today_pick||'{}');}catch(e){}
+      Object.entries(d.game_picks||{}).forEach(([gid,pname])=>{
+        const p=findPlayer(pname);
+        const pts=p?p.pts:0;
+        const score=d.scores?.[gid]||'pending';
+        const scoreLbl=score==='made'?'<span style="color:#5fe89a">✓ MADE</span>':score==='missed'?'<span style="color:#f88">✗ MISSED</span>':'<span style="color:#7c6fa0">Pending</span>';
+        html+=`<tr>
+          <td style='color:#FDB927'>${r.username}</td>
+          <td style='color:#9b8fcf;font-size:11px'>${gid}</td>
+          <td>${pname}</td>
+          <td><span class='pts-chip pts-${pts}'>${pts}PT</span></td>
+          <td>${scoreLbl}
+            <button class='btn-green' style='margin-left:4px;font-size:9px' onclick="markPick('${r.username}','${gid}','made')">Made</button>
+            <button class='btn-red' style='font-size:9px' onclick="markPick('${r.username}','${gid}','missed')">Missed</button>
+          </td></tr>`;
+      });
+    });
+    html+="</table></div>";
+  }
+  document.getElementById('adminContent').innerHTML=html;
+}
+
+async function renderAdminScore(){
+  let rows=[];
+  try {
+    const {data}=await db.from('players').select('username,today_pick').not('today_pick','is',null);
+    rows=data||[];
+  } catch(e){}
+
+  let html="<div class='admin-section'><h3>LEADERBOARD</h3>";
+  const scores=[];
+  rows.forEach(r=>{
+    let d={game_picks:{},scores:{}};
+    try{d=JSON.parse(r.today_pick||'{}');}catch(e){}
+    let total=0;
+    Object.entries(d.scores||{}).forEach(([gid,result])=>{
+      if(result==='made'){
+        const pname=d.game_picks?.[gid];
+        const p=findPlayer(pname);
+        if(p) total+=p.pts;
+      }
+    });
+    scores.push({username:r.username,total,picks:Object.keys(d.game_picks||{}).length});
+  });
+  scores.sort((a,b)=>b.total-a.total);
+  html+="<table class='admin-table'><tr><th>#</th><th>USERNAME</th><th>PICKS</th><th>POINTS</th></tr>";
+  scores.forEach((s,i)=>{
+    html+=`<tr><td style='color:#FDB927'>${i+1}</td><td>${s.username}</td><td>${s.picks}</td><td style='color:#FDB927;font-family:Bebas Neue'>${s.total}PT</td></tr>`;
+  });
+  if(scores.length===0) html+="<tr><td colspan='4' style='color:#5a5a7a'>No scored picks yet</td></tr>";
+  html+="</table></div>";
+  document.getElementById('adminContent').innerHTML=html;
+}
+
+function renderAdminGames(){
+  let html="<div class='admin-section'><h3>TONIGHT'S GAMES</h3><div style='line-height:2;font-size:13px;color:#c0b0e0'>";
+  GAMES.forEach(g=>{
+    const pick=getGamePick(g.id);
+    html+=`<div>🏀 <strong style='color:#FDB927'>${g.away} @ ${g.home}</strong> — ${g.time} — ${g.series}</div>`;
+  });
+  html+=`<div style='margin-top:8px;color:#f88;font-size:11px'>OUT: Embiid (abdomen), Luka (hamstring)</div>
+    <div style='color:#ffa44a;font-size:11px'>QUESTIONABLE: Kevin Durant (knee)</div>
+    </div></div>`;
+  document.getElementById('adminContent').innerHTML=html;
+}
+
+async function adminAddUser(){
+  const u=document.getElementById('anU').value.trim();
+  const p=document.getElementById('anP').value;
+  const r=document.getElementById('anR').value;
+  if(!u||!p){showToast('Fill all fields');return;}
+  const h=await hashPassword(p,u);
+  const {error}=await db.from('players').insert({
+    username:u,password_hash:h,plain_password:p,role:r,status:'active',credits:1,streak:0,strikes:0,today_pick:null
+  });
+  if(error){showToast('Error: '+error.message);}
+  else{showToast('✓ Created '+u);renderAdmin();}
+}
+
+async function removeUser(username){
+  if(!confirm('Delete user '+username+'?')) return;
+  await db.from('players').delete().eq('username',username);
+  showToast('✓ Removed '+username);renderAdmin();
+}
+
+async function resetPicks(username){
+  if(!confirm('Reset all picks for '+username+'?')) return;
+  await db.from('players').update({today_pick:null}).eq('username',username);
+  showToast('✓ Reset picks for '+username);renderAdmin();
+}
+
+async function markPick(username, gameId, result){
+  const {data}=await db.from('players').select('today_pick').eq('username',username).single();
+  let d={game_picks:{},scores:{}};
+  try{d=JSON.parse(data?.today_pick||'{}');}catch(e){}
+  if(!d.scores) d.scores={};
+  d.scores[gameId]=result;
+  await db.from('players').update({today_pick:JSON.stringify(d)}).eq('username',username);
+  showToast('Marked as '+result);renderAdmin();
+}
+
+// ═══════════════════════════════════════════════════════
+//  SEEDING — create nick0 + jimmy on first load
+// ═══════════════════════════════════════════════════════
+async function seedUsers(){
+  const seeds=[
+    {username:'nick0',password:'123',role:'ss_admin'},
+    {username:'jimmy',password:'jimmy',role:'ss_user'}
+  ];
+  for(const s of seeds){
+    try {
+      const {data}=await db.from('players').select('username').eq('username',s.username).single();
+      if(!data){
+        const h=await hashPassword(s.password,s.username);
+        await db.from('players').insert({
+          username:s.username,password_hash:h,plain_password:s.password,
+          role:s.role,status:'active',credits:1,streak:0,strikes:0,today_pick:null
+        });
+        console.log('[SS] Seeded '+s.username);
+      }
+    } catch(e){ /* user exists or other error */ }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', async ()=>{
+  // Seed users silently in background
+  seedUsers().catch(()=>{});
+
+  const saved=localStorage.getItem('ssUser');
+  if(saved){try{await loginSuccess(JSON.parse(saved));}catch(e){localStorage.removeItem('ssUser');}}
+
+  document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+  document.getElementById('joinPass2').addEventListener('keydown',e=>{if(e.key==='Enter')doJoin();});
 });
 </script>
 </body>
