@@ -168,6 +168,33 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .lock-pick-btn{display:block;width:100%;margin-top:10px;padding:10px 20px;background:#22c55e;color:#fff;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:opacity 0.15s;}
 .lock-pick-btn:hover{opacity:0.82;}
 .lock-pick-btn:active{transform:scale(0.98);}
+.team-tabs-bar{display:flex;border-bottom:1px solid rgba(255,255,255,.08);margin:12px -16px 0;padding:0 16px;}
+.team-tab{flex:1;padding:10px 4px;background:transparent;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,.4);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:all .2s;}
+.team-tab.tab-active{color:#ffd700;border-bottom-color:#ffd700;}
+.ppl{padding:0;}
+.prow{display:flex;align-items:center;gap:12px;padding:10px 0;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);transition:background .12s;}
+.prow.prow-sel{background:rgba(255,215,0,.08);border-left:3px solid #ffd700;padding-left:13px;margin-left:-16px;}
+.prow.prow-locked{opacity:.3;cursor:not-allowed;}
+.pthumb{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#1e1e2e;flex-shrink:0;}
+.pname{flex:1;font-size:14px;font-weight:600;color:#fff;}
+.badge-pt{font-size:11px;padding:3px 8px;border-radius:4px;font-weight:700;flex-shrink:0;}
+.badge-pt.badge-star{background:rgba(255,215,0,.1);color:#ffd700;border:1px solid rgba(255,215,0,.25);}
+.badge-pt.badge-role{background:rgba(129,140,248,.1);color:#818cf8;border:1px solid rgba(129,140,248,.25);}
+.badge-pt.badge-brick{background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.25);}
+.pick-footer-row{display:flex;align-items:center;padding:14px 0 2px;gap:12px;}
+.pick-hint{flex:1;color:rgba(255,255,255,.3);font-size:12px;}
+.pick-btn2{padding:12px 22px;border-radius:8px;border:none;font-size:13px;font-weight:800;letter-spacing:.06em;cursor:pointer;transition:all .2s;}
+.pick-btn-dis{background:rgba(255,255,255,.07);color:rgba(255,255,255,.2);cursor:not-allowed;}
+.pick-btn-active{background:#22c55e;color:#fff;}
+.picked-card{display:flex;align-items:center;gap:12px;padding:14px 0 8px;flex-wrap:wrap;}
+.pick-hs{width:62px;height:62px;border-radius:50%;object-fit:cover;background:#1e1e2e;flex-shrink:0;}
+.pick-pinfo{flex:1;}
+.pick-pname{font-size:15px;font-weight:800;color:#ffd700;text-transform:uppercase;letter-spacing:.04em;}
+.pick-pteam{font-size:12px;color:rgba(255,255,255,.5);margin:2px 0;}
+.pick-pstats{font-size:12px;color:rgba(255,255,255,.55);}
+.pick-badges2{display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
+.ypbadge{background:rgba(74,222,128,.1);color:#4ade80;border:1px solid rgba(74,222,128,.3);font-size:11px;padding:3px 7px;border-radius:4px;font-weight:700;}
+.chg-btn{width:100%;margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.4);padding:8px;border-radius:6px;cursor:pointer;font-size:12px;}
 </style>
 </head>
 <body>
@@ -769,81 +796,100 @@ function renderPicksTab(){
   });
 }
 
+
 function buildGameCard(game){
-  const awT=TEAMS[game.away], hmT=TEAMS[game.home];
-  const pick=getGamePick(game.id);
-  const pickedAll=getAllPicked();
-  const locked=Date.now()>game.tipoff;
-  const hasPick=!!pick;
-
-  let html="<div class='game-card"+(hasPick?' has-pick':'')+"' id='card_"+game.id+"'>";
-
-  // Header
-  html+="<div class='game-header'>";
-  html+="<div class='gh-team away'>";
-  html+="<img class='gh-logo' src='"+logoUrl(awT.id)+"' onerror=\"this.style.display='none'\" alt='"+awT.abbr+"'>";
-  html+="<div class='gh-abbr'>"+awT.abbr+"</div><div class='gh-full'>"+awT.name+"</div></div>";
-  html+="<div class='gh-meta'><div class='gh-vs'>@</div><div class='gh-time'>"+game.time+"</div><div class='gh-series'>"+game.series+"</div></div>";
-  html+="<div class='gh-team home'>";
-  html+="<img class='gh-logo' src='"+logoUrl(hmT.id)+"' onerror=\"this.style.display='none'\" alt='"+hmT.abbr+"'>";
-  html+="<div class='gh-abbr'>"+hmT.abbr+"</div><div class='gh-full'>"+hmT.name+"</div></div>";
-  html+="</div>";
-
-  // Dropdowns or locked message
-  if(!hasPick){
-    if(locked){
-      html+="<div class='game-locked-bar'>GAME LOCKED TIPOFF PASSED</div>";
-    } else {
-      html+="<div class='game-drops'>";
-      html+=buildDropdown(game,'away',awT,pickedAll);
-      html+=buildDropdown(game,'home',hmT,pickedAll);
-      html+="</div>";
-    }
+  var awT=TEAMS[game.away]||{name:game.away};
+  var hmT=TEAMS[game.home]||{name:game.home};
+  var pickName=getGamePick(game.id);
+  var pickedPlayer=pickName?ALL_PLAYERS.find(function(p){return p.name===pickName;}):null;
+  var awLogo='https://cdn.nba.com/logos/nba/'+game.away+'/global/L/logo.svg';
+  var hmLogo='https://cdn.nba.com/logos/nba/'+game.home+'/global/L/logo.svg';
+  var h='<div class="game-card"><div class="game-header">';
+  h+='<div class="gteam"><img class="gteam-logo" src="'+awLogo+'" onerror="this.style.opacity=0">';
+  h+='<div class="gteam-code">'+game.away+'</div><div class="gteam-name">'+awT.name+'</div></div>';
+  h+='<div class="gcenter"><div class="gat">@</div><div class="gtime">'+game.time+'</div><div class="gseries">'+game.series+'</div></div>';
+  h+='<div class="gteam right"><img class="gteam-logo" src="'+hmLogo+'" onerror="this.style.opacity=0">';
+  h+='<div class="gteam-code">'+game.home+'</div><div class="gteam-name">'+hmT.name+'</div></div></div>';
+  if(pickedPlayer){
+    var pts=pickedPlayer.pts;
+    var ptLbl=pts===1?'1PT':pts===2?'2PT':'3PT';
+    var ptCls=pts===1?'badge-star':pts===2?'badge-role':'badge-brick';
+    var tmName=(TEAMS[pickedPlayer.team]&&TEAMS[pickedPlayer.team].name)||pickedPlayer.team;
+    h+='<div class="picked-card">';
+    h+='<img class="pick-hs" src="https://cdn.nba.com/headshots/nba/latest/1040x760/'+pickedPlayer.id+'.png" onerror="this.style.opacity=0.3">';
+    h+='<div class="pick-pinfo">';
+    h+='<div class="pick-pname">'+pickedPlayer.name+'</div>';
+    h+='<div class="pick-pteam">'+tmName+'</div>';
+    h+='<div class="pick-pstats">'+pickedPlayer.tpm+' 3PM/G '+pickedPlayer.pct+'% 3PT '+pickedPlayer.ppg+' PPG</div>';
+    h+='</div>';
+    h+='<div class="pick-badges2"><span class="ypbadge">YOUR PICK</span><span class="badge-pt '+ptCls+'">'+ptLbl+'</span></div>';
+    h+='</div>';
+    h+='<button class="chg-btn" data-gid="'+game.id+'" onclick="doChangePick(this.dataset.gid)">Change pick</button>';
+  }else{
+    h+=buildPlayerList(game);
   }
-
-  // Pick confirmation
-  if(hasPick){
-    const p=findPlayer(pick);
-    if(p){
-      const ptsLbl=p.pts===1?'1PT':p.pts===2?'2PT':'3PT';
-      const ptsCls='pts-'+p.pts;
-      const pTeam=TEAMS[p.team]||{id:0,full:p.team};
-      html+="<div class='pick-confirm show'><div class='pick-confirm-row'>";
-      html+="<img class='pick-photo' src='"+photoUrl(p.id)+"' onerror=\"this.src='https://via.placeholder.com/60x60/333/fff?text=?'\" alt='"+p.name+"'>";
-      html+="<div class='pick-info'>";
-      html+="<div class='pick-name'>"+p.name+"</div>";
-      html+="<div class='pick-team-row'>";
-      html+="<img class='pick-team-logo' src='"+logoUrl(pTeam.id)+"' onerror=\"this.style.display='none'\" alt='"+p.team+"'>";
-      html+="<span class='pick-team-name'>"+pTeam.full+"</span></div>";
-      html+="<div class='pick-stats'>"+p.tpm+" 3PM/G &bull; "+p.pct+"% 3PT &bull; "+p.ppg+" PPG</div>";
-      html+="<div class='pick-badges'>";
-      html+="<span class='pick-tag'>YOUR PICK</span>";
-      html+="<span class='pts-chip "+ptsCls+"'>"+ptsLbl+"</span>";
-      if(!locked) html+="<button class='pick-change-btn' id='clr_"+game.id+"'>Change pick</button>";
-      html+="</div></div></div></div>";
-    }
-  }
-
-  html+="</div>";
-  return html;
+  return h+'</div>';
 }
 
-function buildDropdown(game, side, team, pickedAll){
-  const names=side==='away'?game.awayPlayers:game.homePlayers;
-  let html="<div class='drop-section'>";
-  html+="<div class='drop-label'><img class='drop-logo' src='"+logoUrl(team.id)+"' onerror=\"this.style.display='none'\" alt='"+team.abbr+"'> "+team.abbr+" "+team.name.toUpperCase()+"</div>";
-  html+="<select class='player-select' id='sel_"+game.id+"_"+side+"'>";
-  html+="<option value=''>Pick a "+team.name+"...</option>";
-  names.forEach(pname=>{
-    const p=findPlayer(pname); if(!p) return;
-    const used=pickedAll.includes(pname);
-    const ptsLbl=p.pts===1?'1PT':p.pts===2?'2PT':'3PT';
-    html+="<option value='"+pname+"'"+(used?' disabled':'')+">";
-    html+=pname+" &#xE2;&#x80;&#x94; "+ptsLbl+(used?' (USED)':'');
-    html+="</option>";
-  });
-  html+="</select></div>";
-  return html;
+function buildPlayerList(game){
+  var locked=getAllPicked()||[];
+  if(!window._gtab)window._gtab={};
+  if(!window._gsel)window._gsel={};
+  var side=window._gtab[game.id]||'away';
+  var awName=(TEAMS[game.away]&&TEAMS[game.away].name)||game.away;
+  var hmName=(TEAMS[game.home]&&TEAMS[game.home].name)||game.home;
+  var teamCode=side==='away'?game.away:game.home;
+  var players=ALL_PLAYERS.filter(function(p){return p.team===teamCode;});
+  var sel=window._gsel[game.id];
+  var h='<div class="team-tabs-bar">';
+  h+='<button class="team-tab'+(side==='away'?' tab-active':'')+'" data-gid="'+game.id+'" data-side="away" onclick="doSetTab(this)">'+awName.toUpperCase()+'</button>';
+  h+='<button class="team-tab'+(side==='home'?' tab-active':'')+'" data-gid="'+game.id+'" data-side="home" onclick="doSetTab(this)">'+hmName.toUpperCase()+'</button>';
+  h+='</div><div class="ppl" id="ppl_'+game.id+'">';
+  for(var i=0;i<players.length;i++){
+    var p=players[i];
+    var pts=p.pts;
+    var ptLbl=pts===1?'1PT':pts===2?'2PT':'3PT';
+    var ptCls=pts===1?'badge-star':pts===2?'badge-role':'badge-brick';
+    var isLocked=locked.indexOf(p.name)>=0;
+    var isSel=(sel===p.name);
+    var safePName=p.name.replace(/"/g,'&quot;');
+    h+='<div class="prow'+(isLocked?' prow-locked':'')+(isSel?' prow-sel':'')+'"';
+    h+=' data-gid="'+game.id+'" data-pname="'+safePName+'"';
+    if(!isLocked) h+=' onclick="doPickSel(this)"';
+    h+='><img class="pthumb" src="https://cdn.nba.com/headshots/nba/latest/1040x760/'+p.id+'.png" onerror="this.style.opacity=0.3">';
+    h+='<span class="pname">'+p.name+'</span>';
+    h+='<span class="badge-pt '+ptCls+'">'+ptLbl+'</span></div>';
+  }
+  h+='</div>';
+  h+='<div class="pick-footer-row">';
+  h+='<span class="pick-hint" id="pht_'+game.id+'">'+(sel?'':'Select a player above to pick')+'</span>';
+  h+='<button class="pick-btn2'+(sel?' pick-btn-active':' pick-btn-dis')+'" data-gid="'+game.id+'" onclick="doConfirmPick(this.dataset.gid)"'+(sel?'':' disabled')+'>PICK</button>';
+  h+='</div>';
+  return h;
+}
+
+function doChangePick(gid){clearGamePick(gid).then(function(){renderPicksTab();});}
+function doSetTab(el){if(!window._gtab)window._gtab={};window._gtab[el.dataset.gid]=el.dataset.side;if(window._gsel)delete window._gsel[el.dataset.gid];renderPicksTab();}
+function doPickSel(el){
+  var gid=el.dataset.gid,pname=el.dataset.pname;
+  if(!window._gsel)window._gsel={};
+  window._gsel[gid]=pname;
+  var list=document.getElementById('ppl_'+gid);
+  if(list){var rows=list.querySelectorAll('.prow');for(var i=0;i<rows.length;i++)rows[i].classList.remove('prow-sel');}
+  el.classList.add('prow-sel');
+  var btn=document.getElementById('pcb_'+gid);
+  if(btn){btn.classList.remove('pick-btn-dis');btn.classList.add('pick-btn-active');btn.disabled=false;}
+  var hint=document.getElementById('pht_'+gid);
+  if(hint)hint.textContent='';
+}
+async function doConfirmPick(gid){
+  var pname=window._gsel&&window._gsel[gid];
+  if(!pname)return;
+  var btn=document.getElementById('pcb_'+gid);
+  if(btn){btn.textContent='SAVING...';btn.disabled=true;}
+  await onPickPlayer(gid,pname);
+  if(window._gsel)delete window._gsel[gid];
+  renderPicksTab();
 }
 
 async function onPickPlayer(gameId, playerName){
