@@ -102,10 +102,28 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .drop-section{}
 .drop-label{font-family:'Bebas Neue',sans-serif;font-size:10px;color:#9b8fcf;letter-spacing:1px;margin-bottom:5px;display:flex;align-items:center;gap:4px;}
 .drop-logo{width:13px;height:13px;object-fit:contain;}
-.player-select{width:100%;background:#0e0e20;border:1px solid #262650;color:#b0a0d0;padding:8px 28px 8px 10px;border-radius:8px;font-size:11px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%236a6a8a'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;transition:border-color .2s;}
-.player-select:focus{border-color:#FDB927;}
-.player-select:disabled{opacity:.35;cursor:not-allowed;}
-.player-select option:disabled{color:#444;}
+.picker-container{background:#1e1e2e;border-radius:12px;overflow:hidden;margin:10px 14px 0;}
+.team-tabs{display:flex;}
+.team-tab{flex:1;padding:10px;text-align:center;cursor:pointer;background:#252535;color:#888;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid transparent;transition:background .15s,color .15s;}
+.team-tab.active{background:#2d2d45;color:#FFD700;border-bottom-color:#FFD700;}
+.player-list{max-height:280px;overflow-y:auto;}
+.player-row{display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
+.player-row:hover{background:#252535;}
+.player-row.selected{background:#1a2e1a;border-left-color:#22c55e;}
+.player-row.used{opacity:0.4;cursor:not-allowed;pointer-events:none;}
+.player-headshot{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#333;flex-shrink:0;}
+.player-name{flex:1;font-weight:600;font-size:14px;color:#fff;}
+.pts-badge{padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700;}
+.pts-1{background:#FFD700;color:#000;}
+.pts-2{background:#C0C0C0;color:#000;}
+.pts-3{background:#CD7F32;color:#fff;}
+.used-badge{font-size:10px;color:#888;background:#333;padding:2px 6px;border-radius:8px;}
+.pick-summary{padding:10px 12px;font-size:13px;color:#aaa;min-height:28px;border-top:1px solid #252535;}
+.pick-summary .selected-name{color:#22c55e;font-weight:700;}
+.pick-footer{padding:8px 12px 12px;}
+.pick-btn-new{display:block;width:100%;padding:10px 20px;background:#22c55e;color:#fff;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:opacity .15s;}
+.pick-btn-new:disabled{opacity:0.35;cursor:not-allowed;}
+.pick-btn-new:not(:disabled):hover{opacity:0.82;}
 
 /* Pick confirmation */
 .pick-confirm{display:none;border-top:1px solid rgba(253,185,39,.12);padding:12px 14px;background:linear-gradient(135deg,rgba(28,18,56,.9),rgba(18,10,40,.9));}
@@ -428,7 +446,7 @@ const SCHEDULE = {
       id:'phx_okc_g1', away:'PHX', home:'OKC',
       time:'6:30 PM ET', series:'Game 1',
       tipoff: 1776897000000,
-      awayPlayers:['Devin Booker','Dillon Brooks','Jalen Green','Grayson Allen','Ryan Dunn','Mark Williams'],
+      awayPlayers:['Devin Booker','Dillon Brooks','Jalen Green','Royce O\'Neale','Grayson Allen','Ryan Dunn','Mark Williams'],
       homePlayers:['Shai Gilgeous-Alexander','Jalen Williams','Chet Holmgren','Lu Dort','Isaiah Joe','Aaron Wiggins','Isaiah Hartenstein']
     }
   ]
@@ -631,13 +649,11 @@ function renderPicksTab(){
 
   document.getElementById('tabContent').innerHTML=html;
 
-  // Attach listeners after renderGAMES.forEach(g=>{
-    ['away','home'].forEach(side=>{
-      const sel=document.getElementById('sel_'+g.id+'_'+side);
-      if(sel) sel.addEventListener('change',function(){onPickPlayer(g.id,this.value);});
-    });
+  // Attach change-pick listeners
+  GAMES.forEach(function(g){
     const clr=document.getElementById('clr_'+g.id);
-    if(clr) clr.addEventListener('click',()=>{clearGamePick(g.id).then(()=>renderPicksTab());});
+    if(clr) clr.addEventListener('click',function(){clearGamePick(g.id).then(function(){renderPicksTab();});});
+  });
 }
 
 function buildGameCard(game){
@@ -666,8 +682,7 @@ function buildGameCard(game){
       html+="<div class='game-locked-bar'>GAME LOCKED TIPOFF PASSED</div>";
     } else {
       html+="<div class='game-drops'>";
-      html+=buildDropdown(game,'away',awT,pickedAll);
-      html+=buildDropdown(game,'home',hmT,pickedAll);
+      html+=buildCustomPicker(game,awT,hmT,pickedAll);
       html+="</div>";
     }
   }
@@ -699,22 +714,69 @@ function buildGameCard(game){
   return html;
 }
 
-function buildDropdown(game, side, team, pickedAll){
-  const names=side==='away'?game.awayPlayers:game.homePlayers;
-  let html="<div class='drop-section'>";
-  html+="<div class='drop-label'><img class='drop-logo' src='"+logoUrl(team.id)+"' onerror=\"this.style.display='none'\" alt='"+team.abbr+"'> "+team.abbr+" "+team.name.toUpperCase()+"</div>";
-  html+="<select class='player-select' id='sel_"+game.id+"_"+side+"'>";
-  html+="<option value=''>Pick a "+team.name+"...</option>";
-  names.forEach(pname=>{
+const _pickerState={};
+
+function _initPicker(gid){
+  if(!_pickerState[gid]) _pickerState[gid]={side:'away',selected:null};
+}
+
+function switchPickerTab(gid,side){
+  _initPicker(gid);
+  _pickerState[gid].side=side;
+  const g=GAMES.find(x=>x.id===gid); if(!g) return;
+  const cnt=document.getElementById('picker_'+gid); if(!cnt) return;
+  cnt.innerHTML=_buildPickerInner(g,TEAMS[g.away],TEAMS[g.home],getAllPicked());
+}
+
+function selectPickerPlayer(gid,pname){
+  _initPicker(gid);
+  _pickerState[gid].selected=pname;
+  const g=GAMES.find(x=>x.id===gid); if(!g) return;
+  const cnt=document.getElementById('picker_'+gid); if(!cnt) return;
+  cnt.innerHTML=_buildPickerInner(g,TEAMS[g.away],TEAMS[g.home],getAllPicked());
+}
+
+function _buildPickerInner(game,awT,hmT,pickedAll){
+  const st=_pickerState[game.id]||{side:'away',selected:null};
+  const side=st.side, sel=st.selected;
+  const activePlayers=side==='away'?game.awayPlayers:game.homePlayers;
+  let h='';
+  h+="<div class='team-tabs'>";
+  h+="<div class='team-tab"+(side==='away'?' active':'')+"' onclick=\"switchPickerTab('"+game.id+"','away')\">";
+  h+="<img src='"+logoUrl(awT.id)+"' style='width:13px;height:13px;vertical-align:middle;margin-right:4px;' onerror=\"this.style.display='none'\">"+awT.abbr+" "+awT.name.toUpperCase()+"</div>";
+  h+="<div class='team-tab"+(side==='home'?' active':'')+"' onclick=\"switchPickerTab('"+game.id+"','home')\">";
+  h+="<img src='"+logoUrl(hmT.id)+"' style='width:13px;height:13px;vertical-align:middle;margin-right:4px;' onerror=\"this.style.display='none'\">"+hmT.abbr+" "+hmT.name.toUpperCase()+"</div>";
+  h+="</div>";
+  h+="<div class='player-list'>";
+  activePlayers.forEach(function(pname){
     const p=findPlayer(pname); if(!p) return;
     const used=pickedAll.includes(pname);
+    const isSel=(sel===pname);
+    const ptsCls='pts-'+p.pts;
     const ptsLbl=p.pts===1?'1PT':p.pts===2?'2PT':'3PT';
-    html+="<option value='"+pname+"'"+(used?' disabled':'')+">";
-    html+=pname+" &#xE2;&#x80;&#x94; "+ptsLbl+(used?' (USED)':'');
-    html+="</option>";
+    let rowCls='player-row'+(isSel?' selected':'')+(used?' used':'');
+    const clickAttr=used?'':" onclick=\"selectPickerPlayer('"+game.id+"','"+pname.replace(/'/g,"\\'")+"')\"";
+    h+="<div class='"+rowCls+"'"+clickAttr+">";
+    h+="<img class='player-headshot' src='"+photoUrl(p.id)+"' onerror=\"this.src='https://via.placeholder.com/44x44/333/fff?text='+encodeURIComponent('"+pname[0]+"')\">";
+    h+="<span class='player-name'>"+pname+"</span>";
+    if(used){ h+="<span class='used-badge'>&#x2713; Used</span>"; }
+    else { h+="<span class='pts-badge "+ptsCls+"'>"+ptsLbl+"</span>"; }
+    h+="</div>";
   });
-  html+="</select></div>";
-  return html;
+  h+="</div>";
+  h+="<div class='pick-summary'>";
+  if(sel){ const sp=findPlayer(sel); if(sp){ const pl=sp.pts===1?'1PT':sp.pts===2?'2PT':'3PT'; h+="Selected: <span class='selected-name'>"+sel+"</span> <span class='pts-badge pts-"+sp.pts+"'>"+pl+"</span>"; } }
+  else { h+="Select a player above to pick"; }
+  h+="</div>";
+  h+="<div class='pick-footer'>";
+  h+="<button class='pick-btn-new' "+(sel?"":"disabled ")+"onclick=\"onPickPlayer('"+game.id+"','"+( sel||''  )+"')\">PICK</button>";
+  h+="</div>";
+  return h;
+}
+
+function buildCustomPicker(game,awT,hmT,pickedAll){
+  _initPicker(game.id);
+  return "<div class='picker-container' id='picker_"+game.id+"'>"+_buildPickerInner(game,awT,hmT,pickedAll)+"</div>";
 }
 
 async function onPickPlayer(gameId, playerName){
@@ -1000,22 +1062,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
         '&#x1F3C0; No games scheduled today &#x2014; check back tomorrow!</div>'
       );
     }
-    // Add PICK button next to each player select dropdown
-    setTimeout(function() {
-      document.querySelectorAll('select[id^="sel_"]').forEach(function(sel) {
-        if (sel.nextElementSibling && sel.nextElementSibling.classList.contains('lock-pick-btn')) return;
-        var parts = sel.id.split('_');
-        var side = parts[parts.length - 1];
-        var gameId = parts.slice(1, parts.length - 1).join('_');
-        var btn = document.createElement('button');
-        btn.className = 'lock-pick-btn';
-        btn.innerHTML = 'PICK';
-        btn.onclick = function() {
-          if (sel.value && window.onPickPlayer) window.onPickPlayer(gameId, sel.value);
-        };
-        sel.insertAdjacentElement('afterend', btn);
-      });
-    }, 80);
+    // Custom picker uses inline onclick handlers — no select injection needed
   };
 })();
 </script>
