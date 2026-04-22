@@ -802,8 +802,8 @@ function buildGameCard(game){
   var hmT=TEAMS[game.home]||{name:game.home};
   var pickName=getGamePick(game.id);
   var pickedPlayer=pickName?ALL_PLAYERS.find(function(p){return p.name===pickName;}):null;
-  var awLogo='https://cdn.nba.com/logos/nba/'+game.away+'/global/L/logo.svg';
-  var hmLogo='https://cdn.nba.com/logos/nba/'+game.home+'/global/L/logo.svg';
+  var awLogo='https://cdn.nba.com/logos/nba/'+(awT.id||game.away)+'/global/L/logo.svg';
+  var hmLogo='https://cdn.nba.com/logos/nba/'+(hmT.id||game.home)+'/global/L/logo.svg';
   var h='<div class="game-card"><div class="game-header">';
   h+='<div class="gteam"><img class="gteam-logo" src="'+awLogo+'" onerror="this.style.opacity=0">';
   h+='<div class="gteam-code">'+game.away+'</div><div class="gteam-name">'+awT.name+'</div></div>';
@@ -816,11 +816,11 @@ function buildGameCard(game){
     var ptCls=pts===1?'badge-star':pts===2?'badge-role':'badge-brick';
     var tmName=(TEAMS[pickedPlayer.team]&&TEAMS[pickedPlayer.team].name)||pickedPlayer.team;
     h+='<div class="picked-card">';
-    h+='<img class="pick-hs" src="https://cdn.nba.com/headshots/nba/latest/1040x760/'+pickedPlayer.id+'.png" onerror="this.style.opacity=0.3">';
+    h+='<img class="pick-hs" src="https://cdn.nba.com/headshots/nba/latest/1040x760/'+pi&ãkedPlayer.id+'.png" onerror="this.style.opacity=0.3">';
     h+='<div class="pick-pinfo">';
-    h+='<div class="pick-pname">'+pickedPlayer.name+'</div>';
+    h+='<div class="pick-pname">'+pi&ãkedPlayer.name+'</div>';
     h+='<div class="pick-pteam">'+tmName+'</div>';
-    h+='<div class="pick-pstats">'+pickedPlayer.tpm+' 3PM/G '+pickedPlayer.pct+'% 3PT '+pickedPlayer.ppg+' PPG</div>';
+    h+='<div class="pick-pstats">'+pickedPlayer.tpm+' 3PM/G '+pickedPlayer.pct+'% 3PT '+pi&ãkedPlayer.ppg+' PPG</div>';
     h+='</div>';
     h+='<div class="pick-badges2"><span class="ypbadge">YOUR PICK</span><span class="badge-pt '+ptCls+'">'+ptLbl+'</span></div>';
     h+='</div>';
@@ -838,8 +838,8 @@ function buildPlayerList(game){
   var side=window._gtab[game.id]||'away';
   var awName=(TEAMS[game.away]&&TEAMS[game.away].name)||game.away;
   var hmName=(TEAMS[game.home]&&TEAMS[game.home].name)||game.home;
-  var teamCode=side==='away'?game.away:game.home;
-  var players=ALL_PLAYERS.filter(function(p){return p.team===teamCode;});
+  var playerNames=side==='away'?(game.awayPlayers||[]):(game.homePlayers||[]);
+  var players=playerNames.map(function(n){return ALL_PLAYERS.find(function(p){return p.name===n;});}).filter(Boolean);
   var sel=window._gsel[game.id];
   var h='<div class="team-tabs-bar">';
   h+='<button class="team-tab'+(side==='away'?' tab-active':'')+'" data-gid="'+game.id+'" data-side="away" onclick="doSetTab(this)">'+awName.toUpperCase()+'</button>';
@@ -868,7 +868,7 @@ function buildPlayerList(game){
   return h;
 }
 
-function doChangePick(gid){clearGamePick(gid).then(function(){renderPicksTab();});}
+function doChangePick(gid){clearGamePich(gid).then(function(){renderPicksTab();});}
 function doSetTab(el){if(!window._gtab)window._gtab={};window._gtab[el.dataset.gid]=el.dataset.side;if(window._gsel)delete window._gsel[el.dataset.gid];renderPicksTab();}
 function doPickSel(el){
   var gid=el.dataset.gid,pname=el.dataset.pname;
