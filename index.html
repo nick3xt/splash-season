@@ -168,7 +168,7 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .lock-pick-btn{display:block;width:100%;margin-top:10px;padding:10px 20px;background:#22c55e;color:#fff;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:opacity 0.15s;}
 .lock-pick-btn:hover{opacity:0.82;}
 .lock-pick-btn:active{transform:scale(0.98);}
-.expand-pick-btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#ff6b35,#f7c59f);color:#000;font-weight:800;font-size:14px;letter-spacing:1px;border:none;cursor:pointer;border-radius:0 0 12px 12px;text-align:center;}.expand-pick-btn:hover{opacity:0.9;}</style>
+.team-tabs-bar{display:flex;border-bottom:2px solid #333;margin:0;}.team-tab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 6px;background:transparent;border:none;color:#888;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer;white-space:nowrap;overflow:hidden;}.team-tab.tab-active{color:#fff;border-bottom:2px solid #f7c14e;margin-bottom:-2px;}.tab-logo{width:20px;height:20px;object-fit:contain;flex-shrink:0;}.ppl{display:flex;flex-direction:column;gap:0;}.prow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #222;cursor:pointer;}.prow:active{background:rgba(255,255,255,0.05);}.prow-sel{background:rgba(247,193,78,0.12);border-left:3px solid #f7c14e;}.prow-locked{opacity:0.35;cursor:default;pointer-events:none;}.pthumb{width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;background:#1a1a2e;}.pname{flex:1;font-size:13px;font-weight:600;color:#fff;}.badge-pt{padding:3px 7px;border-radius:10px;font-size:10px;font-weight:800;letter-spacing:.5px;flex-shrink:0;}.badge-star{background:#f7c14e;color:#000;}.badge-role{background:#5b8dee;color:#fff;}.badge-brick{background:#e05c5c;color:#fff;}.pick-footer-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;gap:10px;}.pick-hint{font-size:11px;color:#666;flex:1;}.pick-btn2{padding:10px 20px;border:none;border-radius:8px;font-weight:800;font-size:13px;letter-spacing:.5px;cursor:pointer;}.pick-btn-dis{background:#333;color:#555;cursor:default;}.pick-btn-active{background:#f7c14e;color:#000;}.picked-card{display:flex;align-items:center;gap:12px;padding:12px;}.pick-hs{width:60px;height:44px;object-fit:cover;object-position:top;border-radius:8px;flex-shrink:0;background:#1a1a2e;}.pick-pinfo{flex:1;min-width:0;}.pick-pname{font-size:14px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.pick-pteam{font-size:11px;color:#888;margin-top:1px;}.pick-pstats{font-size:10px;color:#666;margin-top:2px;}.pick-badges2{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}.ypbadge{font-size:9px;font-weight:800;color:#f7c14e;letter-spacing:.5px;}.chg-btn{display:block;width:100%;padding:8px;background:transparent;border:1px solid #444;color:#888;font-size:11px;cursor:pointer;border-radius:0 0 12px 12px;}.chg-btn:hover{border-color:#888;color:#ccc;}.expand-pick-btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#ff6b35,#f7c59f);color:#000;font-weight:800;font-size:14px;letter-spacing:1px;border:none;cursor:pointer;border-radius:0 0 12px 12px;text-align:center;}.expand-pick-btn:hover{opacity:0.9;}</style>
 </head>
 <body>
 
@@ -473,7 +473,6 @@ const ALL_PLAYERS = [
   // DETROIT PISTONS (additional rotation)
   ,{id:1631218,name:'Marcus Sasser',team:'DET',ppg:6.8,tpm:1.0,pct:34.2,pts:3,note:'Young backup guard'}
   ,{id:202711,name:'Bojan Bogdanovic',team:'DET',ppg:14.6,tpm:2.3,pct:40.1,pts:2,note:'Veteran shooter'}
-  ,{id:1631093,name:'Jaden Ivey',team:'DET',ppg:13.4,tpm:1.1,pct:31.8,pts:2,note:'Athletic guard'}
   ,{id:1629029,name:'Kevin Huerter',team:'DET',ppg:11.7,tpm:2.0,pct:38.4,pts:2,note:'3PT specialist'}
   ,{id:1631263,name:'Daniss Jenkins',team:'DET',ppg:3.4,tpm:0.3,pct:27.5,pts:3,note:'Deep bench guard'}
   ,{id:1630191,name:'Isaiah Stewart',team:'DET',ppg:9.2,tpm:0.6,pct:29.3,pts:3,note:'Physical big'}
@@ -519,7 +518,6 @@ const SCHEDULE = {
   ,{id:1628975,name:'Jevon Carter',team:'ORL',ppg:7.8,tpm:1.9,pct:38.2,pts:2,note:'Defensive guard'}
   // DET additional rotation
   ,{id:202339,name:'Bojan Bogdanovic',team:'DET',ppg:16.1,tpm:2.3,pct:38.9,pts:2,note:'Veteran scorer'}
-  ,{id:1631109,name:'Jaden Ivey',team:'DET',ppg:14.8,tpm:1.6,pct:34.2,pts:2,note:'Athletic PG'}
   ,{id:1630191,name:'Isaiah Stewart',team:'DET',ppg:11.9,tpm:0.9,pct:31.5,pts:3,note:'Versatile big'}
   ,{id:1631234,name:'Marcus Sasser',team:'DET',ppg:8.4,tpm:1.7,pct:37.1,pts:1,note:'3-point shooter'}
   ,{id:1628989,name:'Kevin Huerter',team:'DET',ppg:12.5,tpm:2.8,pct:38.2,pts:2,note:'Stretch shooter'}
@@ -558,7 +556,7 @@ const SCHEDULE = {
       time:'4:00 PM ET', series:'Game 2 • ORL leads 1-0',
       tipoff: 1776888000000,
       awayPlayers:['Paolo Banchero','Franz Wagner','Desmond Bane','Gary Harris','Jonathan Isaac','Jalen Suggs','Anthony Black','Cole Anthony','Jevon Carter','Wendell Carter Jr.','Goga Bitadze','Tristan da Silva'],
-      homePlayers:['Cade Cunningham','Marcus Sasser','Duncan Robinson','Tobias Harris','Ausar Thompson','Ron Holland','Bojan Bogdanovic','Jaden Ivey','Kevin Huerter','Daniss Jenkins','Jalen Duren','Isaiah Stewart']
+      homePlayers:['Cade Cunningham','Marcus Sasser','Duncan Robinson','Tobias Harris','Ausar Thompson','Ron Holland','Bojan Bogdanovic','Kevin Huerter','Daniss Jenkins','Jalen Duren','Isaiah Stewart']
     },
     {
       id:'phx_okc_g2', away:'PHX', home:'OKC',
