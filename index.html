@@ -450,7 +450,23 @@ const SCHEDULE = {
     homePlayers:['LeBron James',"D'Angelo Russell",'Rui Hachimura','Bronny James','Dalton Knecht','Deandre Ayton']
   }
 ],
-  // Add future playoff dates here as '2026-04-22': [...], etc.
+  '2026-04-22': [
+  {
+    id:'orl_det_g2', away:'ORL', home:'DET',
+    time:'4:00 PM ET', series:'Game 2 \u2022 ORL leads 1-0',
+    tipoff: 1776888000000,
+    awayPlayers:['Paolo Banchero','Franz Wagner','Jalen Suggs','Cole Anthony','Wendell Carter Jr.','Gary Harris','Jonathan Isaac'],
+    homePlayers:['Cade Cunningham','Bojan Bogdanovic','Jaden Ivey','Ausar Thompson','Isaiah Stewart','Marcus Sasser','Tobias Harris']
+  },
+  {
+    id:'phx_okc_g2', away:'PHX', home:'OKC',
+    time:'6:30 PM ET', series:'Game 2 \u2022 OKC leads 1-0',
+    tipoff: 1776897000000,
+    awayPlayers:['Devin Booker','Kevin Durant','Bradley Beal','Grayson Allen','Jusuf Nurkic','Nick Richards','Deandre Ayton'],
+    homePlayers:['Shai Gilgeous-Alexander','Jalen Williams','Luguentz Dort','Chet Holmgren','Isaiah Hartenstein','Alex Caruso','Aaron Wiggins']
+  }
+],
+// Add future playoff dates here as '2026-04-22': [...], etc.
 };
 // Get today in Eastern Time (EDT = UTC-4)
 const _etMs = Date.now() - 4 * 3600 * 1000;
