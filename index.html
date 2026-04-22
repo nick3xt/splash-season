@@ -416,12 +416,32 @@ const SCHEDULE = {
     homePlayers:['LeBron James',"D'Angelo Russell",'Rui Hachimura','Bronny James','Dalton Knecht','Deandre Ayton']
   }
 ],
-  // Add future playoff dates here as '2026-04-22': [...], etc.
+  '2026-04-22': [
+    {
+      id:'orl_det_g1', away:'ORL', home:'DET',
+      time:'4:00 PM ET', series:'Game 1',
+      tipoff: 1776888000000,
+      awayPlayers:['Paolo Banchero','Franz Wagner','Desmond Bane','Jalen Suggs','Anthony Black','Wendell Carter Jr.','Goga Bitadze'],
+      homePlayers:['Cade Cunningham','Duncan Robinson','Tobias Harris','Ausar Thompson','Ron Holland','Jalen Duren']
+    },
+    {
+      id:'phx_okc_g1', away:'PHX', home:'OKC',
+      time:'6:30 PM ET', series:'Game 1',
+      tipoff: 1776897000000,
+      awayPlayers:['Devin Booker','Dillon Brooks','Jalen Green','Grayson Allen','Ryan Dunn','Mark Williams'],
+      homePlayers:['Shai Gilgeous-Alexander','Jalen Williams','Chet Holmgren','Lu Dort','Isaiah Joe','Aaron Wiggins','Isaiah Hartenstein']
+    }
+  ]
 };
-// Get today in Eastern Time (EDT = UTC-4)
-const _etMs = Date.now() - 4 * 3600 * 1000;
-const _todayET = new Date(_etMs).toISOString().slice(0, 10);
-constGAMES = SCHEDULE[_todayET] || [];
+function getTodayET() {
+  const now = new Date();
+  const et = new Date(now.toLocaleString('en-US', {timeZone: 'America/New_York'}));
+  const y = et.getFullYear();
+  const m = String(et.getMonth()+1).padStart(2,'0');
+  const d = String(et.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+const GAMES = SCHEDULE[getTodayET()] || [];
 
 // &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 //  PICKS &#xE2;&#x80;&#x94; Supabase-backed (falls back to localStorage)
@@ -587,7 +607,7 @@ function renderTab(tab){
 function renderPicksTab(){
   let html='';
   html+="<div class='picks-intro'>";
-  html+="<div class='picks-intro-title'>TODAY'S PICKS APR 21</div>";
+  (()=>{const _td=getTodayET(),_p=_td.split('-'),_mn=['','JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];html+="<div class='picks-intro-title'>TODAY'S PICKS "+_mn[+_p[1]]+" "+parseInt(_p[2])+"</div>";})();
   html+="<div class='picks-intro-body'>Pick <strong style='color:#FDB927'>1 player per game</strong> from either team's dropdown. ";
   html+="Once picked, that player is <strong style='color:#f88'>locked for your entire playoffs</strong>. ";
   html+="&#x2B50; Stars = 1PT &bull; &#x1F3C0; Role Players = 2PT &bull; &#x1F9F1; Brick City = 3PT</div></div>";GAMES.forEach(g=>{ html+=buildGameCard(g); });
