@@ -1,268 +1,123 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPLASH SEASON</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;}
-
-/* LOGIN */
-#loginPage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:linear-gradient(135deg,#080810 0%,#12082a 100%);}
-.login-logo{text-align:center;margin-bottom:32px;}
-.login-logo .fire-ball{font-size:72px;line-height:1;filter:drop-shadow(0 0 20px rgba(253,185,39,0.5));}
-.login-logo h1{font-family:'Bebas Neue',sans-serif;font-size:58px;font-weight:700;color:#FDB927;letter-spacing:5px;margin-top:10px;text-shadow:0 0 30px rgba(253,185,39,0.4);}
-.login-logo .tagline{color:#7c6fa0;font-size:13px;letter-spacing:3px;margin-top:4px;text-transform:uppercase;}
-.login-card{background:rgba(18,8,42,0.8);border:1px solid rgba(253,185,39,0.3);border-radius:16px;padding:32px;width:100%;max-width:360px;backdrop-filter:blur(10px);}
-.login-card input{width:100%;background:#0e0e1e;border:1px solid #2a2a4a;color:#fff;padding:12px 16px;border-radius:10px;font-size:15px;margin-bottom:12px;outline:none;transition:border .2s;}
-.login-card input:focus{border-color:#FDB927;}
-.login-card input::placeholder{color:#4a4a6a;}
-.login-btn{width:100%;background:linear-gradient(135deg,#FDB927,#f0a800);color:#000;border:none;padding:14px;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:20px;font-weight:700;letter-spacing:2px;cursor:pointer;margin-top:4px;transition:opacity .2s;}
-.login-btn:hover{opacity:.9;}
-.login-btn:disabled{opacity:.5;cursor:not-allowed;}
-.login-error{display:none;background:rgba(255,68,68,.15);border:1px solid #f44;color:#f88;padding:10px;border-radius:8px;font-size:13px;text-align:center;margin-top:10px;}
-.login-kobe{text-align:center;margin-top:20px;color:#5a4a70;font-size:12px;font-style:italic;line-height:1.5;}
-.join-toggle{text-align:center;margin-top:14px;color:#7c6fa0;font-size:13px;}
-.join-toggle a{color:#FDB927;cursor:pointer;text-decoration:none;font-weight:600;}
-.join-toggle a:hover{text-decoration:underline;}
-.join-form{display:none;}
-.success-msg{display:none;background:rgba(39,200,100,.15);border:1px solid #27c864;color:#5fe89a;padding:10px;border-radius:8px;font-size:13px;text-align:center;margin-top:10px;}
-
-/* APP */
-#app{display:none;min-height:100vh;}
-.app-header{background:linear-gradient(90deg,#0a0a1a,#1a0a30);border-bottom:2px solid rgba(253,185,39,0.3);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
-.app-header h1{font-family:'Bebas Neue',sans-serif;font-size:26px;font-weight:700;color:#FDB927;letter-spacing:3px;}
-.header-actions{display:flex;align-items:center;gap:12px;}
-.logout-btn{background:none;border:1px solid #333;color:#aaa;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;}
-.logout-btn:hover{border-color:#FDB927;color:#FDB927;}
-
-/* TABS */
-.tabs{display:flex;background:#0d0d1a;border-bottom:1px solid #1a1a30;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.tab-btn{flex:1;min-width:80px;padding:10px 6px 8px;text-align:center;cursor:pointer;border:none;background:none;color:#6a6a8a;font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:.5px;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
-.tab-btn.active{color:#FDB927;border-bottom-color:#FDB927;}
-.tab-btn .tab-pts{display:block;font-family:'Inter',sans-serif;font-size:9px;color:#FDB927;opacity:.7;margin-top:1px;font-weight:600;}
-.tab-btn.active .tab-pts{opacity:1;}
-
-/* CONTENT */
-.tab-content{padding:12px;max-width:600px;margin:0 auto;}
-
-/* RULES BANNER */
-.rules-banner{background:rgba(253,185,39,.08);border:1px solid rgba(253,185,39,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
-.rules-banner .pts-badge-lbl{background:#FDB927;color:#000;font-family:'Bebas Neue',sans-serif;font-size:16px;padding:3px 8px;border-radius:6px;white-space:nowrap;}
-.rules-banner p{color:#c0b0e0;font-size:12px;line-height:1.4;}
-
-/* SECTION HEADER */
-.section-header{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#FDB927;letter-spacing:2px;margin-bottom:4px;}
-.section-sub{color:#7c6fa0;font-size:12px;margin-bottom:12px;}
-
-/* PLAYER CARD (reference tabs) */
-.player-card{background:rgba(14,14,28,.9);border:2px solid #1e1e36;border-radius:12px;margin-bottom:10px;overflow:hidden;}
-.card-inner{display:flex;align-items:center;padding:12px;gap:0;}
-.card-photo{width:54px;height:54px;border-radius:8px;object-fit:cover;object-position:top;background:#1a1a30;flex-shrink:0;border:2px solid #2a2a40;}
-.card-info{flex:1;padding:0 10px;}
-.card-name{font-family:'Bebas Neue',sans-serif;font-size:17px;color:#fff;letter-spacing:.5px;line-height:1.1;}
-.card-team{display:flex;align-items:center;gap:5px;margin-top:2px;}
-.team-logo-sm{width:18px;height:18px;object-fit:contain;}
-.card-team-name{color:#9b8fcf;font-size:11px;}
-.card-stats{color:#9b8fcf;font-size:11px;margin-top:3px;}
-.card-note{color:#7a7a9a;font-size:10px;margin-top:2px;font-style:italic;}
-.card-right{display:flex;flex-direction:column;align-items:center;gap:5px;padding-right:4px;}
-.pts-chip{font-family:'Bebas Neue',sans-serif;font-size:13px;padding:3px 8px;border-radius:6px;border:1px solid;white-space:nowrap;}
-.pts-1{background:rgba(253,185,39,.15);color:#FDB927;border-color:rgba(253,185,39,.3);}
-.pts-2{background:rgba(160,112,224,.15);color:#a070e0;border-color:rgba(160,112,224,.3);}
-.pts-3{background:rgba(100,180,255,.12);color:#64b4ff;border-color:rgba(100,180,255,.25);}
-
-/* ===== TODAY'S PICKS ===== */
-.picks-intro{background:linear-gradient(135deg,rgba(253,185,39,.1),rgba(160,112,224,.06));border:1px solid rgba(253,185,39,.2);border-radius:12px;padding:12px 16px;margin-bottom:16px;}
-.picks-intro-title{font-family:'Bebas Neue',sans-serif;font-size:16px;color:#FDB927;letter-spacing:2px;margin-bottom:4px;}
-.picks-intro-body{color:#c0b0e0;font-size:11px;line-height:1.6;}
-
-/* GAME CARD BSH-style */
-.game-card{background:rgba(10,10,22,.98);border:1.5px solid #222240;border-radius:14px;margin-bottom:18px;overflow:hidden;transition:border-color .2s;}
-.game-card.has-pick{border-color:rgba(253,185,39,.5);}
-
-.game-header{display:flex;align-items:center;padding:12px 16px;background:linear-gradient(135deg,#0e0e24,#110a28);border-bottom:1px solid #1c1c38;}
-.gh-team{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
-.gh-team.away{align-items:flex-start;}
-.gh-team.home{align-items:flex-end;}
-.gh-logo{width:36px;height:36px;object-fit:contain;}
-.gh-abbr{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1.5px;color:#fff;}
-.gh-full{font-size:9px;color:#5a5a7a;margin-top:-1px;}
-.gh-meta{text-align:center;padding:0 10px;flex:0 0 auto;}
-.gh-time{font-family:'Bebas Neue',sans-serif;font-size:18px;color:#FDB927;letter-spacing:.5px;}
-.gh-series{font-size:9px;color:#7c6fa0;margin-top:1px;white-space:nowrap;}
-.gh-vs{font-size:11px;color:#333358;font-weight:700;margin-bottom:1px;}
-
-/* Dropdowns area */
-.game-drops{display:block;padding:8px 0;}
-.drop-section{}
-.drop-label{font-family:'Bebas Neue',sans-serif;font-size:10px;color:#9b8fcf;letter-spacing:1px;margin-bottom:5px;display:flex;align-items:center;gap:4px;}
-.drop-logo{width:13px;height:13px;object-fit:contain;}
-.picker-container{background:#1e1e2e;border-radius:12px;overflow:hidden;margin:0;}
-.team-tabs{display:flex;}
-.team-tab{flex:1;padding:10px;text-align:center;cursor:pointer;background:#252535;color:#888;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid transparent;transition:background .15s,color .15s;}
-.team-tab.active{background:#2d2d45;color:#FFD700;border-bottom-color:#FFD700;}
-.player-list{max-height:280px;overflow-y:auto;}
-.player-row{display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer;border-left:3px solid transparent;transition:all .15s;}
-.player-row:hover{background:#252535;}
-.player-row.selected{background:#1a2e1a;border-left-color:#22c55e;}
-.player-row.used{opacity:0.4;cursor:not-allowed;pointer-events:none;}
-.player-headshot{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#333;flex-shrink:0;}
-.player-name{flex:1;font-weight:600;font-size:14px;color:#fff;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.pts-badge{padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;}
-.pts-1{background:#FFD700;color:#000;}
-.pts-2{background:#C0C0C0;color:#000;}
-.pts-3{background:#CD7F32;color:#fff;}
-.used-badge{font-size:10px;color:#888;background:#333;padding:2px 6px;border-radius:8px;}
-.pick-summary{padding:10px 12px;font-size:13px;color:#aaa;min-height:28px;border-top:1px solid #252535;}
-.pick-summary .selected-name{color:#22c55e;font-weight:700;}
-.pick-footer{padding:8px 12px 12px;}
-.pick-btn-new{display:block;width:100%;padding:10px 20px;background:#22c55e;color:#fff;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:opacity .15s;}
-.pick-btn-new:disabled{opacity:0.35;cursor:not-allowed;}
-.pick-btn-new:not(:disabled):hover{opacity:0.82;}
-
-/* Pick confirmation */
-.pick-confirm{display:none;border-top:1px solid rgba(253,185,39,.12);padding:12px 14px;background:linear-gradient(135deg,rgba(28,18,56,.9),rgba(18,10,40,.9));}
-.pick-confirm.show{display:block;}
-.pick-confirm-row{display:flex;align-items:center;gap:12px;}
-.pick-photo{width:58px;height:58px;border-radius:10px;object-fit:cover;object-position:top;border:2px solid #FDB927;background:#1a1a30;flex-shrink:0;}
-.pick-info{flex:1;}
-.pick-name{font-family:'Bebas Neue',sans-serif;font-size:19px;color:#FDB927;letter-spacing:.5px;line-height:1.1;}
-.pick-team-row{display:flex;align-items:center;gap:4px;margin-top:3px;}
-.pick-team-logo{width:14px;height:14px;object-fit:contain;}
-.pick-team-name{color:#9b8fcf;font-size:11px;}
-.pick-stats{color:#9b8fcf;font-size:11px;margin-top:3px;}
-.pick-badges{display:flex;align-items:center;gap:6px;margin-top:7px;flex-wrap:wrap;}
-.pick-tag{background:rgba(253,185,39,.12);border:1px solid rgba(253,185,39,.3);color:#FDB927;font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:1px;padding:3px 8px;border-radius:6px;}
-.pick-change-btn{background:none;border:1px solid #2a2a48;color:#6a6a8a;font-size:10px;padding:3px 8px;border-radius:6px;cursor:pointer;}
-.pick-change-btn:hover{border-color:#a070e0;color:#a070e0;}
-
-.game-locked-bar{padding:8px 14px;color:#cc4444;font-size:11px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;background:rgba(60,10,10,.4);border-top:1px solid rgba(80,20,20,.4);}
-
-/* Picks summary */
-.picks-summary{background:rgba(20,10,44,.9);border:1.5px solid rgba(253,185,39,.3);border-radius:12px;padding:14px;margin-top:4px;margin-bottom:16px;}
-.picks-summary h3{font-family:'Bebas Neue',sans-serif;color:#FDB927;font-size:17px;margin-bottom:10px;letter-spacing:1px;}
-.pick-row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);}
-.pick-row:last-child{border-bottom:none;}
-.pr-photo{width:30px;height:30px;border-radius:6px;object-fit:cover;object-position:top;background:#1a1a30;border:1px solid #2a2a40;}
-.pr-name{flex:1;color:#fff;font-size:12px;}
-.pr-pts{font-family:'Bebas Neue',sans-serif;font-size:12px;}
-
-/*ADMIN */
-#adminGear{position:fixed;bottom:24px;right:20px;width:44px;height:44px;background:#12122a;border:2px solid #FDB927;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:18px;cursor:pointer;z-index:500;box-shadow:0 4px 16px rgba(0,0,0,.4);}
-#adminOverlay{position:fixed;inset:0;background:rgba(4,4,14,.98);z-index:9999;overflow-y:auto;padding:16px;display:none;}
-.admin-panel{max-width:640px;margin:0 auto;}
-.admin-header{font-family:'Bebas Neue',sans-serif;color:#FDB927;font-size:28px;letter-spacing:3px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
-.admin-nav{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
-.admin-nav-btn{background:#12122a;border:1px solid #2a2a40;color:#9b8fcf;padding:8px 14px;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:13px;cursor:pointer;letter-spacing:.5px;transition:all .15s;}
-.admin-nav-btn.active,.admin-nav-btn:hover{border-color:#FDB927;color:#FDB927;}
-.admin-section{background:#0e0e1e;border:1.5px solid #1e1e36;border-radius:12px;padding:16px;margin-bottom:16px;}
-.admin-section h3{font-family:'Bebas Neue',sans-serif;color:#9b8fcf;font-size:15px;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1a1a30;}
-.admin-table{width:100%;border-collapse:collapse;}
-.admin-table th{padding:8px;color:#FDB927;text-align:left;background:#12122a;font-size:11px;font-weight:600;letter-spacing:.5px;}
-.admin-table td{padding:8px;border-bottom:1px solid #151528;font-size:12px;color:#c0b0e0;}
-.admin-table tr:last-child td{border-bottom:none;}
-.admin-table tr:hover td{background:rgba(253,185,39,.03);}
-.admin-inputs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
-.admin-inputs input,.admin-inputs select{flex:1;min-width:90px;background:#12122a;border:1px solid #2a2a40;color:#fff;padding:8px 10px;border-radius:8px;font-size:13px;outline:none;}
-.admin-inputs input:focus,.admin-inputs select:focus{border-color:#FDB927;}
-.btn-gold{background:#FDB927;color:#000;border:none;padding:8px 16px;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:14px;cursor:pointer;}
-.btn-red{background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.4);color:#f88;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;}
-.btn-green{background:rgba(39,200,100,.1);border:1px solid rgba(39,200,100,.4);color:#5fe89a;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;}
-.btn-close{background:none;border:1px solid #333;color:#aaa;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;}
-.stat-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
-.stat-box{background:#12122a;border:1px solid #1e1e36;border-radius:10px;padding:12px 16px;flex:1;min-width:80px;}
-.stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:#FDB927;}
-.stat-lbl{font-size:10px;color:#6a6a8a;margin-top:1px;}
-
-/* TOAST */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a38;border:1px solid rgba(253,185,39,.4);color:#FDB927;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;padding:10px 20px;border-radius:10px;z-index:99999;pointer-events:none;opacity:0;transition:opacity .25s;}
-.toast.show{opacity:1;}
-
-.lock-pick-btn{display:block;width:100%;margin-top:10px;padding:10px 20px;background:#22c55e;color:#fff;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:opacity 0.15s;}
-.lock-pick-btn:hover{opacity:0.82;}
-.lock-pick-btn:active{transform:scale(0.98);}
-</style>
-</head>
-<body>
-
-<!-- LOGIN -->
-<div id="loginPage">
-  <div class="login-logo">
-    <div class="fire-ball">&#128293;&#127936;</div>
-    <h1>SPLASH SEASON</h1>
-    <div class="tagline">NBA Picks 2026 &bull; Playoffs</div>
-  </div>
-  <div class="login-card">
-    <div id="loginForm">
-      <input type="text" id="loginUser" placeholder="Username" autocomplete="off">
-      <input type="password" id="loginPass" placeholder="Password">
-      <button class="login-btn" id="loginBtn" onclick="doLogin()">LET'S SPLASH &#127936;</button>
-      <div class="login-error" id="loginError">Invalid username or password</div>
-      <div class="join-toggle">New here? <a onclick="showJoin()">Create account</a></div>
-    </div>
-    <div id="joinForm" class="join-form">
-      <input type="text" id="joinUser" placeholder="Choose a username" autocomplete="off">
-      <input type="password" id="joinPass" placeholder="Choose a password">
-      <input type="password" id="joinPass2" placeholder="Confirm password">
-      <button class="login-btn" id="joinBtn" onclick="doJoin()">JOIN THE SPLASH</button>
-      <div class="login-error" id="joinError">Error</div>
-      <div class="success-msg" id="joinSuccess">Account created!</div>
-      <div class="join-toggle">Have an account? <a onclick="showLogin()">Log in</a></div>
-    </div>
-  </div>
-  <div class="login-kobe">"Be a lion, not a sheep.<br>Know your purpose and own it."<br>&mdash; Kobe Bryant #24</div>
-</div>
-
-<!-- APP -->
-<div id="app">
-  <div class="app-header">
-    <h1>SPLASH <span style="color:#a070e0">SEASON</span></h1>
-    <div class="header-actions">
-      <span id="userLabel" style="color:#7c6fa0;font-size:12px;"></span>
-      <button class="logout-btn" onclick="doLogout()">Logout</button>
-    </div>
-  </div>
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="picks" onclick="switchTab('picks',this)">
-      &#127936; TODAY'S PICKS<span class="tab-pts">PICK NOW</span>
-    </button>
-    <button class="tab-btn" data-tab="stars" onclick="switchTab('stars',this)">
-      &#11088; STARS<span class="tab-pts">1 PT</span>
-    </button>
-    <button class="tab-btn" data-tab="role" onclick="switchTab('role',this)">
-      &#127936; ROLE PLAYERS<span class="tab-pts">2 PT</span>
-    </button>
-    <button class="tab-btn" data-tab="brick" onclick="switchTab('brick',this)">
-      &#129408; BRICK CITY<span class="tab-pts">3 PT</span>
-    </button>
-  </div>
-  <div id="tabContent" class="tab-content"></div>
-</div>
-
-<div id="adminGear" onclick="openAdmin()">&#9881;&#65039;</div>
-<div id="adminOverlay"><div class="admin-panel" id="adminPanel"></div></div>
-<div class="toast" id="toast"></div>
-
-<script>
-// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
-//  SUPABASE CONFIG
-// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
-const SUPABASE_URL = 'https://heykwxkyvbzffkhgrqgf.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_KvxJYevSYKP1Na_de5RCTQ_G9dDi0_L';
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
-//  PASSWORD HASHING (PBKDF2 &#xE2;&#x80;&#x94; same as BSH)
-// &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
-async function hashPassword(password, username) {
-  const enc = new TextEncoder();
-  const keyMat = await crypto.subtle.importKey(
-    'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits']
+const PLAYERS = [
+    {id:1628369,name:'Jayson Tatum',team:'BOS',ppg:21.8,tpm:2.8,pct:37.2,pts:1,note:'Achilles return, 25/11/7 Game 1'},
+    {id:202331,name:'Jaylen Brown',team:'BOS',ppg:28.7,tpm:2.4,pct:35.8,pts:1,note:'BOS leading scorer'},
+    {id:1630202,name:'Payton Pritchard',team:'BOS',ppg:17.0,tpm:3.2,pct:41.5,pts:1,note:'League leader 3PM/G'},
+    {id:1630573,name:'Sam Hauser',team:'BOS',ppg:11.8,tpm:2.6,pct:39.3,pts:2,note:'Elite catch-and-shoot'},
+    {id:1628401,name:'Derrick White',team:'BOS',ppg:12.4,tpm:1.8,pct:37.1,pts:2,note:'Two-way starter'},
+    {id:1642348,name:'Baylor Scheierman',team:'BOS',ppg:8.4,tpm:2.1,pct:40.2,pts:2,note:'40% from deep, sophomore'},
+    {id:1629674,name:'Neemias Queta',team:'BOS',ppg:6.8,tpm:0.1,pct:20.0,pts:3,note:'Backup center'},
+    {id:1630178,name:'Tyrese Maxey',team:'PHI',ppg:28.3,tpm:2.8,pct:37.4,pts:1,note:'PHI #1 PROBABLE (finger)'},
+    {id:203081,name:'Paul George',team:'PHI',ppg:17.3,tpm:1.8,pct:36.1,pts:1,note:'17 pts Game 1'},
+    {id:1642355,name:'VJ Edgecombe',team:'PHI',ppg:14.2,tpm:1.9,pct:36.1,pts:1,note:'2025 #3 pick, explosive'},
+    {id:1629666,name:'Quentin Grimes',team:'PHI',ppg:13.1,tpm:2.3,pct:37.8,pts:2,note:'Floor spacer'},
+    {id:1642356,name:'Jared McCain',team:'PHI',ppg:11.6,tpm:2.0,pct:36.8,pts:2,note:'Rookie sharpshooter'},
+    {id:200768,name:'Kyle Lowry',team:'PHI',ppg:9.4,tpm:1.2,pct:34.6,pts:2,note:'Veteran backup PG'},
+    {id:201142,name:'Kevin Durant',team:'HOU',ppg:25.9,tpm:1.6,pct:38.1,pts:1,note:'QUESTIONABLE (knee)'},
+    {id:1642263,name:'Reed Sheppard',team:'HOU',ppg:13.8,tpm:2.2,pct:38.4,pts:2,note:'Hot rookie, 38.4% from 3'},
+    {id:1631103,name:'Jabari Smith Jr.',team:'HOU',ppg:12.8,tpm:1.6,pct:35.6,pts:2,note:'Stretch PF'},
+    {id:1628396,name:'Dorian Finney-Smith',team:'HOU',ppg:9.8,tpm:1.9,pct:37.1,pts:2,note:'3&D wing'},
+    {id:1631111,name:'Tari Eason',team:'HOU',ppg:11.2,tpm:1.1,pct:33.2,pts:2,note:'Energy wing'},
+    {id:1627832,name:'Fred VanVleet',team:'HOU',ppg:12.6,tpm:1.6,pct:36.4,pts:2,note:'Veteran PG'},
+    {id:1630578,name:'Alperen Sengun',team:'HOU',ppg:20.3,tpm:0.4,pct:28.1,pts:3,note:'Skilled big, rare 3s'},
+    {id:1641706,name:'Amen Thompson',team:'HOU',ppg:18.0,tpm:0.8,pct:29.4,pts:3,note:'Elite athlete, low 3PT%'},
+    {id:2544,name:'LeBron James',team:'LAL',ppg:20.9,tpm:1.4,pct:31.7,pts:1,note:'1st father-son playoff duo'},
+    {id:1629060,name:'Rui Hachimura',team:'LAL',ppg:11.5,tpm:1.6,pct:35.2,pts:2,note:'Elevated role'},
+    {id:1642355,name:'Bronny James',team:'LAL',ppg:7.2,tpm:1.1,pct:33.4,pts:2,note:'Historic father-son duo'},
+    {id:1630560,name:'Dalton Knecht',team:'LAL',ppg:8.9,tpm:1.8,pct:36.2,pts:2,note:'Young shooter'},
+    {id:1629028,name:'Deandre Ayton',team:'LAL',ppg:14.8,tpm:0.2,pct:24.0,pts:3,note:'Lakers center'},
+    {id:1629138,name:'Cam Reddish',team:'LAL',ppg:9.2,tpm:1.4,pct:33.8,pts:2,note:'Wing defender'},
+    {id:1628983,name:'Shai Gilgeous-Alexander',team:'OKC',ppg:31.1,tpm:1.8,pct:36.4,pts:1,note:'2x MVP finalist, Finals MVP'},
+    {id:1631114,name:'Jalen Williams',team:'OKC',ppg:17.1,tpm:1.4,pct:35.2,pts:1,note:'Returned from wrist surgery'},
+    {id:1631096,name:'Chet Holmgren',team:'OKC',ppg:17.1,tpm:2.1,pct:37.9,pts:1,note:'All-Star stretch 5'},
+    {id:1629652,name:'Lu Dort',team:'OKC',ppg:10.1,tpm:2.1,pct:41.2,pts:2,note:'41% 3PT, elite defender'},
+    {id:1630529,name:'Isaiah Joe',team:'OKC',ppg:11.1,tpm:2.4,pct:40.8,pts:2,note:'Bench sharpshooter'},
+    {id:1630598,name:'Aaron Wiggins',team:'OKC',ppg:9.4,tpm:1.6,pct:38.2,pts:2,note:'3&D rotation piece'},
+    {id:1628392,name:'Isaiah Hartenstein',team:'OKC',ppg:10.4,tpm:0.4,pct:28.6,pts:3,note:'9.4 RPG rim protector'},
+    {id:1626164,name:'Devin Booker',team:'PHX',ppg:26.1,tpm:1.9,pct:33.0,pts:1,note:'PHX leader vs OKC'},
+    {id:1628415,name:'Dillon Brooks',team:'PHX',ppg:20.2,tpm:2.1,pct:36.4,pts:1,note:'Acquired in KD trade'},
+    {id:1629684,name:'Jalen Green',team:'PHX',ppg:17.8,tpm:2.3,pct:35.9,pts:2,note:'Acquired in KD trade'},
+    {id:1628960,name:'Grayson Allen',team:'PHX',ppg:11.4,tpm:2.6,pct:38.9,pts:2,note:'Veteran sharpshooter'},
+    {id:1629750,name:'Ryan Dunn',team:'PHX',ppg:8.6,tpm:1.2,pct:33.1,pts:2,note:'Young wing defender'},
+    {id:1631109,name:'Mark Williams',team:'PHX',ppg:11.2,tpm:0.1,pct:18.0,pts:3,note:'Starting center'},
+    {id:1631094,name:'Paolo Banchero',team:'ORL',ppg:22.3,tpm:1.6,pct:34.2,pts:1,note:'23 pts Game 1 upset'},
+    {id:1630532,name:'Franz Wagner',team:'ORL',ppg:20.4,tpm:2.1,pct:35.8,pts:1,note:'19 pts Game 1'},
+    {id:1630217,name:'Desmond Bane',team:'ORL',ppg:20.5,tpm:2.8,pct:38.6,pts:1,note:'17 pts Game 1'},
+    {id:1630591,name:'Jalen Suggs',team:'ORL',ppg:13.7,tpm:1.9,pct:36.1,pts:2,note:'Defensive spark plug'},
+    {id:1641710,name:'Anthony Black',team:'ORL',ppg:15.1,tpm:1.4,pct:34.8,pts:2,note:'Starting PG'},
+    {id:1629011,name:'Wendell Carter Jr.',team:'ORL',ppg:10.4,tpm:0.8,pct:31.2,pts:3,note:'Starting C'},
+    {id:1629607,name:'Goga Bitadze',team:'ORL',ppg:8.6,tpm:0.4,pct:28.4,pts:3,note:'Shot-blocker off bench'},
+    {id:1630595,name:'Cade Cunningham',team:'DET',ppg:26.1,tpm:1.8,pct:34.8,pts:1,note:'39 pts in Game 1 loss'},
+    {id:1629130,name:'Duncan Robinson',team:'DET',ppg:13.8,tpm:2.8,pct:39.4,pts:2,note:'Starting SG, elite sniper'},
+    {id:202699,name:'Tobias Harris',team:'DET',ppg:17.4,tpm:1.6,pct:35.8,pts:2,note:'17 pts Game 1'},
+    {id:1641709,name:'Ausar Thompson',team:'DET',ppg:12.4,tpm:0.8,pct:29.8,pts:2,note:'Athletic wing'},
+    {id:1641842,name:'Ron Holland',team:'DET',ppg:10.6,tpm:1.2,pct:33.4,pts:2,note:'2024 #5 pick'},
+    {id:1631105,name:'Jalen Duren',team:'DET',ppg:19.2,tpm:0.0,pct:0.0,pts:3,note:'Team rebounding leader'},
+    {id:1628973,name:'Jalen Brunson',team:'NYK',ppg:29.6,tpm:2.0,pct:35.5,pts:1,note:'NYK franchise star'},
+    {id:1626157,name:'Karl-Anthony Towns',team:'NYK',ppg:24.1,tpm:3.0,pct:38.8,pts:1,note:'All-Star C, 3PT weapon'},
+    {id:1628969,name:'Mikal Bridges',team:'NYK',ppg:13.5,tpm:2.0,pct:37.2,pts:2,note:'Trade acquisition'},
+    {id:1628384,name:'OG Anunoby',team:'NYK',ppg:14.2,tpm:2.1,pct:38.3,pts:2,note:'Elite 3&D wing'},
+    {id:1628404,name:'Josh Hart',team:'NYK',ppg:11.2,tpm:0.8,pct:33.5,pts:2,note:'Energy rebounder'},
+    {id:1630174,name:'Miles McBride',team:'NYK',ppg:10.1,tpm:2.0,pct:38.5,pts:2,note:'Backup PG'},
+    {id:1630552,name:'Jalen Johnson',team:'ATL',ppg:21.3,tpm:1.5,pct:36.8,pts:1,note:'All-Star breakout'},
+    {id:1630700,name:'Dyson Daniels',team:'ATL',ppg:14.2,tpm:2.0,pct:37.5,pts:1,note:'Defensive Player of Year'},
+    {id:1628378,name:'Donovan Mitchell',team:'CLE',ppg:26.7,tpm:2.0,pct:34.5,pts:1,note:'CLE franchise star'},
+    {id:1630596,name:'Evan Mobley',team:'CLE',ppg:17.2,tpm:1.0,pct:32.5,pts:1,note:'All-Star stretch big'},
+    {id:1628470,name:'Jarrett Allen',team:'CLE',ppg:14.0,tpm:0.0,pct:0.0,pts:2,note:'Rim protector'},
+    {id:1629622,name:'Max Strus',team:'CLE',ppg:13.4,tpm:3.1,pct:37.8,pts:2,note:'Sharpshooter'},
+    {id:1629656,name:'Ty Jerome',team:'CLE',ppg:12.0,tpm:2.5,pct:42.0,pts:2,note:'Breakout backup PG'},
+    {id:1630165,name:'Sam Merrill',team:'CLE',ppg:9.1,tpm:2.5,pct:42.0,pts:2,note:'3&D rotation'},
+    {id:1629628,name:'RJ Barrett',team:'TOR',ppg:22.5,tpm:1.5,pct:33.5,pts:1,note:'TOR franchise star'},
+    {id:1630567,name:'Scottie Barnes',team:'TOR',ppg:20.4,tpm:0.8,pct:31.5,pts:1,note:'All-Star forward'},
+    {id:1630193,name:'Immanuel Quickley',team:'TOR',ppg:18.5,tpm:2.2,pct:36.8,pts:1,note:'PG sparkplug'},
+    {id:1627751,name:'Jakob Poeltl',team:'TOR',ppg:13.2,tpm:0.0,pct:0.0,pts:2,note:'Veteran center'},
+    {id:1641711,name:'Gradey Dick',team:'TOR',ppg:12.0,tpm:2.8,pct:39.5,pts:2,note:'3PT specialist'},
+    {id:1630534,name:'Ochai Agbaji',team:'TOR',ppg:10.5,tpm:2.5,pct:39.2,pts:2,note:'Athletic wing'},
+    {id:203999,name:'Nikola Jokic',team:'DEN',ppg:29.6,tpm:0.8,pct:35.5,pts:1,note:'3x MVP, all-time great'},
+    {id:1627750,name:'Jamal Murray',team:'DEN',ppg:20.0,tpm:2.5,pct:40.0,pts:1,note:'Clutch playoff performer'},
+    {id:203932,name:'Aaron Gordon',team:'DEN',ppg:14.2,tpm:1.2,pct:35.5,pts:2,note:'Two-way forward'},
+    {id:1631212,name:'Peyton Watson',team:'DEN',ppg:8.5,tpm:1.5,pct:37.0,pts:2,note:'Developing wing'},
+    {id:1630162,name:'Anthony Edwards',team:'MIN',ppg:25.6,tpm:3.0,pct:36.5,pts:1,note:'MIN franchise star'},
+    {id:203944,name:'Julius Randle',team:'MIN',ppg:22.0,tpm:2.0,pct:38.5,pts:1,note:'Trade acquisition'},
+    {id:1630183,name:'Jaden McDaniels',team:'MIN',ppg:14.8,tpm:1.8,pct:37.2,pts:2,note:'Defensive wing'},
+    {id:203497,name:'Rudy Gobert',team:'MIN',ppg:12.4,tpm:0.0,pct:0.0,pts:2,note:'4x DPOY center'},
+    {id:1629675,name:'Naz Reid',team:'MIN',ppg:12.2,tpm:2.6,pct:38.8,pts:2,note:'Bench scorer'},
+    {id:201144,name:'Mike Conley',team:'MIN',ppg:11.2,tpm:2.4,pct:40.5,pts:2,note:'Veteran PG'},
+    {id:1629638,name:'Nickeil Alexander-Walker',team:'ATL',ppg:10.5,tpm:2.5,pct:40.5,pts:1,note:'Versatile guard'},
+    {id:203468,name:'CJ McCollum',team:'ATL',ppg:19.2,tpm:2.1,pct:38.5,pts:1,note:'Hawks star guard'},
+    {id:1630168,name:'Onyeka Okongwu',team:'ATL',ppg:12.4,tpm:0.1,pct:62.5,pts:2,note:'Athletic big'},
+    {id:1630228,name:'Jonathan Kuminga',team:'ATL',ppg:14.2,tpm:1.2,pct:34.5,pts:2,note:'Athletic forward'},
+    {id:1630557,name:'Corey Kispert',team:'ATL',ppg:9.8,tpm:2.5,pct:41.2,pts:2,note:'Sharpshooter'},
+    {id:201935,name:'James Harden',team:'CLE',ppg:18.5,tpm:2.8,pct:37.2,pts:1,note:'Veteran PG'},
+    {id:1631128,name:'Christian Braun',team:'DEN',ppg:10.2,tpm:1.8,pct:38.5,pts:2,note:'Versatile wing'},
+    {id:1629661,name:'Cameron Johnson',team:'DEN',ppg:16.4,tpm:2.9,pct:40.2,pts:2,note:'Stretch forward'},
+    {id:1628971,name:'Bruce Brown',team:'DEN',ppg:7.8,tpm:0.9,pct:33.5,pts:2,note:'Two-way guard'},
+    {id:202685,name:'Jonas Valanciunas',team:'DEN',ppg:12.4,tpm:0.2,pct:58.5,pts:3,note:'Big man anchor'},
+    {id:1642461,name:'Spencer Jones',team:'DEN',ppg:6.5,tpm:1.8,pct:38.2,pts:3,note:'Young wing'},
+    {id:1630245,name:'Ayo Dosunmu',team:'MIN',ppg:14.8,tpm:2.1,pct:43.9,pts:2,note:'Key acquisition'},
+    {id:1630538,name:'Bones Hyland',team:'MIN',ppg:8.5,tpm:2.3,pct:39.5,pts:2,note:'Energetic guard'},
+    {id:1630188,name:'Cole Anthony',team:'ORL',ppg:11.2,tpm:1.4,pct:35.2,pts:2,note:'PG spark plug'},
+    {id:203914,name:'Gary Harris',team:'ORL',ppg:8.1,tpm:1.6,pct:36.8,pts:1,note:'3&D wing'},
+    {id:1628406,name:'Jonathan Isaac',team:'ORL',ppg:8.2,tpm:1.1,pct:32.5,pts:1,note:'Defensive anchor'},
+    {id:1641783,name:'Tristan da Silva',team:'ORL',ppg:13.1,tpm:2.3,pct:37.4,pts:3,note:'Versatile wing scorer'},
+    {id:1628975,name:'Jevon Carter',team:'ORL',ppg:7.8,tpm:1.9,pct:38.2,pts:2,note:'Defensive guard'},
+    {id:202339,name:'Bojan Bogdanovic',team:'DET',ppg:16.1,tpm:2.3,pct:38.9,pts:2,note:'Veteran scorer'},
+    {id:1631109,name:'Jaden Ivey',team:'DET',ppg:14.8,tpm:1.6,pct:34.2,pts:2,note:'Athletic PG'},
+    {id:1630191,name:'Isaiah Stewart',team:'DET',ppg:11.9,tpm:0.9,pct:31.5,pts:3,note:'Versatile big'},
+    {id:1631234,name:'Marcus Sasser',team:'DET',ppg:8.4,tpm:1.7,pct:37.1,pts:1,note:'3-point shooter'},
+    {id:1628989,name:'Kevin Huerter',team:'DET',ppg:12.5,tpm:2.8,pct:38.2,pts:2,note:'Stretch shooter'},
+    {id:1642450,name:'Daniss Jenkins',team:'DET',ppg:7.2,tpm:1.4,pct:35.5,pts:2,note:'Athletic guard'},
+    {id:203078,name:'Bradley Beal',team:'PHX',ppg:18.6,tpm:1.2,pct:36.1,pts:2,note:'Elite scorer'},
+    {id:203994,name:'Jusuf Nurkic',team:'PHX',ppg:12.8,tpm:0.4,pct:29.1,pts:1,note:'Physical C'},
+    {id:1629702,name:'Nick Richards',team:'PHX',ppg:9.2,tpm:0.0,pct:0.0,pts:1,note:'Rim runner'},
+    {id:1626220,name:'Royce O\'Neale',team:'PHX',ppg:7.9,tpm:2.0,pct:39.4,pts:1,note:'3&D forward'},
+    {id:1631221,name:'Collin Gillespie',team:'PHX',ppg:6.5,tpm:1.6,pct:36.8,pts:2,note:'Two-way guard'},
+    {id:1630692,name:'Jordan Goodwin',team:'PHX',ppg:7.4,tpm:0.8,pct:33.5,pts:2,note:'Active guard'},
+    {id:1627936,name:'Alex Caruso',team:'OKC',ppg:9.8,tpm:2.0,pct:40.8,pts:2,note:'Elite defender'},
+    {id:1630170,name:'Kenrich Williams',team:'OKC',ppg:7.2,tpm:1.1,pct:36.5,pts:1,note:'Versatile wing'},
+    {id:1629519,name:'Jaylin Williams',team:'OKC',ppg:8.5,tpm:0.6,pct:31.2,pts:1,note:'Young big'},
+    {id:1641717,name:'Cason Wallace',team:'OKC',ppg:10.6,tpm:2.2,pct:38.8,pts:2,note:'Athletic two-way guard'},
+    {id:1642349,name:'Ajay Mitchell',team:'OKC',ppg:8.1,tpm:1.5,pct:36.2,pts:2,note:'Rookie wing'}
+  ];
   );
   const bits = await crypto.subtle.deriveBits(
     { name:'PBKDF2', salt: enc.encode('bsh42_' + username.toLowerCase()),
