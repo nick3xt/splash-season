@@ -9,7 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;}
+body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden;}
 
 /* LOGIN */
 #loginPage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:linear-gradient(135deg,#080810 0%,#12082a 100%);}
@@ -168,7 +168,7 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .lock-pick-btn{display:block;width:100%;margin-top:10px;padding:10px 20px;background:#22c55e;color:#fff;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:opacity 0.15s;}
 .lock-pick-btn:hover{opacity:0.82;}
 .lock-pick-btn:active{transform:scale(0.98);}
-.team-tabs-bar{display:flex;border-bottom:2px solid #333;margin:0;}.team-tab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 6px;background:transparent;border:none;color:#888;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer;white-space:nowrap;overflow:hidden;}.team-tab.tab-active{color:#fff;border-bottom:2px solid #f7c14e;margin-bottom:-2px;}.tab-logo{width:20px;height:20px;object-fit:contain;flex-shrink:0;}.ppl{display:flex;flex-direction:column;gap:0;}.prow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #222;cursor:pointer;}.prow:active{background:rgba(255,255,255,0.05);}.prow-sel{background:rgba(247,193,78,0.12);border-left:3px solid #f7c14e;}.prow-locked{opacity:0.35;cursor:default;pointer-events:none;}.pthumb{width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;background:#1a1a2e;}.pname{flex:1;font-size:13px;font-weight:600;color:#fff;}.badge-pt{padding:3px 7px;border-radius:10px;font-size:10px;font-weight:800;letter-spacing:.5px;flex-shrink:0;}.badge-star{background:#f7c14e;color:#000;}.badge-role{background:#5b8dee;color:#fff;}.badge-brick{background:#e05c5c;color:#fff;}.pick-footer-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;gap:10px;}.pick-hint{font-size:11px;color:#666;flex:1;}.pick-btn2{padding:10px 20px;border:none;border-radius:8px;font-weight:800;font-size:13px;letter-spacing:.5px;cursor:pointer;}.pick-btn-dis{background:#333;color:#555;cursor:default;}.pick-btn-active{background:#f7c14e;color:#000;}.picked-card{display:flex;align-items:center;gap:12px;padding:12px;}.pick-hs{width:60px;height:44px;object-fit:cover;object-position:top;border-radius:8px;flex-shrink:0;background:#1a1a2e;}.pick-pinfo{flex:1;min-width:0;}.pick-pname{font-size:14px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.pick-pteam{font-size:11px;color:#888;margin-top:1px;}.pick-pstats{font-size:10px;color:#666;margin-top:2px;}.pick-badges2{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}.ypbadge{font-size:9px;font-weight:800;color:#f7c14e;letter-spacing:.5px;}.chg-btn{display:block;width:100%;padding:8px;background:transparent;border:1px solid #444;color:#888;font-size:11px;cursor:pointer;border-radius:0 0 12px 12px;}.chg-btn:hover{border-color:#888;color:#ccc;}.expand-pick-btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#ff6b35,#f7c59f);color:#000;font-weight:800;font-size:14px;letter-spacing:1px;border:none;cursor:pointer;border-radius:0 0 12px 12px;text-align:center;}.expand-pick-btn:hover{opacity:0.9;}</style>
+.team-tabs-bar{display:flex;margin:0;padding:10px 12px 8px;gap:8px;background:rgba(10,10,26,.6);border-bottom:1px solid #1a1a30;}.team-tab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;color:#888;font-size:11px;font-weight:700;letter-spacing:.5px;cursor:pointer;white-space:nowrap;overflow:hidden;transition:all .15s;}.team-tab.tab-active{color:#FDB927;background:rgba(253,185,39,0.15);border-color:rgba(253,185,39,0.5);}.tab-logo{width:20px;height:20px;object-fit:contain;flex-shrink:0;}.ppl{display:flex;flex-direction:column;gap:0;}.prow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid #222;cursor:pointer;min-height:64px;transition:background .15s;}.prow:hover{background:rgba(255,255,255,0.03);}.prow:active{background:rgba(255,255,255,0.05);}.prow-sel{background:rgba(253,185,39,0.15);border-left:4px solid #FDB927;box-shadow:inset 0 0 0 1px rgba(253,185,39,0.2);}.prow-locked{opacity:0.35;cursor:default;pointer-events:none;}.pthumb{width:56px;height:56px;border-radius:8px;object-fit:cover;object-position:top;flex-shrink:0;background:#1a1a2e;border:1.5px solid #2a2a40;}.pname{flex:1;font-size:13px;font-weight:600;color:#fff;}.badge-pt{padding:3px 7px;border-radius:10px;font-size:10px;font-weight:800;letter-spacing:.5px;flex-shrink:0;}.badge-star{background:#f7c14e;color:#000;}.badge-role{background:#5b8dee;color:#fff;}.badge-brick{background:#e05c5c;color:#fff;}.pick-footer-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;gap:10px;}.pick-hint{font-size:11px;color:#666;flex:1;}.pick-btn2{padding:10px 20px;border:none;border-radius:8px;font-weight:800;font-size:13px;letter-spacing:.5px;cursor:pointer;transition:all .15s;}.pick-btn-dis{background:#333;color:#555;cursor:default;}.pick-btn-active{background:#FDB927;color:#000;transform:scale(1.05);box-shadow:0 2px 16px rgba(253,185,39,0.5);}.picked-card{display:flex;align-items:center;gap:12px;padding:12px;}.pick-hs{width:64px;height:64px;object-fit:cover;object-position:top;border-radius:8px;flex-shrink:0;background:#1a1a2e;border:1.5px solid rgba(253,185,39,0.4);}.pick-pinfo{flex:1;min-width:0;}.pick-pname{font-size:14px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.pick-pteam{font-size:11px;color:#888;margin-top:1px;}.pick-pstats{font-size:10px;color:#666;margin-top:2px;}.pick-badges2{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}.ypbadge{font-size:9px;font-weight:800;color:#f7c14e;letter-spacing:.5px;}.chg-btn{display:block;width:100%;padding:8px;background:transparent;border:1px solid #444;color:#888;font-size:11px;cursor:pointer;border-radius:0 0 12px 12px;}.chg-btn:hover{border-color:#888;color:#ccc;}.expand-pick-btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#ff6b35,#f7c59f);color:#000;font-weight:800;font-size:14px;letter-spacing:1px;border:none;cursor:pointer;border-radius:0 0 12px 12px;text-align:center;}.expand-pick-btn:hover{opacity:0.9;}</style>
 </head>
 <body>
 
@@ -259,6 +259,7 @@ async function hashPassword(password, username) {
 // &#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;&#xE2;&#x95;&#x90;
 function photoUrl(id){ return 'https://cdn.nba.com/headshots/nba/latest/1040x760/'+id+'.png'; }
 function logoUrl(tid){ return 'https://cdn.nba.com/logos/nba/'+tid+'/global/L/logo.svg'; }
+const SILHOUETTE="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56'%3E%3Ccircle cx='28' cy='18' r='11' fill='%234a4a6a'/%3E%3Cellipse cx='28' cy='45' rx='18' ry='13' fill='%234a4a6a'/%3E%3C/svg%3E";
 
 const TEAMS = {
   BOS:{abbr:'BOS',name:'Celtics',full:'Boston Celtics',id:1610612738},
@@ -775,7 +776,7 @@ function renderPicksTab(){
       const ptsLbl=p.pts===1?'1PT':p.pts===2?'2PT':'3PT';
       const ptsCls='pts-'+p.pts;
       html+="<div class='pick-row'>";
-      html+="<img class='pr-photo' src='"+photoUrl(p.id)+"' onerror=\"this.src='https://via.placeholder.com/60x60/333/fff?text=?'\" alt='"+pname+"'>";
+      html+="<img class='pr-photo' src='"+photoUrl(p.id)+"' onerror=\"this.onerror=null;this.src=SILHOUETTE\" alt='"+pname+"'>";
       html+="<span class='pr-name'>"+pname+"</span>";
       html+="<span class='pr-pts pts-chip "+ptsCls+"'>"+ptsLbl+"</span>";
       html+="</div>";
@@ -817,7 +818,7 @@ function buildGameCard(game){
     var ptCls=pts===1?'badge-star':pts===2?'badge-role':'badge-brick';
     var tmName=(TEAMS[pickedPlayer.team]&&TEAMS[pickedPlayer.team].name)||pickedPlayer.team;
     h+='<div class="picked-card">';
-    h+='<img class="pick-hs" src="https://cdn.nba.com/headshots/nba/latest/1040x760/'+pickedPlayer.id+'.png" onerror="this.style.opacity=0.3">';
+    h+='<img class="pick-hs" src="https://cdn.nba.com/headshots/nba/latest/1040x760/'+pickedPlayer.id+'.png" onerror="this.onerror=null;this.src=SILHOUETTE">';
     h+='<div class="pick-pinfo">';
     h+='<div class="pick-pname">'+pickedPlayer.name+'</div>';
     h+='<div class="pick-pteam">'+tmName+'</div>';
@@ -874,7 +875,7 @@ function buildPlayerList(game){
     h+='<div class="prow'+(isLocked?' prow-locked':'')+(isSel?' prow-sel':'')+'"';
     h+=' data-gid="'+game.id+'" data-pname="'+safePName+'"';
     if(!isLocked) h+=' onclick="doPickSel(this)"';
-    h+='><img class="pthumb" src="https://cdn.nba.com/headshots/nba/latest/1040x760/'+p.id+'.png" onerror="this.style.opacity=0.3">';
+    h+='><img class="pthumb" src="https://cdn.nba.com/headshots/nba/latest/1040x760/'+p.id+'.png" onerror="this.onerror=null;this.src=SILHOUETTE">';
     h+='<span class="pname">'+p.name+'</span>';
     h+='<span class="badge-pt '+ptCls+'">'+ptLbl+'</span></div>';
   }
@@ -886,7 +887,7 @@ function buildPlayerList(game){
   return h;
 }
 
-function doChangePich(gid){clearGamePick(gid).then(function(){renderPicksTab();});}
+function doChangePick(gid){clearGamePick(gid).then(function(){if(window._gexp)delete window._gexp[gid];renderPicksTab();});}
 function doSetTab(el){if(!window._gtab)window._gtab={};window._gtab[el.dataset.gid]=el.dataset.side;if(window._gsel)delete window._gsel[el.dataset.gid];renderPicksTab();}
 function doPickSel(el){
   var gid=el.dataset.gid,pname=el.dataset.pname;
@@ -900,7 +901,7 @@ function doPickSel(el){
   var hint=document.getElementById('pht_'+gid);
   if(hint)hint.textContent='';
 }
-async function doConfirmPich(gid){
+async function doConfirmPick(gid){
   var pname=window._gsel&&window._gsel[gid];
   if(!pname)return;
   var btn=document.getElementById('pcb_'+gid);
@@ -951,7 +952,7 @@ function renderRefTab(players, label, pts){
   players.forEach((p,i)=>{
     const t=TEAMS[p.team]||{id:0,full:p.team};
     html+="<div class='player-card'><div class='card-inner'>";
-    html+="<img class='card-photo' src='"+photoUrl(p.id)+"' onerror=\"this.src='https://via.placeholder.com/60x60/333/fff?text=?'\" alt='"+p.name+"'>";
+    html+="<img class='card-photo' src='"+photoUrl(p.id)+"' onerror=\"this.onerror=null;this.src=SILHOUETTE\" alt='"+p.name+"'>";
     html+="<div class='card-info'>";
     html+="<div class='card-name'>"+p.name+"</div>";
     html+="<div class='card-team'><img class='team-logo-sm' src='"+logoUrl(t.id)+"' onerror=\"this.style.display='none'\" alt='"+p.team+"'><span class='card-team-name'>"+t.full+"</span></div>";
