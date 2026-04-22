@@ -98,11 +98,11 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .gh-vs{font-size:11px;color:#333358;font-weight:700;margin-bottom:1px;}
 
 /* Dropdowns area */
-.game-drops{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 14px;}
+.game-drops{display:block;padding:8px 0;}
 .drop-section{}
 .drop-label{font-family:'Bebas Neue',sans-serif;font-size:10px;color:#9b8fcf;letter-spacing:1px;margin-bottom:5px;display:flex;align-items:center;gap:4px;}
 .drop-logo{width:13px;height:13px;object-fit:contain;}
-.picker-container{background:#1e1e2e;border-radius:12px;overflow:hidden;margin:10px 14px 0;}
+.picker-container{background:#1e1e2e;border-radius:12px;overflow:hidden;margin:0;}
 .team-tabs{display:flex;}
 .team-tab{flex:1;padding:10px;text-align:center;cursor:pointer;background:#252535;color:#888;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid transparent;transition:background .15s,color .15s;}
 .team-tab.active{background:#2d2d45;color:#FFD700;border-bottom-color:#FFD700;}
@@ -112,8 +112,8 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .player-row.selected{background:#1a2e1a;border-left-color:#22c55e;}
 .player-row.used{opacity:0.4;cursor:not-allowed;pointer-events:none;}
 .player-headshot{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#333;flex-shrink:0;}
-.player-name{flex:1;font-weight:600;font-size:14px;color:#fff;}
-.pts-badge{padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700;}
+.player-name{flex:1;font-weight:600;font-size:14px;color:#fff;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pts-badge{padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;}
 .pts-1{background:#FFD700;color:#000;}
 .pts-2{background:#C0C0C0;color:#000;}
 .pts-3{background:#CD7F32;color:#fff;}
@@ -395,7 +395,7 @@ const ALL_PLAYERS = [
   {id:1630595,name:'Cade Cunningham',team:'DET',ppg:26.1,tpm:1.8,pct:34.8,pts:1,note:'39 pts in Game 1 loss'},
   {id:1629130,name:'Duncan Robinson',team:'DET',ppg:13.8,tpm:2.8,pct:39.4,pts:2,note:'Starting SG, elite sniper'},
   {id:202699,name:'Tobias Harris',team:'DET',ppg:17.4,tpm:1.6,pct:35.8,pts:2,note:'17 pts Game 1'},
-  {id:1641706,name:'Ausar Thompson',team:'DET',ppg:12.4,tpm:0.8,pct:29.8,pts:2,note:'Athletic wing'},
+  {id:1641709,name:'Ausar Thompson',team:'DET',ppg:12.4,tpm:0.8,pct:29.8,pts:2,note:'Athletic wing'},
   {id:1641842,name:'Ron Holland',team:'DET',ppg:10.6,tpm:1.2,pct:33.4,pts:2,note:'2024 #5 pick'},
   {id:1631105,name:'Jalen Duren',team:'DET',ppg:19.2,tpm:0.0,pct:0.0,pts:3,note:'Team rebounding leader'}
 ];
@@ -418,7 +418,26 @@ const SCHEDULE = {
     tipoff: 1776812400000, // 7pm ET Apr 21 2026
     awayPlayers:['Tyrese Maxey','Paul George','VJ Edgecombe','Quentin Grimes','Jared McCain','Kyle Lowry','Andre Drummond'],
     homePlayers:['Jayson Tatum','Jaylen Brown','Payton Pritchard','Sam Hauser','Derrick White','Baylor Scheierman','Anfernee Simons','Nikola Vucevic']
-  },
+  }
+  // ORL additional rotation
+  ,{id:1630188,name:'Cole Anthony',team:'ORL',ppg:11.2,tpm:1.4,pct:35.2,pts:2,note:'PG spark plug'}
+  ,{id:203914,name:'Gary Harris',team:'ORL',ppg:8.1,tpm:1.6,pct:36.8,pts:1,note:'3&D wing'}
+  ,{id:1628406,name:'Jonathan Isaac',team:'ORL',ppg:8.2,tpm:1.1,pct:32.5,pts:1,note:'Defensive anchor'}
+  // DET additional rotation
+  ,{id:202339,name:'Bojan Bogdanovic',team:'DET',ppg:16.1,tpm:2.3,pct:38.9,pts:2,note:'Veteran scorer'}
+  ,{id:1631109,name:'Jaden Ivey',team:'DET',ppg:14.8,tpm:1.6,pct:34.2,pts:2,note:'Athletic PG'}
+  ,{id:1630228,name:'Isaiah Stewart',team:'DET',ppg:11.9,tpm:0.9,pct:31.5,pts:2,note:'Versatile big'}
+  ,{id:1631234,name:'Marcus Sasser',team:'DET',ppg:8.4,tpm:1.7,pct:37.1,pts:1,note:'3-point shooter'}
+  // PHX additional rotation
+  ,{id:201142,name:'Kevin Durant',team:'PHX',ppg:27.1,tpm:1.9,pct:41.3,pts:3,note:'All-time great'}
+  ,{id:203078,name:'Bradley Beal',team:'PHX',ppg:18.6,tpm:1.2,pct:36.1,pts:2,note:'Elite scorer'}
+  ,{id:203994,name:'Jusuf Nurkic',team:'PHX',ppg:12.8,tpm:0.4,pct:29.1,pts:1,note:'Physical C'}
+  ,{id:1629702,name:'Nick Richards',team:'PHX',ppg:9.2,tpm:0.0,pct:0.0,pts:1,note:'Rim runner'}
+  ,{id:1626220,name:'Royce O\'Neale',team:'PHX',ppg:7.9,tpm:2.0,pct:39.4,pts:1,note:'3&D forward'}
+  // OKC additional rotation
+  ,{id:1627936,name:'Alex Caruso',team:'OKC',ppg:9.8,tpm:2.0,pct:40.8,pts:2,note:'Elite defender'}
+  ,{id:1630170,name:'Kenrich Williams',team:'OKC',ppg:7.2,tpm:1.1,pct:36.5,pts:1,note:'Versatile wing'}
+  ,{id:1629519,name:'Jaylin Williams',team:'OKC',ppg:8.5,tpm:0.6,pct:31.2,pts:1,note:'Young big'},
   {
     id:'por_sas_g2', away:'POR', home:'SAS',
     time:'8:00 PM ET', series:'Game 2 \u2022 SAS leads 1-0',
@@ -439,15 +458,15 @@ const SCHEDULE = {
       id:'orl_det_g1', away:'ORL', home:'DET',
       time:'4:00 PM ET', series:'Game 1',
       tipoff: 1776888000000,
-      awayPlayers:['Paolo Banchero','Franz Wagner','Desmond Bane','Jalen Suggs','Anthony Black','Wendell Carter Jr.','Goga Bitadze'],
-      homePlayers:['Cade Cunningham','Duncan Robinson','Tobias Harris','Ausar Thompson','Ron Holland','Jalen Duren']
+      awayPlayers:['Paolo Banchero','Franz Wagner','Desmond Bane','Jalen Suggs','Anthony Black','Wendell Carter Jr.','Goga Bitadze','Cole Anthony','Gary Harris','Jonathan Isaac'],
+      homePlayers:['Cade Cunningham','Duncan Robinson','Tobias Harris','Ausar Thompson','Ron Holland','Jalen Duren','Bojan Bogdanovic','Jaden Ivey','Isaiah Stewart','Marcus Sasser']
     },
     {
       id:'phx_okc_g1', away:'PHX', home:'OKC',
       time:'6:30 PM ET', series:'Game 1',
       tipoff: 1776897000000,
-      awayPlayers:['Devin Booker','Dillon Brooks','Jalen Green','Royce O\'Neale','Grayson Allen','Ryan Dunn','Mark Williams'],
-      homePlayers:['Shai Gilgeous-Alexander','Jalen Williams','Chet Holmgren','Lu Dort','Isaiah Joe','Aaron Wiggins','Isaiah Hartenstein']
+      awayPlayers:['Devin Booker','Dillon Brooks','Jalen Green','Royce O\'Neale','Grayson Allen','Ryan Dunn','Mark Williams','Kevin Durant','Bradley Beal','Jusuf Nurkic','Nick Richards','Royce O\'Neale'],
+      homePlayers:['Shai Gilgeous-Alexander','Jalen Williams','Chet Holmgren','Lu Dort','Isaiah Joe','Aaron Wiggins','Isaiah Hartenstein','Alex Caruso','Kenrich Williams','Jaylin Williams']
     }
   ]
 };
