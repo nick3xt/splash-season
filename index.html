@@ -165,7 +165,7 @@ body{background:#080810;color:#fff;font-family:'Inter',sans-serif;min-height:100
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a38;border:1px solid rgba(253,185,39,.4);color:#FDB927;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;padding:10px 20px;border-radius:10px;z-index:99999;pointer-events:none;opacity:0;transition:opacity .25s;}
 .toast.show{opacity:1;}
 
-.lock-pick-btn{display:block;width:100%;margin-top:10px;padding:11px 0;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:opacity 0.15s;}
+.lock-pick-btn{display:block;width:100%;margin-top:10px;padding:10px 20px;background:#22c55e;color:#fff;border:none;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:opacity 0.15s;}
 .lock-pick-btn:hover{opacity:0.82;}
 .lock-pick-btn:active{transform:scale(0.98);}
 </style>
@@ -294,7 +294,7 @@ const ALL_PLAYERS = [
   // PHILADELPHIA 76ERS
   {id:1630178,name:'Tyrese Maxey',team:'PHI',ppg:28.3,tpm:2.8,pct:37.4,pts:1,note:'PHI #1 &#xE2;&#x80;&#x94; PROBABLE (finger)'},
   {id:203081,name:'Paul George',team:'PHI',ppg:17.3,tpm:1.8,pct:36.1,pts:1,note:'17 pts Game 1'},
-  {id:1642845,name:'VJ Edgecombe',team:'PHI',ppg:14.2,tpm:1.9,pct:36.1,pts:1,note:'2025 #3 pick, explosive'},
+  {id:1642355,name:'VJ Edgecombe',team:'PHI',ppg:14.2,tpm:1.9,pct:36.1,pts:1,note:'2025 #3 pick, explosive'},
   {id:1628403,name:'Quentin Grimes',team:'PHI',ppg:13.1,tpm:2.3,pct:37.8,pts:2,note:'Floor spacer'},
   {id:1631190,name:'Jared McCain',team:'PHI',ppg:11.6,tpm:2.0,pct:36.8,pts:2,note:'Rookie sharpshooter'},
   {id:200768,name:'Kyle Lowry',team:'PHI',ppg:9.4,tpm:1.2,pct:34.6,pts:2,note:'Veteran backup PG'},
@@ -302,7 +302,7 @@ const ALL_PLAYERS = [
   // SAN ANTONIO SPURS
   {id:1641705,name:'Victor Wembanyama',team:'SAS',ppg:25.0,tpm:1.8,pct:34.9,pts:1,note:'35 pts & 5 threes Game 1!'},
   {id:1628368,name:"De'Aaron Fox",team:'SAS',ppg:22.4,tpm:1.8,pct:34.2,pts:1,note:'Trade deadline star'},
-  {id:1630175,name:'Devin Vassell',team:'SAS',ppg:18.2,tpm:2.4,pct:38.1,pts:1,note:'4-9 from 3 in Game 1'},
+  {id:1630170,name:'Devin Vassell',team:'SAS',ppg:18.2,tpm:2.4,pct:38.1,pts:1,note:'4-9 from 3 in Game 1'},
   {id:1642264,name:'Stephon Castle',team:'SAS',ppg:15.6,tpm:1.4,pct:33.8,pts:2,note:'ROY candidate'},
   {id:203084,name:'Harrison Barnes',team:'SAS',ppg:12.4,tpm:1.8,pct:37.2,pts:2,note:'Veteran wing'},
   {id:1631115,name:'Jeremy Sochan',team:'SAS',ppg:10.8,tpm:1.2,pct:33.4,pts:2,note:'Versatile PF'},
@@ -310,7 +310,7 @@ const ALL_PLAYERS = [
   {id:1629123,name:'Luke Kornet',team:'SAS',ppg:7.2,tpm:1.0,pct:34.8,pts:3,note:'Backup C, spells Wemby'},
   // PORTLAND TRAIL BLAZERS
   {id:1630166,name:'Deni Avdija',team:'POR',ppg:24.2,tpm:2.1,pct:36.4,pts:1,note:'2026 All-Star'},
-  {id:1631109,name:'Shaedon Sharpe',team:'POR',ppg:20.8,tpm:2.6,pct:37.2,pts:1,note:'Explosive scorer'},
+  {id:1631100,name:'Shaedon Sharpe',team:'POR',ppg:20.8,tpm:2.6,pct:37.2,pts:1,note:'Explosive scorer'},
   {id:203924,name:'Jerami Grant',team:'POR',ppg:18.6,tpm:1.8,pct:36.2,pts:1,note:'Portland third scorer'},
   {id:201950,name:'Jrue Holiday',team:'POR',ppg:16.3,tpm:1.6,pct:35.8,pts:2,note:'Veteran leader'},
   {id:1630703,name:'Scoot Henderson',team:'POR',ppg:14.1,tpm:1.5,pct:33.6,pts:2,note:'Developing PG'},
@@ -378,7 +378,7 @@ const ALL_PLAYERS = [
   // ATLANTA HAWKS
   {id:1630244,name:'Jalen Johnson',team:'ATL',ppg:22.5,tpm:1.4,pct:33.6,pts:1,note:'1st All-Star, Game 2 hero'},
   {id:1629638,name:'Nickeil Alexander-Walker',team:'ATL',ppg:20.8,tpm:2.7,pct:38.4,pts:1,note:'32 pts Game 2 comeback'},
-  {id:1629006,name:'CJ McCollum',team:'ATL',ppg:19.4,tpm:2.5,pct:37.8,pts:1,note:'Acquired in Trae trade'},
+  {id:203468,name:'CJ McCollum',team:'ATL',ppg:19.4,tpm:2.5,pct:37.8,pts:1,note:'Acquired in Trae trade'},
   {id:1630557,name:'Corey Kispert',team:'ATL',ppg:12.1,tpm:2.0,pct:38.6,pts:2,note:'Came with CJ, sniper'},
   {id:1629627,name:'Dyson Daniels',team:'ATL',ppg:14.2,tpm:1.6,pct:35.4,pts:2,note:'Defensive specialist'},
   {id:1642258,name:'Zaccharie Risacher',team:'ATL',ppg:12.6,tpm:1.8,pct:36.2,pts:2,note:'2024 #1 pick, developing'},
@@ -400,7 +400,7 @@ const ALL_PLAYERS = [
   {id:202685,name:'Jakob Poeltl',team:'TOR',ppg:9.8,tpm:0.0,pct:0.0,pts:3,note:'Starting center'},
   // ORLANDO MAGIC
   {id:1631094,name:'Paolo Banchero',team:'ORL',ppg:22.3,tpm:1.6,pct:34.2,pts:1,note:'23 pts Game 1 upset'},
-  {id:1631107,name:'Franz Wagner',team:'ORL',ppg:20.4,tpm:2.1,pct:35.8,pts:1,note:'19 pts Game 1'},
+  {id:1630532,name:'Franz Wagner',team:'ORL',ppg:20.4,tpm:2.1,pct:35.8,pts:1,note:'19 pts Game 1'},
   {id:1630217,name:'Desmond Bane',team:'ORL',ppg:20.5,tpm:2.8,pct:38.6,pts:1,note:'17 pts Game 1'},
   {id:1630530,name:'Jalen Suggs',team:'ORL',ppg:13.7,tpm:1.9,pct:36.1,pts:2,note:'Defensive spark plug'},
   {id:1641710,name:'Anthony Black',team:'ORL',ppg:15.1,tpm:1.4,pct:34.8,pts:2,note:'Starting PG'},
@@ -633,7 +633,7 @@ function renderPicksTab(){
     html+="<div class='picks-summary'><h3>&#xE2;&#x9C;&#x85; YOUR PICKS TODAY ("+picked.length+"/"+GAMES.length+")</h3>";
     picked.forEach(([gid,pname])=>{
       const p=findPlayer(pname); if(!p) return;
-      const ptsLbl=p.pts===1?'&#xE2;&#xAD;&#x90; 1PT':p.pts===2?'&#xF0;&#x9F;&#x8F;&#x80; 2PT':'&#xF0;&#x9F;&#xA7;&#xB1; 3PT';
+      const ptsLbl=p.pts===1?'1PT':p.pts===2?'2PT':'3PT';
       const ptsCls='pts-'+p.pts;
       html+="<div class='pick-row'>";
       html+="<img class='pr-photo' src='"+photoUrl(p.id)+"' onerror=\"this.style.background='#1a1a30';this.src=''\" alt='"+pname+"'>";
@@ -1027,7 +1027,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
         var gameId = parts.slice(1, parts.length - 1).join('_');
         var btn = document.createElement('button');
         btn.className = 'lock-pick-btn';
-        btn.innerHTML = '&#x1F512; LOCK IN PICK';
+        btn.innerHTML = 'PICK';
         btn.onclick = function() {
           if (sel.value && window.onPickPlayer) window.onPickPlayer(gameId, sel.value);
         };
