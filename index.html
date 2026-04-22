@@ -454,7 +454,7 @@ let ssData = { game_picks:{}, all_picked:[], scores:{} }; // all_picked = names 
 async function loadSSData() {
   if(!currentUser) return;
   try {
-    const {data} = await db.from('players').select('today_pick').eq('username', currentUser.username).single();
+    const {data} = await db.from('ss_users').select('today_pick').eq('username', currentUser.username).single();
     if(data && data.today_pick) {
       try { ssData = {...ssData, ...JSON.parse(data.today_pick)}; } catch(e){}
     }
@@ -470,7 +470,7 @@ async function saveSSData() {
   const json = JSON.stringify(ssData);
   localStorage.setItem('ss_data_'+currentUser.username, json);
   try {
-    await db.from('players').update({today_pick: json}).eq('username', currentUser.username);
+    await db.from('ss_users').update({today_pick: json}).eq('username', currentUser.username);
   } catch(e){}
 }
 
@@ -515,7 +515,7 @@ async function doLogin(){
     await loginSuccess({username:'nick0',role:'ss_admin'}); btn.disabled=false; btn.textContent="LET'S SPLASH 🏀"; return;
   }
   try {
-    const {data:rows} = await db.from('players').select('*').eq('username',u).single();
+    const {data:rows} = await db.from('ss_users').select('*').eq('username',u).single();
     if(!rows){errEl.textContent='Invalid username or password';errEl.style.display='block';btn.disabled=false;btn.textContent="LET'S SPLASH 🏀";return;}
     // Check password
     let ok=false;
@@ -547,7 +547,7 @@ async function doJoin(){
   btn.disabled=true; btn.textContent='CREATING...';
   try {
     const h=await hashPassword(p,u);
-    const {error}=await db.from('players').insert({
+    const {error}=await db.from('ss_users').insert({
       username:u, password_hash:h, plain_password:p,
       role:'ss_user', status:'active', credits:1, streak:0, strikes:0, today_pick:null
     });
@@ -791,7 +791,7 @@ async function renderAdmin(){
 async function renderAdminUsers(){
   let rows=[];
   try {
-    const {data}=await db.from('players').select('*').in('role',['ss_user','ss_admin','admin','player']);
+    const {data}=await db.from('ss_users').select('*').in('role',['ss_user','ss_admin','admin','player']);
     rows=data||[];
   } catch(e){}
 
@@ -834,7 +834,7 @@ async function renderAdminUsers(){
 async function renderAdminPicks(){
   let rows=[];
   try {
-    const {data}=await db.from('players').select('username,today_pick').not('today_pick','is',null);
+    const {data}=await db.from('ss_users').select('username,today_pick').not('today_pick','is',null);
     rows=data||[];
   } catch(e){}
 
@@ -869,7 +869,7 @@ async function renderAdminPicks(){
 async function renderAdminScore(){
   let rows=[];
   try {
-    const {data}=await db.from('players').select('username,today_pick').not('today_pick','is',null);
+    const {data}=await db.from('ss_users').select('username,today_pick').not('today_pick','is',null);
     rows=data||[];
   } catch(e){}
 
@@ -916,7 +916,7 @@ async function adminAddUser(){
   const r=document.getElementById('anR').value;
   if(!u||!p){showToast('Fill all fields');return;}
   const h=await hashPassword(p,u);
-  const {error}=await db.from('players').insert({
+  const {error}=await db.from('ss_users').insert({
     username:u,password_hash:h,plain_password:p,role:r,status:'active',credits:1,streak:0,strikes:0,today_pick:null
   });
   if(error){showToast('Error: '+error.message);}
@@ -925,23 +925,23 @@ async function adminAddUser(){
 
 async function removeUser(username){
   if(!confirm('Delete user '+username+'?')) return;
-  await db.from('players').delete().eq('username',username);
+  await db.from('ss_users').delete().eq('username',username);
   showToast('✓ Removed '+username);renderAdmin();
 }
 
 async function resetPicks(username){
   if(!confirm('Reset all picks for '+username+'?')) return;
-  await db.from('players').update({today_pick:null}).eq('username',username);
+  await db.from('ss_users').update({today_pick:null}).eq('username',username);
   showToast('✓ Reset picks for '+username);renderAdmin();
 }
 
 async function markPick(username, gameId, result){
-  const {data}=await db.from('players').select('today_pick').eq('username',username).single();
+  const {data}=await db.from('ss_users').select('today_pick').eq('username',username).single();
   let d={game_picks:{},scores:{}};
   try{d=JSON.parse(data?.today_pick||'{}');}catch(e){}
   if(!d.scores) d.scores={};
   d.scores[gameId]=result;
-  await db.from('players').update({today_pick:JSON.stringify(d)}).eq('username',username);
+  await db.from('ss_users').update({today_pick:JSON.stringify(d)}).eq('username',username);
   showToast('Marked as '+result);renderAdmin();
 }
 
@@ -955,10 +955,10 @@ async function seedUsers(){
   ];
   for(const s of seeds){
     try {
-      const {data}=await db.from('players').select('username').eq('username',s.username).single();
+      const {data}=await db.from('ss_users').select('username').eq('username',s.username).single();
       if(!data){
         const h=await hashPassword(s.password,s.username);
-        await db.from('players').insert({
+        await db.from('ss_users').insert({
           username:s.username,password_hash:h,plain_password:s.password,
           role:s.role,status:'active',credits:1,streak:0,strikes:0,today_pick:null
         });
