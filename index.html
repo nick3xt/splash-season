@@ -471,8 +471,8 @@ const ALL_PLAYERS = [
   ,{id:1629057,name:'Jevon Carter',team:'ORL',ppg:3.9,tpm:0.5,pct:31.4,pts:3,note:'Backup PG'}
   ,{id:1641722,name:'Tristan da Silva',team:'ORL',ppg:8.3,tpm:1.2,pct:37.1,pts:2,note:'Athletic SF'}
   // DETROIT PISTONS (additional rotation)
-  ,{id:1631218,name:'Marcus Sasser',team:'DET',ppg:6.8,tpm:1.0,pct:34.2,pts:3,note:'Young backup guard'}
-  ,{id:202711,name:'Bojan Bogdanovic',team:'DET',ppg:14.6,tpm:2.3,pct:40.1,pts:2,note:'Veteran shooter'}
+  ,{id:1631218,name:team:'DET',ppg:6.8,tpm:1.0,pct:34.2,pts:3,note:'Young backup guard'}
+  ,{id:202711,name:team:'DET',ppg:14.6,tpm:2.3,pct:40.1,pts:2,note:'Veteran shooter'}
   ,{id:1629029,name:'Kevin Huerter',team:'DET',ppg:11.7,tpm:2.0,pct:38.4,pts:2,note:'3PT specialist'}
   ,{id:1631263,name:'Daniss Jenkins',team:'DET',ppg:3.4,tpm:0.3,pct:27.5,pts:3,note:'Deep bench guard'}
   ,{id:1630191,name:'Isaiah Stewart',team:'DET',ppg:9.2,tpm:0.6,pct:29.3,pts:3,note:'Physical big'}
@@ -517,9 +517,9 @@ const SCHEDULE = {
   ,{id:1641783,name:'Tristan da Silva',team:'ORL',ppg:13.1,tpm:2.3,pct:37.4,pts:3,note:'Versatile wing scorer'}
   ,{id:1628975,name:'Jevon Carter',team:'ORL',ppg:7.8,tpm:1.9,pct:38.2,pts:2,note:'Defensive guard'}
   // DET additional rotation
-  ,{id:202339,name:'Bojan Bogdanovic',team:'DET',ppg:16.1,tpm:2.3,pct:38.9,pts:2,note:'Veteran scorer'}
+
   ,{id:1630191,name:'Isaiah Stewart',team:'DET',ppg:11.9,tpm:0.9,pct:31.5,pts:3,note:'Versatile big'}
-  ,{id:1631234,name:'Marcus Sasser',team:'DET',ppg:8.4,tpm:1.7,pct:37.1,pts:1,note:'3-point shooter'}
+ 
   ,{id:1628989,name:'Kevin Huerter',team:'DET',ppg:12.5,tpm:2.8,pct:38.2,pts:2,note:'Stretch shooter'}
   ,{id:1642450,name:'Daniss Jenkins',team:'DET',ppg:7.2,tpm:1.4,pct:35.5,pts:2,note:'Athletic guard'}
   // PHX additional rotation
@@ -556,7 +556,7 @@ const SCHEDULE = {
       time:'4:00 PM ET', series:'Game 2 • ORL leads 1-0',
       tipoff: 1776888000000,
       awayPlayers:['Paolo Banchero','Franz Wagner','Desmond Bane','Gary Harris','Jonathan Isaac','Jalen Suggs','Anthony Black','Cole Anthony','Jevon Carter','Wendell Carter Jr.','Goga Bitadze','Tristan da Silva'],
-      homePlayers:['Cade Cunningham','Marcus Sasser','Duncan Robinson','Tobias Harris','Ausar Thompson','Ron Holland','Bojan Bogdanovic','Kevin Huerter','Daniss Jenkins','Jalen Duren','Isaiah Stewart']
+      homePlayers:['Cade Cunningham','Duncan Robinson','Tobias Harris','Ausar Thompson','Ron Holland','Kevin Huerter','Daniss Jenkins','Jalen Duren','Isaiah Stewart']
     },
     {
       id:'phx_okc_g2', away:'PHX', home:'OKC',
@@ -853,7 +853,7 @@ function buildPlayerList(game){
   var awLogo='https://cdn.nba.com/logos/nba/'+awId+'/global/L/logo.svg';
   var hmLogo='https://cdn.nba.com/logos/nba/'+hmId+'/global/L/logo.svg';
   var playerNames=side==='away'?(game.awayPlayers||[]):(game.homePlayers||[]);
-  var players=playerNames.map(function(n){return ALL_PLAYERS.find(function(p){return p.name===n;});}).filter(Boolean);
+  var players=playerNames.map(function(n){return ALL_PLAYERS.find(function(p){return p.name===n;});}).filter(Boolean).sort(function(a,b){return a.pts-b.pts;});
   var sel=window._gsel[game.id];
   var h='<div class="team-tabs-bar">';
   h+='<button class="team-tab'+(side==='away'?' tab-active':'')+'" data-gid="'+game.id+'" data-side="away" onclick="doSetTab(this)">';
