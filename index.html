@@ -377,7 +377,7 @@ const ALL_PLAYERS = [
   {id:1629186,name:'Landry Shamet',team:'NYK',ppg:9.8,tpm:2.3,pct:39.2,pts:2,note:'Floor spacer'},
   // ATLANTA HAWKS
   {id:1630244,name:'Jalen Johnson',team:'ATL',ppg:22.5,tpm:1.4,pct:33.6,pts:1,note:'1st All-Star, Game 2 hero'},
-  {id:1629638,name:'Nickeil Alexander-Walker',team:'ATL',ppg:20.8,tpm:2.7,pct:38.4,pts:1,note:'32 pts Game 2 comeback'},
+  {id:1629638,name:'Luguentz Dort',team:'OKC',ppg:20.8,tpm:2.7,pct:38.4,pts:1,note:'32 pts Game 2 comeback'},
   {id:203468,name:'CJ McCollum',team:'ATL',ppg:19.4,tpm:2.5,pct:37.8,pts:1,note:'Acquired in Trae trade'},
   {id:1630557,name:'Corey Kispert',team:'ATL',ppg:12.1,tpm:2.0,pct:38.6,pts:2,note:'Came with CJ, sniper'},
   {id:1629627,name:'Dyson Daniels',team:'ATL',ppg:14.2,tpm:1.6,pct:35.4,pts:2,note:'Defensive specialist'},
@@ -1018,7 +1018,7 @@ window.addEventListener('DOMContentLoaded', async ()=>{
         '&#x1F3C0; No games scheduled today &#x2014; check back tomorrow!</div>'
       );
     }
-    // Add LOCK IN PICK button next to each player select dropdown
+    // Add PICK button next to each player select dropdown
     setTimeout(function() {
       document.querySelectorAll('select[id^="sel_"]').forEach(function(sel) {
         if (sel.nextElementSibling && sel.nextElementSibling.classList.contains('lock-pick-btn')) return;
