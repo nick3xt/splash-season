@@ -312,7 +312,7 @@ const ALL_PLAYERS = [
   {id:1629029,name:'Luka Doncic',team:'LAL',ppg:33.5,tpm:5.0,pct:37.8,pts:1,note:'MVP-level PG (hamstring injury)'},
   {id:1630559,name:'Austin Reaves',team:'LAL',ppg:23.3,tpm:2.8,pct:39.1,pts:1,note:'Key scorer (oblique injury)'},
   {id:203935,name:'Marcus Smart',team:'LAL',ppg:8.2,tpm:1.0,pct:32.5,pts:2,note:'Defensive PG'},
-  {id:1628370,name:'Luke Kennard',team:'LAL',ppg:12.4,tpm:3.2,pct:43.1,pts:2,note:'Sharpshooter'},
+  {id:1628379,name:'Luke Kennard',team:'LAL',ppg:12.4,tpm:3.2,pct:43.1,pts:2,note:'Sharpshooter'},
   {id:1629869,name:'Jarred Vanderbilt',team:'LAL',ppg:7.8,tpm:0.3,pct:28.6,pts:2,note:'Energy/defense'},
   {id:1629628,name:'Jaxson Hayes',team:'LAL',ppg:6.1,tpm:0.0,pct:0.0,pts:3,note:'Backup C'},
   {id:2544,name:'LeBron James',team:'LAL',ppg:20.9,tpm:1.4,pct:31.7,pts:1,note:'1st father-son playoff duo'},
@@ -410,7 +410,7 @@ const ALL_PLAYERS = [
   ,{id:1630596,name:'Evan Mobley',team:'CLE',ppg:17.2,tpm:1.0,pct:32.5,pts:1,note:'All-Star stretch big'}
   ,{id:1628470,name:'Jarrett Allen',team:'CLE',ppg:14.0,tpm:0.0,pct:0.0,pts:2,note:'Rim protector'}
   ,{id:1629622,name:'Max Strus',team:'CLE',ppg:13.4,tpm:3.1,pct:37.8,pts:2,note:'Sharpshooter'}
-  ,{id:1629656,name:'Ty Jerome',team:'CLE',ppg:12.0,tpm:2.5,pct:42.0,pts:2,note:'Breakout backup PG'}
+  ,{id:1629656,name:'Ty Jerome',team:'MEM',ppg:12.0,tpm:2.5,pct:42.0,pts:2,note:'Breakout backup PG'}
   ,{id:1630165,name:'Sam Merrill',team:'CLE',ppg:9.1,tpm:2.5,pct:42.0,pts:2,note:'3&D rotation'}
   // TOR
   ,{id:1629628,name:'RJ Barrett',team:'TOR',ppg:22.5,tpm:1.5,pct:33.5,pts:1,note:'TOR franchise star'}
@@ -424,7 +424,7 @@ const ALL_PLAYERS = [
   ,{id:203999,name:'Nikola Jokic',team:'DEN',ppg:29.6,tpm:0.8,pct:35.5,pts:1,note:'3x MVP, all-time great'}
   ,{id:1627750,name:'Jamal Murray',team:'DEN',ppg:20.0,tpm:2.5,pct:40.0,pts:1,note:'Clutch playoff performer'}
   ,{id:203932,name:'Aaron Gordon',team:'DEN',ppg:14.2,tpm:1.2,pct:35.5,pts:2,note:'Two-way forward'}
-  ,{id:1629008,name:'Michael Porter Jr.',team:'DEN',ppg:15.4,tpm:3.0,pct:41.5,pts:2,note:'3PT sniper'}
+  ,{id:1629008,name:'Michael Porter Jr.',team:'BKN',ppg:15.4,tpm:3.0,pct:41.5,pts:2,note:'3PT sniper'}
   ,{id:203484,name:'Kentavious Caldwell-Pope',team:'DEN',ppg:11.2,tpm:2.4,pct:40.5,pts:2,note:'3&D wing'}
   ,{id:201566,name:'Russell Westbrook',team:'DEN',ppg:10.5,tpm:1.0,pct:30.0,pts:2,note:'Veteran guard'}
   ,{id:1631212,name:'Peyton Watson',team:'DEN',ppg:8.5,tpm:1.5,pct:37.0,pts:2,note:'Developing wing'}
@@ -556,14 +556,14 @@ const SCHEDULE = {
   '2026-04-22': [
     {
       id:'orl_det_g2', away:'ORL', home:'DET',
-      time:'4:00 PM ET', series:'Game 2 • ORL leads 1-0',
+      time:'4:00 PM ET', series:'Game 2 â¢ ORL leads 1-0',
       tipoff: 1776888000000,
       awayPlayers:['Paolo Banchero','Franz Wagner','Desmond Bane','Gary Harris','Jonathan Isaac','Jalen Suggs','Anthony Black','Jamal Cain','Jevon Carter','Wendell Carter Jr.','Goga Bitadze','Tristan da Silva'],
       homePlayers:['Cade Cunningham','Duncan Robinson','Tobias Harris','Ausar Thompson','Ron Holland','Kevin Huerter','Daniss Jenkins','Jalen Duren','Isaiah Stewart','Javonte Green','Caris LeVert']
     },
     {
       id:'phx_okc_g2', away:'PHX', home:'OKC',
-      time:'6:30 PM ET', series:'Game 2 • OKC leads 1-0',
+      time:'6:30 PM ET', series:'Game 2 â¢ OKC leads 1-0',
       tipoff: 1776897000000,
       awayPlayers:['Devin Booker','Dillon Brooks','Nick Richards','Mark Williams','Royce O\'Neale','Jalen Green','Grayson Allen','Ryan Dunn','Collin Gillespie','Jordan Goodwin','Oso Ighodaro','Jamaree Bouyea','Haywood Highsmith','Khaman Maluach','Rasheer Fleming'],
       homePlayers:['Shai Gilgeous-Alexander','Jalen Williams','Chet Holmgren','Kenrich Williams','Jaylin Williams','Lu Dort','Isaiah Joe','Aaron Wiggins','Alex Caruso','Cason Wallace','Ajay Mitchell','Jared McCain','Isaiah Hartenstein']
@@ -572,21 +572,21 @@ const SCHEDULE = {
   '2026-04-23': [
     {
       id:'nyk_atl_g3', away:'NYK', home:'ATL',
-      time:'4:00 PM ET', series:'Game 3 • Series tied 1-1',
+      time:'4:00 PM ET', series:'Game 3 â¢ Series tied 1-1',
       tipoff: 1776974400000,
       awayPlayers:['Jalen Brunson','Karl-Anthony Towns','Mikal Bridges','OG Anunoby','Josh Hart','Miles McBride','Precious Achiuwa'],
       homePlayers:['CJ McCollum','Jalen Johnson','Dyson Daniels','Nickeil Alexander-Walker','Onyeka Okongwu','Jonathan Kuminga','Corey Kispert']
     },
     {
       id:'cle_tor_g3', away:'CLE', home:'TOR',
-      time:'5:00 PM ET', series:'Game 3 • CLE leads 2-0',
+      time:'5:00 PM ET', series:'Game 3 â¢ CLE leads 2-0',
       tipoff: 1776978000000,
       awayPlayers:['Donovan Mitchell','James Harden','Evan Mobley','Jarrett Allen','Max Strus','Ty Jerome','Sam Merrill'],
       homePlayers:['RJ Barrett','Scottie Barnes','Immanuel Quickley','Jakob Poeltl','Gradey Dick','Ochai Agbaji','Jonathan Mogbo']
     },
     {
       id:'den_min_g3', away:'DEN', home:'MIN',
-      time:'6:30 PM ET', series:'Game 3 • Series tied 1-1',
+      time:'6:30 PM ET', series:'Game 3 â¢ Series tied 1-1',
       tipoff: 1776983400000,
       awayPlayers:['Nikola Jokic','Jamal Murray','Aaron Gordon','Christian Braun','Cameron Johnson','Peyton Watson','Bruce Brown','Jonas Valanciunas','Spencer Jones'],
       homePlayers:['Anthony Edwards','Julius Randle','Jaden McDaniels','Rudy Gobert','Naz Reid','Mike Conley','Ayo Dosunmu','Bones Hyland']
@@ -875,7 +875,7 @@ function buildPlayerList(game){
     h+='<div class="prow'+(isLocked?' prow-locked':'')+(isSel?' prow-sel':'')+'"';
     h+=' data-gid="'+game.id+'" data-pname="'+safePName+'"';
     if(!isLocked) h+=' onclick="doPickSel(this)"';
-    h+='><img class="pthumb" src="https://cdn.nba.com/headshots/nba/latest/1040x760/'+p.id+'.png" onerror="this.onerror=null;this.src=SILHOUETTE">';
+    h+='>';
     h+='<span class="pname">'+p.name+'</span>';
     h+='<span class="badge-pt '+ptCls+'">'+ptLbl+'</span></div>';
   }
