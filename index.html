@@ -376,7 +376,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .rank-badge.dn{background:#ef4444;color:#fff}
 .board-card{transition:transform .4s cubic-bezier(.4,0,.2,1)}
 /* F5: pick confidence */
-.pick-confidence{display:none}.pick-3pt-pill{display:inline-flex;align-items:center;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:5px;color:var(--bg);background:var(--gold);letter-spacing:.3px;gap:0}
+.pick-confidence{display:none}.pick-3pt-pill{display:inline-block;font-size:.65rem;font-weight:500;margin-top:5px;color:var(--gold)}
 /* F6: streak badge */
 .streak-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ff6b35,#cc0000);color:#fff;font-weight:900;font-size:.9rem;padding:4px 13px;border-radius:20px;margin-left:12px;box-shadow:0 2px 16px rgba(255,80,0,.6);animation:strk 2s infinite}
 @keyframes strk{0%,100%{box-shadow:0 2px 16px rgba(255,80,0,.6)}50%{box-shadow:0 4px 32px rgba(255,80,0,1)}}
@@ -968,7 +968,7 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
     if (tierPlayers.length === 0) return;
     html += `<div class="tier-group-label">${labels[tier]}</div>`;
     tierPlayers.forEach(player => {
-      const isMyCurrentPick = currentPick && currentPick.id === player.id;
+      const isMyCurrentPick = currentPick && (currentPick.id === player.id || String(currentPick.id) === String(player.id));
       const burnedPast = !!(window._burnedIds?.has(player.id) && !isMyCurrentPick);
       const alreadyPickedByMe = (!isMyCurrentPick && myPickedPlayerIds.has(player.id)) || burnedPast;
       const photoUrl = getPhotoUrl(player.nba_id);
@@ -980,7 +980,7 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
         onclick="${alreadyPickedByMe ? '' : `selectPlayer(${gameId},'${side}',${player.id})`}">
                 <div class="pick-info">
           <div class="pick-name">${player.name}</div>
-          <div class="pick-stat">${stats}${alreadyPickedByMe ? ' · <span style="color:var(--red)">Already in your lineup</span>' : ''}</div>
+          <div class="pick-stat">${stats}${isMyCurrentPick ? ' · <span style="color:var(--green);font-weight:600">✓ Current Pick</span>' : alreadyPickedByMe ? ' · <span style="color:var(--red)">Already in your lineup</span>' : ''}</div>
           ${get3ptPill(player.name)}
         </div>
         <div class="pick-right">
