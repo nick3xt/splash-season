@@ -689,10 +689,13 @@ async function startApp() {
 // ═══════════════════════════════════════════════════════
 async function loadAll() {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const _now = new Date();
+    const localDate = `${_now.getFullYear()}-${String(_now.getMonth()+1).padStart(2,'0')}-${String(_now.getDate()).padStart(2,'0')}`;
+    const _yest = new Date(_now); _yest.setDate(_now.getDate() - 1);
+    const fromDate = `${_yest.getFullYear()}-${String(_yest.getMonth()+1).padStart(2,'0')}-${String(_yest.getDate()).padStart(2,'0')}`;
     const [playersRes, gamesRes, picksRes] = await Promise.all([
       db.from('ss_players').select('*').eq('is_active', true).order('tier').order('three_pct', { ascending: false }),
-      db.from('ss_games').select('*').gte('game_date', today).order('game_date').order('tip_off_et'),
+      db.from('ss_games').select('*').gte('game_date', fromDate).order('game_date').order('tip_off_et'),
       db.from('ss_picks').select('*').eq('user_id', currentUser.id)
     ]);
     allPlayers = playersRes.data || [];
