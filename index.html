@@ -758,8 +758,22 @@ async function loadAll() {
     todayGames = gamesRes.data || [];
     myPicks = picksRes.data || [];
     myPickedPlayerIds = new Set(myPicks.map(p => p.player_id));
-    const {data:_bpAll} = await db.from('ss_picks').select('player_id').eq('user_id',currentUser.id);
-    window._burnedIds = new Set((_bpAll||[]).map(p=>p.player_id));
+    // Only burn players from games where tip-off time has already passed
+    const _now = new Date();
+    const _todayStr = _now.toISOString().split('T')[0];
+    const {data:_lockedGamesRaw} = await db.from('ss_games').select('id,game_date,tip_off_et').lte('game_date', _todayStr);
+    const _lockedGids = (_lockedGamesRaw||[]).filter(g => {
+      if (g.game_date < _todayStr) return true;
+      const m = (g.tip_off_et||'').match(/(\d{1,2}):(\d{2})/);
+      if (!m) return false;
+      return new Date(g.game_date + 'T' + String(m[0]).padStart(5,'0') + ':00-04:00') <= _now;
+    }).map(g => g.id);
+    let _bpAll = [];
+    if (_lockedGids.length > 0) {
+      const {data:_bpData} = await db.from('ss_picks').select('player_id').eq('user_id',currentUser.id).in('game_id',_lockedGids);
+      _bpAll = _bpData||[];
+    }
+    window._burnedIds = new Set(_bpAll.map(p=>p.player_id));
     // Load results for today's games (to show ✅ on scored picks)
     const gameIds = todayGames.filter(g => {
       const d = new Date(g.game_date + 'T00:00:00');
