@@ -221,7 +221,9 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   border-radius: 12px; cursor: pointer; transition: background .15s; margin-bottom: 4px;
 }
 .pick-player-row:hover { background: var(--bg3); }
-.pick-player-row.greyed { opacity: 0.35; pointer-events: none; }
+.pick-player-row.burned-player { opacity: 0.42; cursor: not-allowed; pointer-events: none; }
+.burned-player .pick-name::after { content: " · USED"; color: #ff6b6b; font-size: 10px; font-weight: 700; }
+.greyed { opacity: 0.35; pointer-events: none; }
 .pick-player-row.my-pick { background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.25); }
 .pick-player-row.my-pick:hover { background: rgba(34,197,94,.12); }
 .pick-photo { width: 46px; height: 46px; border-radius: 10px; object-fit: cover; background: var(--bg3); flex-shrink: 0; }
@@ -600,7 +602,9 @@ const SUPABASE_KEY = 'sb_publishable_KvxJYevSYKP1Na_de5RCTQ_G9dDi0_L';
 // ═══════════════════════════════════════════════════════
 let db, currentUser;
 let allPlayers = [], todayGames = [], myPicks = [], allUsers = [];
-let myPickedPlayerIds = new Set(); // players picked by me in ANY game this playoffs
+let myPickedPlayerIds = new Set();
+    const {data:_bpAll} = await db.from('ss_picks').select('player_id').eq('user_id',currentUser.id);
+    window._burnedIds = new Set((_bpAll||[]).map(p=>p.player_id)); // players picked by me in ANY game this playoffs
 let todayResults = []; // ss_results for today's games (to show scored ✅)
 let currentTab = 'picks';
 let selectedDate = null; // selected date pill (YYYY-MM-DD)
@@ -918,13 +922,14 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
     html += `<div class="tier-group-label">${labels[tier]}</div>`;
     tierPlayers.forEach(player => {
       const isMyCurrentPick = currentPick && currentPick.id === player.id;
-      const alreadyPickedByMe = !isMyCurrentPick && myPickedPlayerIds.has(player.id);
+      const burnedPast = !!(window._burnedIds?.has(player.id) && !isMyCurrentPick);
+      const alreadyPickedByMe = (!isMyCurrentPick && myPickedPlayerIds.has(player.id)) || burnedPast;
       const photoUrl = getPhotoUrl(player.nba_id);
       const pct = player.three_pct ? player.three_pct.toFixed(1) + '% 3PT' : '';
       const pg = player.three_pg ? player.three_pg.toFixed(1) + ' 3PM/G' : '';
       const stats = [pg, pct].filter(Boolean).join(' · ');
 
-      html += `<div class="pick-player-row ${alreadyPickedByMe ? 'greyed' : ''} ${isMyCurrentPick ? 'my-pick' : ''}"
+      html += `<div class="pick-player-row ${burnedPast ? 'greyed burned-player' : alreadyPickedByMe ? 'greyed' : ''} ${isMyCurrentPick ? 'my-pick' : ''}"
         onclick="${alreadyPickedByMe ? '' : `selectPlayer(${gameId},'${side}',${player.id})`}">
                 <div class="pick-info">
           <div class="pick-name">${player.name}</div>
