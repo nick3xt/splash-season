@@ -1159,7 +1159,7 @@ function openAdmin() {
   if (!currentUser.is_admin) return;
   document.getElementById('admin-overlay').style.display = 'block';
   populateAdminSelects();
-  document.getElementById('setup-sql').textContent = SETUP_SQL;
+  const _sqlEl = document.getElementById('setup-sql'); if (_sqlEl) _sqlEl.textContent = SETUP_SQL;
   // Default today's date
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('a-date').value = today;
