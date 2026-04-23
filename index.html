@@ -690,10 +690,8 @@ async function startApp() {
   document.getElementById('app-screen').style.display = 'flex';
   document.getElementById('header-username').textContent = currentUser.nickname || currentUser.username;
   const ptsEl = document.getElementById('header-pts');
-  if ((currentUser.total_points || 0) > 0) {
-    ptsEl.textContent = (currentUser.total_points || 0) + ' PTS';
-    ptsEl.style.display = 'inline-block';
-  }
+  ptsEl.textContent = (currentUser.total_points || 0) + ' PTS';
+  ptsEl.style.display = 'inline-block';
   if (currentUser.is_admin) {
     document.getElementById('admin-btn').style.display = 'inline-block';
   }
@@ -930,8 +928,7 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
 
       html += `<div class="pick-player-row ${alreadyPickedByMe ? 'greyed' : ''} ${isMyCurrentPick ? 'my-pick' : ''}"
         onclick="${alreadyPickedByMe ? '' : `selectPlayer(${gameId},'${side}',${player.id})`}">
-        <img class="pick-photo" src="${photoUrl}" onerror="this.src='${silhouette()}'" alt="">
-        <div class="pick-info">
+                <div class="pick-info">
           <div class="pick-name">${player.name}</div>
           <div class="pick-stat">${stats}${alreadyPickedByMe ? ' · <span style="color:var(--red)">Already in your lineup</span>' : ''}</div>
         </div>
@@ -1071,10 +1068,7 @@ function renderTierList(tier) {
     const ppg = player.ppg ? player.ppg.toFixed(1) + ' PPG' : '';
     const stats = [pg, pct, ppg].filter(Boolean).join(' · ');
     return `<div class="player-card" style="${picked ? 'opacity:.5' : ''}">
-      <div class="player-photo-wrap">
-        <img class="player-photo" src="${getPhotoUrl(player.nba_id)}" onerror="this.src='${silhouette()}'" alt="">
-      </div>
-      <div class="player-info">
+            <div class="player-info">
         <div class="player-name">${player.name}</div>
         <div class="player-team">${player.team_full || player.team}${player.position ? ' · ' + player.position : ''}</div>
         <div class="player-stats">${stats}</div>
