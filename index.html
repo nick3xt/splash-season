@@ -689,15 +689,20 @@ async function startApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-screen').style.display = 'flex';
   document.getElementById('header-username').textContent = currentUser.nickname || currentUser.username;
-  const ptsEl = document.getElementById('header-pts');
-  ptsEl.textContent = (currentUser.total_points || 0) + ' PTS';
-  ptsEl.style.display = 'inline-block';
   if (currentUser.is_admin) {
     document.getElementById('admin-btn').style.display = 'inline-block';
+    document.querySelector('.nav-tabs').style.display = 'none';
+    document.querySelector('.tab-content').style.display = 'none';
+    await loadAll();
+    openAdmin();
+  } else {
+    const ptsEl = document.getElementById('header-pts');
+    ptsEl.textContent = (currentUser.total_points || 0) + ' PTS';
+    ptsEl.style.display = 'inline-block';
+    await loadAll();
+    renderCurrentTab();
+    checkNotifications();
   }
-  await loadAll();
-  renderCurrentTab();
-  checkNotifications();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -734,7 +739,7 @@ async function loadAll() {
 
 async function loadLeaderboard() {
   try {
-    const { data: users } = await db.from('ss_users').select('id, username, nickname, total_points').order('total_points', { ascending: false });
+    const { data: users } = await db.from('ss_users').select('id, username, nickname, total_points').eq('is_admin', false).order('total_points', { ascending: false });
     return users || [];
   } catch(e) { return []; }
 }
@@ -997,6 +1002,7 @@ function toggleTeam(sectionId) {
 // PICK SELECTION
 // ═══════════════════════════════════════════════════════
 async function selectPlayer(gameId, side, playerId) {
+  if (currentUser.is_admin) { showToast('Admin accounts cannot make picks.', 'error'); return; }
   const game = todayGames.find(g => g.id === gameId);
   if (!game) return;
   if (isGameLocked(game)) { showToast('Game is locked!', 'error'); return; }
