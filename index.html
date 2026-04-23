@@ -990,7 +990,7 @@ function renderShooterBoxes(game, locked, homePlayer, awayPlayer) {
     const sectionId = `team-${game.id}-${side}`;
     if (player) {
       const tier = player.tier;
-      const ptsLabel = tier === 'star' ? '1 PT · STAR' : tier === 'role' ? '2 PT · ROLE' : '3 PT · BRICK';
+      const ptsLabel = tier === 'star' ? '1 PT · EASY MONEY' : tier === 'role' ? '2 PT · MIDS' : '3 PT · BRICK';
       const scored = todayResults.some(r => r.player_id === player.id && r.made_three);
       const img = `<img class="shooter-box-photo" src="${getPhotoUrl(player.nba_id)}" onerror="this.src='${silhouette()}'" alt="">`;
       return `<div class="shooter-box filled" style="${scored ? 'border-color:rgba(34,197,94,.7);background:rgba(34,197,94,.12)' : ''}">
