@@ -27,7 +27,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; overflow-x: hidden; }
 
-/* ── LOGIN ── */
+/* ââ LOGIN ââ */
 #login-screen {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   min-height: 100vh; padding: 24px; background: var(--bg);
@@ -67,7 +67,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .kobe-mark { color: var(--gold); font-size: 1.1rem; font-style: normal; }
 .kobe-attr { margin-top: 6px; font-size: 0.7rem; color: var(--purple2); font-style: normal; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-/* ── SHOOTER BOXES ── */
+/* ââ SHOOTER BOXES ââ */
 .shooters-row {
   display: flex; gap: 10px; padding: 12px 14px 6px;
 }
@@ -89,7 +89,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .shooter-box-pts.role { color: var(--role-color); }
 .shooter-box-pts.brick { color: var(--brick-color); }
 
-/* ── APP ── */
+/* ââ APP ââ */
 #app-screen { display: none; flex-direction: column; height: 100vh; }
 .app-header {
   padding: 14px 20px 12px; background: var(--bg);
@@ -111,7 +111,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; text-transform: uppercase;
 }
 
-/* ── NAV TABS ── */
+/* ââ NAV TABS ââ */
 .nav-tabs {
   display: flex; background: var(--bg2); border-bottom: 1px solid var(--border);
   overflow-x: auto; flex-shrink: 0; -webkit-overflow-scrolling: touch; scrollbar-width: none;
@@ -130,12 +130,12 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .nav-tab.brick-tab.active { border-bottom-color: var(--brick-color); color: var(--brick-color); }
 .nav-tab.board-tab.active { border-bottom-color: var(--green); color: var(--green); }
 
-/* ── CONTENT ── */
+/* ââ CONTENT ââ */
 .tab-content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 .tab-pane { display: none; }
 .tab-pane.active { display: block; }
 
-/* ── TIER INFO BANNER ── */
+/* ââ TIER INFO BANNER ââ */
 .tier-banner {
   margin: 16px 16px 8px; border-radius: 14px; padding: 14px 16px;
   display: flex; align-items: center; gap: 14px;
@@ -153,7 +153,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .tier-banner-info h3 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
 .tier-banner-info p { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
 
-/* ── PLAYER LIST ── */
+/* ââ PLAYER LIST ââ */
 .section-header {
   padding: 16px 16px 8px; display: flex; justify-content: space-between; align-items: baseline;
 }
@@ -181,7 +181,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .tier-pill.role { background: rgba(129,140,248,.2); color: var(--role-color); border: 1px solid rgba(129,140,248,.4); }
 .tier-pill.brick { background: rgba(244,63,94,.2); color: var(--brick-color); border: 1px solid rgba(244,63,94,.4); }
 
-/* ── TODAY'S PICKS ── */
+/* ââ TODAY'S PICKS ââ */
 .picks-header { padding: 16px 16px 8px; }
 .picks-header h2 { font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 .picks-header p { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
@@ -222,7 +222,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 }
 .pick-player-row:hover { background: var(--bg3); }
 .pick-player-row.burned-player { opacity: 0.42; cursor: not-allowed; pointer-events: none; }
-.burned-player .pick-name::after { content: " · USED"; color: #ff6b6b; font-size: 10px; font-weight: 700; }
+.burned-player .pick-name::after { content: " Â· USED"; color: #ff6b6b; font-size: 10px; font-weight: 700; }
 .greyed { opacity: 0.35; pointer-events: none; }
 .pick-player-row.my-pick { background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.25); }
 .pick-player-row.my-pick:hover { background: rgba(34,197,94,.12); }
@@ -246,7 +246,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   padding: 8px 10px 4px; font-weight: 700;
 }
 
-/* ── DATE PILLS ── */
+/* ââ DATE PILLS ââ */
 .date-pill-row {
   display: flex; gap: 8px; overflow-x: auto; padding: 10px 12px 6px;
   -webkit-overflow-scrolling: touch; scrollbar-width: none;
@@ -262,7 +262,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   background: var(--gold); border-color: var(--gold); color: #000;
 }
 
-/* ── LEADERBOARD ── */
+/* ââ LEADERBOARD ââ */
 .board-header { padding: 16px 16px 8px; }
 .board-header h2 { font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 .board-header p { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
@@ -281,7 +281,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .board-pts-label { font-size: 0.65rem; color: var(--muted); text-align: right; }
 .board-pts-wrap { text-align: right; }
 
-/* ── ADMIN ── */
+/* ââ ADMIN ââ */
 #admin-overlay {
   display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 200;
   overflow-y: auto; padding: 20px;
@@ -318,7 +318,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .admin-table th { text-align: left; color: var(--muted); padding: 6px 8px; border-bottom: 1px solid var(--border); }
 .admin-table td { padding: 8px 8px; border-bottom: 1px solid var(--border); }
 
-/* ── TOAST ── */
+/* ââ TOAST ââ */
 #toast {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
   background: var(--card); border: 1px solid var(--border); border-radius: 14px;
@@ -330,18 +330,18 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 #toast.error { border-color: var(--red); color: var(--red); }
 #toast.info { border-color: var(--gold); color: var(--gold); }
 
-/* ── NOTIFICATION BANNER ── */
+/* ââ NOTIFICATION BANNER ââ */
 .notif-banner {
   background: rgba(34,197,94,.1); border-bottom: 1px solid rgba(34,197,94,.3);
   padding: 10px 16px; font-size: 0.8rem; color: var(--green); cursor: pointer;
 }
 
-/* ── EMPTY STATES ── */
+/* ââ EMPTY STATES ââ */
 .empty-state { text-align: center; padding: 60px 24px; color: var(--muted); }
 .empty-state .icon { font-size: 3rem; margin-bottom: 16px; }
 .empty-state p { font-size: 0.9rem; }
 
-/* ── LOADING ── */
+/* ââ LOADING ââ */
 .loading { text-align: center; padding: 60px 24px; color: var(--muted); font-size: 0.9rem; }
 .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--purple2); border-radius: 50%; animation: spin .8s linear infinite; margin-bottom: 12px; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -388,11 +388,11 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 <div id="login-screen">
   <div class="login-logo">
     <h1><span class="gold">SPLASH</span> <span class="purple">SEASON</span></h1>
-    <p>🏀 2026 NBA Playoffs Picks</p>
+    <p>ð 2026 NBA Playoffs Picks</p>
   </div>
   <div class="kobe-quote">
     <span class="kobe-mark">"</span>The moment you give up is the moment you let someone else win.<span class="kobe-mark">"</span>
-    <div class="kobe-attr">— Kobe Bryant</div>
+    <div class="kobe-attr">â Kobe Bryant</div>
   </div>
   <div class="login-card">
     <h2>Sign In</h2>
@@ -421,26 +421,26 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <span class="header-user" id="header-username"></span>
       <div class="pts-badge" id="header-pts" style="display:none"></div>
       <button class="btn-logout" onclick="doLogout()">Logout</button>
-      <button class="btn-admin" id="admin-btn" onclick="openAdmin()" style="display:none">⚙️</button>
+      <button class="btn-admin" id="admin-btn" onclick="openAdmin()" style="display:none">âï¸</button>
     </div>
   </header>
 
   <!-- Tabs -->
   <nav class="nav-tabs">
     <div class="nav-tab active" data-tab="picks" onclick="switchTab('picks')">
-      <span class="tab-icon">🎯</span>TODAY'S<br>PICKS
+      <span class="tab-icon">ð¯</span>TODAY'S<br>PICKS
     </div>
     <div class="nav-tab star-tab" data-tab="stars" onclick="switchTab('stars')">
-      <span class="tab-icon">⭐</span>STARS<br><span class="tab-pts">1 PT</span>
+      <span class="tab-icon">â­</span>STARS<br><span class="tab-pts">1 PT</span>
     </div>
     <div class="nav-tab role-tab" data-tab="role" onclick="switchTab('role')">
-      <span class="tab-icon">🏀</span>ROLE<br><span class="tab-pts">2 PT</span>
+      <span class="tab-icon">ð</span>ROLE<br><span class="tab-pts">2 PT</span>
     </div>
     <div class="nav-tab brick-tab" data-tab="brick" onclick="switchTab('brick')">
-      <span class="tab-icon">🧱</span>BRICK<br><span class="tab-pts">3 PT</span>
+      <span class="tab-icon">ð§±</span>BRICK<br><span class="tab-pts">3 PT</span>
     </div>
     <div class="nav-tab board-tab" data-tab="board" onclick="switchTab('board')">
-      <span class="tab-icon">🏆</span>BOARD
+      <span class="tab-icon">ð</span>BOARD
     </div>
   </nav>
 
@@ -450,14 +450,14 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
     <div class="tab-pane active" id="tab-picks">
       <div class="picks-header">
         <h2 id="picks-date-heading">Today's Games</h2>
-        <p id="picks-subhead">Pick one player from each team · Change anytime before tip-off</p>
+        <p id="picks-subhead">Pick one player from each team Â· Change anytime before tip-off</p>
       </div>
       <div id="date-pill-row" class="date-pill-row" style="display:none"></div>
       <div id="my-shooters-bar" style="display:none; margin:0 12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:14px; padding:12px 14px;">
-        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px">🎯 My Shooters Today <span id="streak-badge"></span></div>
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px">ð¯ My Shooters Today <span id="streak-badge"></span></div>
         <div id="my-shooters-inner" style="display:flex;flex-wrap:wrap;gap:8px"></div>
       </div>
-      <div id="games-list"><div class="loading"><div class="spinner"></div><br>Loading games…</div></div>
+      <div id="games-list"><div class="loading"><div class="spinner"></div><br>Loading gamesâ¦</div></div>
     </div>
 
     <!-- STARS -->
@@ -465,13 +465,13 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <div class="tier-banner star-banner">
         <div class="tier-badge-lg star">1PT</div>
         <div class="tier-banner-info">
-          <h3>⭐ Stars</h3>
-          <p>Elite shooters &amp; franchise players. Low risk, low reward — but still worth it.</p>
+          <h3>â­ Stars</h3>
+          <p>Elite shooters &amp; franchise players. Low risk, low reward â but still worth it.</p>
         </div>
       </div>
       <div class="section-header">
         <h2>Stars</h2>
-        <span id="stars-count">— players</span>
+        <span id="stars-count">â players</span>
       </div>
       <div id="stars-list"><div class="loading"><div class="spinner"></div></div></div>
     </div>
@@ -481,13 +481,13 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <div class="tier-banner role-banner">
         <div class="tier-badge-lg role">2PT</div>
         <div class="tier-banner-info">
-          <h3>🏀 Role Players</h3>
-          <p>Moderate shooters &amp; bench contributors — solid value picks.</p>
+          <h3>ð Role Players</h3>
+          <p>Moderate shooters &amp; bench contributors â solid value picks.</p>
         </div>
       </div>
       <div class="section-header">
         <h2>Role Players</h2>
-        <span id="role-count">— players</span>
+        <span id="role-count">â players</span>
       </div>
       <div id="role-list"><div class="loading"><div class="spinner"></div></div></div>
     </div>
@@ -497,13 +497,13 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <div class="tier-banner brick-banner">
         <div class="tier-badge-lg brick">3PT</div>
         <div class="tier-banner-info">
-          <h3>🧱 Brick City</h3>
+          <h3>ð§± Brick City</h3>
           <p>Centers &amp; low-usage bigs. Highest risk, highest reward if they splash one.</p>
         </div>
       </div>
       <div class="section-header">
         <h2>Brick City</h2>
-        <span id="brick-count">— players</span>
+        <span id="brick-count">â players</span>
       </div>
       <div id="brick-list"><div class="loading"><div class="spinner"></div></div></div>
     </div>
@@ -511,8 +511,8 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
     <!-- LEADERBOARD -->
     <div class="tab-pane" id="tab-board">
       <div class="board-header">
-        <h2>🏆 Leaderboard</h2>
-        <p id="board-subhead">2026 NBA Playoffs · Total Points</p>
+        <h2>ð Leaderboard</h2>
+        <p id="board-subhead">2026 NBA Playoffs Â· Total Points</p>
       </div>
       <div id="board-list"><div class="loading"><div class="spinner"></div></div></div>
     </div>
@@ -523,11 +523,11 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 <div id="admin-overlay">
   <div class="admin-panel">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <h2 style="margin:0">⚙️ Admin Panel</h2>
-      <button class="admin-close-btn" onclick="closeAdmin()">✕ Close</button>
+      <h2 style="margin:0">âï¸ Admin Panel</h2>
+      <button class="admin-close-btn" onclick="closeAdmin()">â Close</button>
     </div>
 
-    <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-weight:900;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid rgba(245,166,35,.3)">🏀 Games</div>
+    <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-weight:900;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid rgba(245,166,35,.3)">ð Games</div>
 
     <div class="admin-section">
       <h3>Add Game to Schedule</h3>
@@ -551,8 +551,8 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <h3>Lock / Unlock Picks</h3>
       <div class="admin-row">
         <select class="admin-select" id="a-lock-game"></select>
-        <button class="admin-btn" onclick="adminLockGame(true)">🔒 Lock</button>
-        <button class="admin-btn success" onclick="adminLockGame(false)">🔓 Unlock</button>
+        <button class="admin-btn" onclick="adminLockGame(true)">ð Lock</button>
+        <button class="admin-btn success" onclick="adminLockGame(false)">ð Unlock</button>
       </div>
       <div id="a-lock-status"></div>
     </div>
@@ -566,11 +566,11 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
         </select>
       </div>
       <div id="a-result-players"></div>
-      <button class="admin-btn success" onclick="adminSaveResults()" style="margin-top:10px">💾 Save &amp; Award Points</button>
+      <button class="admin-btn success" onclick="adminSaveResults()" style="margin-top:10px">ð¾ Save &amp; Award Points</button>
       <div id="a-result-status"></div>
     </div>
 
-    <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--purple2);font-weight:900;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid rgba(168,85,247,.3)">👤 Players</div>
+    <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--purple2);font-weight:900;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid rgba(168,85,247,.3)">ð¤ Players</div>
 
     <div class="admin-section">
       <h3>Add Player</h3>
@@ -581,16 +581,16 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       </div>
       <div class="admin-row">
         <select class="admin-select" id="a-p-tier">
-          <option value="star">⭐ Star — 1PT</option>
-          <option value="role" selected>🏀 Role Player — 2PT</option>
-          <option value="brick">🧱 Brick — 3PT</option>
+          <option value="star">â­ Star â 1PT</option>
+          <option value="role" selected>ð Role Player â 2PT</option>
+          <option value="brick">ð§± Brick â 3PT</option>
         </select>
       </div>
       <button class="admin-btn" onclick="adminAddPlayer()">+ Add Player</button>
       <div id="a-player-status"></div>
     </div>
 
-    <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--green);font-weight:900;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid rgba(34,197,94,.3)">🔑 Accounts</div>
+    <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--green);font-weight:900;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid rgba(34,197,94,.3)">ð Accounts</div>
 
     <div class="admin-section">
       <h3>Create Player Account</h3>
@@ -622,19 +622,19 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 <div id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // CONFIG
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const SUPABASE_URL = 'https://heykwxkyvbzffkhgrqgf.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_KvxJYevSYKP1Na_de5RCTQ_G9dDi0_L';
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // STATE
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let db, currentUser;
 let allPlayers = [], todayGames = [], myPicks = [], allUsers = [];
 let myPickedPlayerIds = new Set(); // players picked by me in ANY game this playoffs
-let todayResults = []; // ss_results for today's games (to show scored ✅)
+let todayResults = []; // ss_results for today's games (to show scored â)
 let currentTab = 'picks';
 let selectedDate = null; // selected date pill (YYYY-MM-DD)
 
@@ -653,9 +653,9 @@ function getTeamLogo(abbr) {
   return `https://cdn.nba.com/logos/nba/${id}/global/L/logo.svg`;
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // INIT
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 async function init() {
   const { createClient } = supabase;
   db = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -670,9 +670,9 @@ async function init() {
   }
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // AUTH
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 async function doLogin() {
   const btn = document.getElementById('login-btn');
   const errEl = document.getElementById('login-error');
@@ -680,7 +680,7 @@ async function doLogin() {
   const password = document.getElementById('login-pass').value.trim();
   errEl.textContent = '';
   if (!username || !password) { errEl.textContent = 'Enter username and password'; return; }
-  btn.disabled = true; btn.textContent = 'Signing in…';
+  btn.disabled = true; btn.textContent = 'Signing inâ¦';
   try {
     const { data, error } = await db.from('ss_users').select('*').eq('username', username).eq('password', password).single();
     if (error || !data) throw new Error('Invalid username or password');
@@ -708,9 +708,9 @@ function doLogout() {
 document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 document.getElementById('login-user').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-pass').focus(); });
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // START APP
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 async function startApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app-screen').style.display = 'flex';
@@ -732,9 +732,9 @@ async function startApp() {
   }
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // DATA LOADING
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 async function loadAll() {
   try {
     const _now = new Date();
@@ -752,7 +752,7 @@ async function loadAll() {
     myPickedPlayerIds = new Set(myPicks.map(p => p.player_id));
     const {data:_bpAll} = await db.from('ss_picks').select('player_id').eq('user_id',currentUser.id);
     window._burnedIds = new Set((_bpAll||[]).map(p=>p.player_id));
-    // Load results for today's games (to show ✅ on scored picks)
+    // Load results for today's games (to show â on scored picks)
     const gameIds = todayGames.filter(g => {
       const d = new Date(g.game_date + 'T00:00:00');
       return Math.abs((d - new Date()) / 86400000) <= 1;
@@ -780,9 +780,9 @@ async function loadAllUsers() {
   allUsers = data || [];
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // TAB SWITCHING
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -800,9 +800,9 @@ function renderCurrentTab() {
   else if (currentTab === 'board') renderBoard();
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // TODAY'S PICKS
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function renderMyShootersBar(games) {
   const bar = document.getElementById('my-shooters-bar');
   const inner = document.getElementById('my-shooters-inner');
@@ -822,8 +822,8 @@ function renderMyShootersBar(games) {
     return `<div style="display:flex;align-items:center;gap:6px;background:${scored ? 'rgba(34,197,94,.1)' : 'var(--card)'};border:1px solid ${scored ? 'rgba(34,197,94,.4)' : 'var(--border)'};border-radius:10px;padding:6px 10px;">
       <img src="${getPhotoUrl(player.nba_id)}" onerror="this.src='${silhouette()}'" style="width:28px;height:28px;border-radius:7px;object-fit:cover;flex-shrink:0">
       <div>
-        <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase">${player.name}${scored ? ' ✅' : ''}</div>
-        <div style="font-size:0.58rem;color:${color};font-weight:700">${tierPts[player.tier]} · ${player.team}</div>
+        <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase">${player.name}${scored ? ' â' : ''}</div>
+        <div style="font-size:0.58rem;color:${color};font-weight:700">${tierPts[player.tier]} Â· ${player.team}</div>
       </div>
     </div>`;
   }).join('');
@@ -869,7 +869,7 @@ function renderPicks() {
   const heading = document.getElementById('picks-date-heading');
 
   if (!selectedDate || gamesForDate.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="icon">🏀</div><p>No games scheduled.<br>Check back soon!</p></div>`;
+    container.innerHTML = `<div class="empty-state"><div class="icon">ð</div><p>No games scheduled.<br>Check back soon!</p></div>`;
     if (heading) heading.textContent = "Today's Games";
     renderMyShootersBar([]);
     return;
@@ -887,7 +887,7 @@ function renderPicks() {
   }
 
   renderMyShootersBar(gamesForDate);
-  var _rulesHtml = `<div class="rules-callout"><p>Pick <strong>1 player per team</strong> per game — <strong>2 picks per game</strong>. Once picked, that player is <strong>locked for your entire playoffs</strong>.</p><div class="rules-pts"><span>⭐ Stars = <strong style="color:var(--star-color)">1PT</strong></span><span>🏀 Role Players = <strong style="color:var(--role-color)">2PT</strong></span><span>🧱 Brick City = <strong style="color:var(--brick-color)">3PT</strong></span></div></div>` + gamesForDate.map(game => renderGameCard(game)).join('');
+  var _rulesHtml = `<div class="rules-callout"><p>Pick <strong>1 player per team</strong> per game â <strong>2 picks per game</strong>. Once picked, that player is <strong>locked for your entire playoffs</strong>.</p><div class="rules-pts"><span>â­ Stars = <strong style="color:var(--star-color)">1PT</strong></span><span>ð Role Players = <strong style="color:var(--role-color)">2PT</strong></span><span>ð§± Brick City = <strong style="color:var(--brick-color)">3PT</strong></span></div></div>` + gamesForDate.map(game => renderGameCard(game)).join('');
 container.innerHTML = _rulesHtml;
 }
 
@@ -911,7 +911,7 @@ function renderGameCard(game) {
         </div>
         ${logoImg(homeLogo, game.home_team)}
       </div>
-      ${locked ? '<div class="game-locked-badge">🔒 LOCKED</div>' : ''}
+      ${locked ? '<div class="game-locked-badge">ð LOCKED</div>' : ''}
     </div>
     ${renderShooterBoxes(game, locked, homePickPlayer, awayPickPlayer)}
     ${renderTeamSection(game, 'home', locked, homePickPlayer)}
@@ -928,9 +928,9 @@ function renderTeamSection(game, side, locked, pickPlayer) {
 
   let pickLine = '';
   if (pickPlayer) {
-    pickLine = `<span class="team-toggle-pick has-pick">✅ ${pickPlayer.name}${locked ? '' : ' · <span onclick="event.stopPropagation();openPickModal('+game.id+',\''+side+'\')" style="color:var(--gold);text-decoration:underline;cursor:pointer">Change</span>'}</span>`;
+    pickLine = `<span class="team-toggle-pick has-pick">â ${pickPlayer.name}${locked ? '' : ' Â· <span onclick="event.stopPropagation();openPickModal('+game.id+',\''+side+'\')" style="color:var(--gold);text-decoration:underline;cursor:pointer">Change</span>'}</span>`;
   } else if (locked) {
-    pickLine = `<span class="team-toggle-pick">🔒 No pick made</span>`;
+    pickLine = `<span class="team-toggle-pick">ð No pick made</span>`;
   } else {
     pickLine = `<span class="team-toggle-pick">Tap to pick</span>`;
   }
@@ -941,10 +941,10 @@ function renderTeamSection(game, side, locked, pickPlayer) {
         <div class="team-toggle-name">${teamFull}</div>
         <div>${pickLine}</div>
       </div>
-      <span class="team-toggle-arrow" id="arr-${sectionId}">›</span>
+      <span class="team-toggle-arrow" id="arr-${sectionId}">âº</span>
     </button>
     <div class="team-players" id="${sectionId}">
-      ${locked ? '<p style="padding:12px;font-size:.8rem;color:var(--muted);">Game is locked — picks closed.</p>' : renderPickablePlayers(teamPlayers, game.id, side, pickPlayer)}
+      ${locked ? '<p style="padding:12px;font-size:.8rem;color:var(--muted);">Game is locked â picks closed.</p>' : renderPickablePlayers(teamPlayers, game.id, side, pickPlayer)}
     </div>
   </div>`;
 }
@@ -953,7 +953,7 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
   if (players.length === 0) return '<p style="padding:12px;font-size:.8rem;color:var(--muted);">No players found for this team. Ask admin to add players.</p>';
 
   const tiers = ['star', 'role', 'brick'];
-  const labels = { star: '⭐ Stars · 1PT', role: '🏀 Role Players · 2PT', brick: '🧱 Brick City · 3PT' };
+  const labels = { star: 'â­ Stars Â· 1PT', role: 'ð Role Players Â· 2PT', brick: 'ð§± Brick City Â· 3PT' };
   let html = '';
   tiers.forEach(tier => {
     const tierPlayers = players.filter(p => p.tier === tier);
@@ -966,17 +966,17 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
       const photoUrl = getPhotoUrl(player.nba_id);
       const pct = player.three_pct ? player.three_pct.toFixed(1) + '% 3PT' : '';
       const pg = player.three_pg ? player.three_pg.toFixed(1) + ' 3PM/G' : '';
-      const stats = [pg, pct].filter(Boolean).join(' · ');
+      const stats = [pg, pct].filter(Boolean).join(' Â· ');
 
       html += `<div class="pick-player-row ${burnedPast ? 'greyed burned-player' : alreadyPickedByMe ? 'greyed' : ''} ${isMyCurrentPick ? 'my-pick' : ''}"
         onclick="${alreadyPickedByMe ? '' : `selectPlayer(${gameId},'${side}',${player.id})`}">
                 <div class="pick-info">
           <div class="pick-name">${player.name}</div>
-          <div class="pick-stat">${stats}${alreadyPickedByMe ? ' · <span style="color:var(--red)">Already in your lineup</span>' : ''}</div>
+          <div class="pick-stat">${stats}${alreadyPickedByMe ? ' Â· <span style="color:var(--red)">Already in your lineup</span>' : ''}</div>
           ${get3ptPill(player.name)}
         </div>
         <div class="pick-right">
-          ${isMyCurrentPick ? '<span class="pick-check">✅</span>' : ''}
+          ${isMyCurrentPick ? '<span class="pick-check">â</span>' : ''}
           <span class="tier-pill ${tier}">${tier === 'star' ? '1PT' : tier === 'role' ? '2PT' : '3PT'}</span>
         </div>
       </div>`;
@@ -990,21 +990,21 @@ function renderShooterBoxes(game, locked, homePlayer, awayPlayer) {
     const sectionId = `team-${game.id}-${side}`;
     if (player) {
       const tier = player.tier;
-      const ptsLabel = tier === 'star' ? '1 PT · STAR' : tier === 'role' ? '2 PT · ROLE' : '3 PT · BRICK';
+      const ptsLabel = tier === 'star' ? '1 PT Â· STAR' : tier === 'role' ? '2 PT Â· ROLE' : '3 PT Â· BRICK';
       const scored = todayResults.some(r => r.player_id === player.id && r.made_three);
       const img = `<img class="shooter-box-photo" src="${getPhotoUrl(player.nba_id)}" onerror="this.src='${silhouette()}'" alt="">`;
       return `<div class="shooter-box filled" style="${scored ? 'border-color:rgba(34,197,94,.7);background:rgba(34,197,94,.12)' : ''}">
         ${img}
         <div class="shooter-box-info">
           <div class="shooter-box-team">${label}</div>
-          <div class="shooter-box-name">${player.name}${scored ? ' ✅' : ''}</div>
+          <div class="shooter-box-name">${player.name}${scored ? ' â' : ''}</div>
           <div class="shooter-box-pts ${tier}">${ptsLabel}</div>
         </div>
       </div>`;
     }
     if (locked) {
       return `<div class="shooter-box locked-empty">
-        <div class="shooter-box-photo placeholder">🔒</div>
+        <div class="shooter-box-photo placeholder">ð</div>
         <div class="shooter-box-info">
           <div class="shooter-box-team">${label}</div>
           <div class="shooter-box-empty-name">No pick</div>
@@ -1012,7 +1012,7 @@ function renderShooterBoxes(game, locked, homePlayer, awayPlayer) {
       </div>`;
     }
     return `<div class="shooter-box" onclick="toggleTeam('${sectionId}')">
-      <div class="shooter-box-photo placeholder" style="font-size:1.1rem">＋</div>
+      <div class="shooter-box-photo placeholder" style="font-size:1.1rem">ï¼</div>
       <div class="shooter-box-info">
         <div class="shooter-box-team">${label}</div>
         <div class="shooter-box-empty-name">Pick a shooter</div>
@@ -1036,9 +1036,9 @@ function toggleTeam(sectionId) {
   if (arr) arr.classList.toggle('open', !isOpen);
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // PICK SELECTION
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 async function selectPlayer(gameId, side, playerId) {
   if (currentUser.is_admin) { showToast('Admin accounts cannot make picks.', 'error'); return; }
   const game = todayGames.find(g => g.id === gameId);
@@ -1062,7 +1062,7 @@ async function selectPlayer(gameId, side, playerId) {
     myPickedPlayerIds.add(playerId);
     const player = allPlayers.find(p => p.id === playerId);
     const pts = player.tier === 'star' ? '1PT' : player.tier === 'role' ? '2PT' : '3PT';
-    showToast(`✅ ${player.name} locked in (${pts})`, 'success');
+    showToast(`â ${player.name} locked in (${pts})`, 'success');
     renderPicks();
     // F8 burst
     setTimeout(() => {
@@ -1078,9 +1078,9 @@ async function selectPlayer(gameId, side, playerId) {
   }
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // GAME LOCKING
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 
 // -- FEATURE HELPER FUNCTIONS -------------------------
 function getGameTipoffDate(game) {
@@ -1218,18 +1218,18 @@ function isGameLocked(game) {
   } catch(e) { return false; }
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // TIER PLAYER LISTS (Stars / Role / Brick)
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function renderTierList(tier) {
   const containerId = `${tier === 'star' ? 'stars' : tier}-list`;
   const countId = `${tier === 'star' ? 'stars' : tier}-count`;
   const container = document.getElementById(containerId);
   const countEl = document.getElementById(countId);
   const players = allPlayers.filter(p => p.tier === tier);
-  if (countEl) countEl.textContent = players.length + ' players · 2026 Playoffs';
+  if (countEl) countEl.textContent = players.length + ' players Â· 2026 Playoffs';
   if (players.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="icon">🏀</div><p>No ${tier} players yet.<br>Admin can add players.</p></div>`;
+    container.innerHTML = `<div class="empty-state"><div class="icon">ð</div><p>No ${tier} players yet.<br>Admin can add players.</p></div>`;
     return;
   }
   container.innerHTML = players.map(player => {
@@ -1237,30 +1237,30 @@ function renderTierList(tier) {
     const pct = player.three_pct ? player.three_pct.toFixed(1) + '% 3PT' : '';
     const pg = player.three_pg ? player.three_pg.toFixed(1) + ' 3PM/G' : '';
     const ppg = player.ppg ? player.ppg.toFixed(1) + ' PPG' : '';
-    const stats = [pg, pct, ppg].filter(Boolean).join(' · ');
+    const stats = [pg, pct, ppg].filter(Boolean).join(' Â· ');
     return `<div class="player-card" style="${picked ? 'opacity:.5' : ''}">
             <div class="player-info">
         <div class="player-name">${player.name}</div>
-        <div class="player-team">${player.team_full || player.team}${player.position ? ' · ' + player.position : ''}</div>
+        <div class="player-team">${player.team_full || player.team}${player.position ? ' Â· ' + player.position : ''}</div>
         <div class="player-stats">${stats}</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
         <span class="tier-pill ${tier}">${tier === 'star' ? '1PT' : tier === 'role' ? '2PT' : '3PT'}</span>
-        ${picked ? '<span style="font-size:.65rem;color:var(--green)">✅ Used</span>' : ''}
+        ${picked ? '<span style="font-size:.65rem;color:var(--green)">â Used</span>' : ''}
       </div>
     </div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // LEADERBOARD
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 async function renderBoard() {
   const container = document.getElementById('board-list');
   container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   const users = await loadLeaderboard();
   if (users.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="icon">🏆</div><p>No scores yet.<br>Games in progress!</p></div>';
+    container.innerHTML = '<div class="empty-state"><div class="icon">ð</div><p>No scores yet.<br>Games in progress!</p></div>';
     return;
   }
   const _nRanks = {}; users.forEach((u,i) => { _nRanks[u.id] = i+1; }); const _pRanks = window._prevRanks || {};
@@ -1281,16 +1281,16 @@ async function renderBoard() {
   window._prevRanks = _nRanks;
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // NOTIFICATIONS
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 async function checkNotifications() {
   try {
     const { data } = await db.from('ss_notifications').select('*').eq('user_id', currentUser.id).eq('is_read', false).order('created_at', { ascending: false });
     if (data && data.length > 0) {
       const banner = document.getElementById('notif-banner');
       banner.style.display = 'block';
-      banner.textContent = `🔔 ${data[0].message}${data.length > 1 ? ` (+${data.length - 1} more)` : ''} — tap to dismiss`;
+      banner.textContent = `ð ${data[0].message}${data.length > 1 ? ` (+${data.length - 1} more)` : ''} â tap to dismiss`;
     }
   } catch(e) {}
 }
@@ -1302,9 +1302,9 @@ async function dismissNotifs() {
   } catch(e) {}
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // HELPERS
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function getPhotoUrl(nbaId) {
   if (!nbaId) return silhouette();
   return `https://cdn.nba.com/headshots/nba/latest/260x190/${nbaId}.png`;
@@ -1321,9 +1321,9 @@ function showToast(msg, type = 'info') {
   setTimeout(() => { t.className = ''; }, 3500);
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // ADMIN PANEL
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function openAdmin() {
   if (!currentUser.is_admin) return;
   document.getElementById('admin-overlay').style.display = 'block';
@@ -1360,7 +1360,7 @@ async function adminAddGame() {
     is_locked: false, status: 'scheduled'
   });
   if (error) { setStatus('a-game-status', 'Error: ' + error.message, 'err'); return; }
-  setStatus('a-game-status', '✅ Game added!', 'ok');
+  setStatus('a-game-status', 'â Game added!', 'ok');
   await loadAll(); renderCurrentTab(); populateAdminSelects();
 }
 
@@ -1369,7 +1369,7 @@ async function adminLockGame(lock) {
   if (!gameId) { setStatus('a-lock-status', 'Select a game', 'err'); return; }
   const { error } = await db.from('ss_games').update({ is_locked: lock }).eq('id', parseInt(gameId));
   if (error) { setStatus('a-lock-status', 'Error: ' + error.message, 'err'); return; }
-  setStatus('a-lock-status', lock ? '🔒 Game locked' : '🔓 Game unlocked', 'ok');
+  setStatus('a-lock-status', lock ? 'ð Game locked' : 'ð Game unlocked', 'ok');
   await loadAll(); renderCurrentTab();
 }
 
@@ -1417,7 +1417,7 @@ async function adminSaveResults() {
     // Send notification
     await db.from('ss_notifications').insert({
       user_id: pick.user_id,
-      message: `🔥 ${pick.ss_players?.name} made a 3! +${pts} point${pts > 1 ? 's' : ''} awarded.`,
+      message: `ð¥ ${pick.ss_players?.name} made a 3! +${pts} point${pts > 1 ? 's' : ''} awarded.`,
       is_read: false
     }).catch(() => {});
   }
@@ -1427,7 +1427,7 @@ async function adminSaveResults() {
     const newTotal = (user?.total_points || 0) + pts;
     await db.from('ss_users').update({ total_points: newTotal }).eq('id', parseInt(userId));
   }
-  setStatus('a-result-status', `✅ Results saved! ${Object.keys(pointsMap).length} player(s) scored.`, 'ok');
+  setStatus('a-result-status', `â Results saved! ${Object.keys(pointsMap).length} player(s) scored.`, 'ok');
 }
 
 async function adminAddPlayer() {
@@ -1438,7 +1438,7 @@ async function adminAddPlayer() {
   if (!name || !team) { setStatus('a-player-status', 'Name and team required', 'err'); return; }
   const { error } = await db.from('ss_players').insert({ name, team, position: pos, tier, is_active: true });
   if (error) { setStatus('a-player-status', 'Error: ' + error.message, 'err'); return; }
-  setStatus('a-player-status', `✅ ${name} added as ${tier}!`, 'ok');
+  setStatus('a-player-status', `â ${name} added as ${tier}!`, 'ok');
   await loadAll(); renderCurrentTab();
 }
 
@@ -1449,7 +1449,7 @@ async function adminCreateUser() {
   if (!username || !password) { setStatus('a-user-status', 'Username and password required', 'err'); return; }
   const { error } = await db.from('ss_users').insert({ username, password, nickname: nickname || username, total_points: 0, is_admin: false });
   if (error) { setStatus('a-user-status', 'Error: ' + error.message, 'err'); return; }
-  setStatus('a-user-status', `✅ User "${username}" created!`, 'ok');
+  setStatus('a-user-status', `â User "${username}" created!`, 'ok');
 }
 
 async function adminSetNickname() {
@@ -1458,7 +1458,7 @@ async function adminSetNickname() {
   if (!userId || !nick) { setStatus('a-nick-status', 'Select user and enter nickname', 'err'); return; }
   const { error } = await db.from('ss_users').update({ nickname: nick }).eq('id', parseInt(userId));
   if (error) { setStatus('a-nick-status', 'Error: ' + error.message, 'err'); return; }
-  setStatus('a-nick-status', `✅ Nickname set!`, 'ok');
+  setStatus('a-nick-status', `â Nickname set!`, 'ok');
 }
 
 function setStatus(id, msg, type) {
@@ -1468,9 +1468,9 @@ function setStatus(id, msg, type) {
   el.textContent = msg;
 }
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // DB SETUP SQL
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const SETUP_SQL = `-- Run in Supabase SQL Editor if tables are missing
 
 CREATE TABLE IF NOT EXISTS ss_users (
@@ -1554,14 +1554,41 @@ ALTER TABLE ss_players ADD COLUMN IF NOT EXISTS nba_id TEXT;
 -- Give nick0 admin rights
 UPDATE ss_users SET is_admin = TRUE WHERE username = 'nick0';`;
 
-// ═══════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 // BOOT
-// ═══════════════════════════════════════════════════════
-init();
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+loadPlayerStats().catch(()=>{}).finally(()=>init());
 
-  // === 3PT SEASON AVERAGES (fg3m/game, 2024-25) ===
-  const _ss3pt = {'Anthony Edwards':3.9,'Donovan Mitchell':3.2,'CJ McCollum':3.0,'James Harden':2.9,'Cameron Johnson':2.8,'Donte DiVincenzo':2.6,'Jalen Brunson':2.4,'Brandon Ingram':2.4,'Max Strus':2.3,'Jamal Murray':2.3,'OG Anunoby':2.3,'Tim Hardaway Jr.':2.1,'Naz Reid':2.1,'Jordan Clarkson':2.1,'Corey Kispert':2.0,'Sam Merrill':1.9,'Jose Alvarado':1.9,'Nikola Jokic':1.9,'Mikal Bridges':1.9,'RJ Barrett':1.9,'Karl-Anthony Towns':1.8,'Miles McBride':1.7,'Dennis Schroder':1.7,'Nickeil Alexander-Walker':1.7,'Mike Conley':1.7,'Julius Randle':1.6,'Aaron Gordon':1.5,'Gabe Vincent':1.5,'Ayo Dosunmu':1.4,'Bones Hyland':1.4,'Jalen Johnson':1.3,'Dean Wade':1.3,'Jaden McDaniels':1.3,'Evan Mobley':1.2,'Scottie Barnes':1.2,'Landry Shamet':1.2,'Christian Braun':1.1,'Jonathan Kuminga':1.1,'Dyson Daniels':1.1,'Josh Hart':1.1,'Bruce Brown':0.7,'Onyeka Okongwu':0.7,'Jeremy Sochan':0.5};
-  function get3ptPill(name){const v=_ss3pt[name];if(!v||v<0.5)return '';return '<span class="pick-3pt-pill">'+v.toFixed(1)+' 3PM</span>';}
+  // === NBA STATS API: live 3PT per-game (2024-25 Playoffs) ===
+  window._ss3pt = {};
+
+  async function loadPlayerStats() {
+    try {
+      const resp = await fetch('/api/nba-stats');
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const json = await resp.json();
+      if (json.error) throw new Error(json.error);
+      const rs = json.resultSets[0];
+      const h = rs.headers;
+      const ni = h.indexOf('PLAYER_NAME'), fi = h.indexOf('FG3M'),
+            ai = h.indexOf('FG3A'), pi = h.indexOf('FG3_PCT');
+      for (const row of rs.rowSet) {
+        window._ss3pt[row[ni]] = { fg3m: row[fi], fg3a: row[ai], fg3pct: row[pi] };
+      }
+      console.log('[SplashSeason] NBA stats loaded:', Object.keys(window._ss3pt).length, 'players');
+    } catch(e) {
+      console.warn('[SplashSeason] NBA stats failed:', e.message);
+    }
+  }
+
+  function get3ptPill(name) {
+    const d = window._ss3pt[name];
+    if (!d || d.fg3a < 0.5) return '';
+    return '<span class="pick-3pt-pill">' +
+      d.fg3m.toFixed(1) + ' 3PM · ' +
+      d.fg3a.toFixed(1) + ' 3PA · ' +
+      (d.fg3pct * 100).toFixed(1) + '% 3P%</span>';
+  }
 </script>
 </body>
 </html>
