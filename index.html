@@ -350,6 +350,36 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .results-badge.made { background: rgba(34,197,94,.2); color: var(--green); }
 .results-badge.miss { background: rgba(239,68,68,.1); color: var(--red); opacity: .6; }
 .rules-callout{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:14px}.rules-callout p{margin:0;font-size:0.78rem;color:var(--text);line-height:1.55}.rules-callout strong{color:var(--gold)}.rules-callout .rules-pts{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:0.72rem;font-weight:700}.rules-callout .rules-pts span{display:flex;align-items:center;gap:4px}
+
+/* F2: countdown */
+.game-countdown{font-size:1.1rem;font-weight:800;margin-top:4px;padding:1px 0;transition:color .5s}
+.game-countdown.green{color:#22c55e}
+.game-countdown.yellow{color:#f59e0b}
+.game-countdown.red{color:#ef4444;animation:cdpulse 1s infinite}
+@keyframes cdpulse{0%,100%{opacity:1}50%{opacity:.55}}
+/* F2: lock overlay */
+.game-card{position:relative}
+.game-lock-overlay{position:absolute;inset:0;z-index:20;background:rgba(0,0,0,.84);border-radius:inherit;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px}
+.game-lock-icon{font-size:2.8rem;line-height:1}
+.game-lock-text{font-size:1.75rem;font-weight:900;letter-spacing:3px;color:#fff;text-shadow:0 0 28px rgba(239,68,68,.95)}
+/* F3: rank badges */
+.rank-badge{display:inline-flex;align-items:center;font-size:.75rem;font-weight:900;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle}
+.rank-badge.up{background:#22c55e;color:#000}
+.rank-badge.dn{background:#ef4444;color:#fff}
+.board-card{transition:transform .4s cubic-bezier(.4,0,.2,1)}
+/* F5: pick confidence */
+.pick-confidence{display:inline-flex;align-items:center;font-size:.74rem;font-weight:800;padding:3px 10px;border-radius:20px;margin-top:5px;color:#fff;gap:3px;letter-spacing:.2px}
+/* F6: streak badge */
+.streak-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ff6b35,#cc0000);color:#fff;font-weight:900;font-size:.9rem;padding:4px 13px;border-radius:20px;margin-left:12px;box-shadow:0 2px 16px rgba(255,80,0,.6);animation:strk 2s infinite}
+@keyframes strk{0%,100%{box-shadow:0 2px 16px rgba(255,80,0,.6)}50%{box-shadow:0 4px 32px rgba(255,80,0,1)}}
+/* F8: pick burst */
+@keyframes pick-burst{0%{box-shadow:0 0 0 0 rgba(34,197,94,.9),inset 0 0 0 0 rgba(34,197,94,.1)}40%{box-shadow:0 0 0 20px rgba(34,197,94,0),inset 0 0 36px rgba(34,197,94,.35)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0),inset 0 0 0 0 rgba(34,197,94,0)}}
+.pick-burst{animation:pick-burst .75s ease-out forwards!important}
+/* F9: live badge */
+@keyframes livedot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.75)}}
+.status-live{display:inline-flex;align-items:center;gap:7px;background:#ef4444;color:#fff;font-size:.82rem;font-weight:900;padding:5px 12px;border-radius:20px;letter-spacing:1.5px;box-shadow:0 0 16px rgba(239,68,68,.8)}
+.status-live .ldot{width:10px;height:10px;background:#fff;border-radius:50%;animation:livedot 1s infinite;flex-shrink:0}
+.status-final{display:inline-flex;align-items:center;background:#374151;color:#9ca3af;font-size:.79rem;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:1px}
 </style>
 </head>
 <body>
@@ -424,7 +454,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       </div>
       <div id="date-pill-row" class="date-pill-row" style="display:none"></div>
       <div id="my-shooters-bar" style="display:none; margin:0 12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:14px; padding:12px 14px;">
-        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px">🎯 My Shooters Today</div>
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px">🎯 My Shooters Today <span id="streak-badge"></span></div>
         <div id="my-shooters-inner" style="display:flex;flex-wrap:wrap;gap:8px"></div>
       </div>
       <div id="games-list"><div class="loading"><div class="spinner"></div><br>Loading games…</div></div>
@@ -698,6 +728,7 @@ async function startApp() {
     await loadAll();
     renderCurrentTab();
     checkNotifications();
+    startCountdownTimer();
   }
 }
 
@@ -730,6 +761,8 @@ async function loadAll() {
       const { data: resultsData } = await db.from('ss_results').select('*').in('game_id', gameIds).eq('made_three', true);
       todayResults = resultsData || [];
     } else { todayResults = []; }
+    // F5+F6
+    await Promise.all([loadPickCounts(), loadUserStreak()]);
   } catch(e) {
     console.error('loadAll error', e);
   }
@@ -776,6 +809,9 @@ function renderMyShootersBar(games) {
   const todayPicksForDisplay = myPicks.filter(p => games.some(g => g.id === p.game_id));
   if (todayPicksForDisplay.length === 0) { bar.style.display = 'none'; return; }
   bar.style.display = 'block';
+  // F6 streak
+  const _sEl = document.getElementById('streak-badge');
+  if (_sEl) _sEl.innerHTML = (window._pickStreak >= 2) ? '<span class="streak-badge">&#x1F525; ' + window._pickStreak + ' day streak</span>' : '';
   inner.innerHTML = todayPicksForDisplay.map(pick => {
     const player = allPlayers.find(p => p.id === pick.player_id);
     if (!player) return '';
@@ -871,7 +907,7 @@ function renderGameCard(game) {
         ${logoImg(awayLogo, game.away_team)}
         <div>
           <div class="game-matchup">${game.away_team_full || game.away_team} @ ${game.home_team_full || game.home_team}</div>
-          <div class="game-time">${game.tip_off_et} ET</div>
+          ${renderGameTimeHtml(game)}
         </div>
         ${logoImg(homeLogo, game.home_team)}
       </div>
@@ -880,6 +916,7 @@ function renderGameCard(game) {
     ${renderShooterBoxes(game, locked, homePickPlayer, awayPickPlayer)}
     ${renderTeamSection(game, 'home', locked, homePickPlayer)}
     ${renderTeamSection(game, 'away', locked, awayPickPlayer)}
+  ${locked ? '<div class="game-lock-overlay"><div class="game-lock-icon">&#x1F512;</div><div class="game-lock-text">LOCKED</div></div>' : ''}
   </div>`;
 }
 
@@ -936,6 +973,7 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
                 <div class="pick-info">
           <div class="pick-name">${player.name}</div>
           <div class="pick-stat">${stats}${alreadyPickedByMe ? ' · <span style="color:var(--red)">Already in your lineup</span>' : ''}</div>
+          ${getConfidencePill(player.id)}
         </div>
         <div class="pick-right">
           ${isMyCurrentPick ? '<span class="pick-check">✅</span>' : ''}
@@ -1026,6 +1064,14 @@ async function selectPlayer(gameId, side, playerId) {
     const pts = player.tier === 'star' ? '1PT' : player.tier === 'role' ? '2PT' : '3PT';
     showToast(`✅ ${player.name} locked in (${pts})`, 'success');
     renderPicks();
+    // F8 burst
+    setTimeout(() => {
+      document.querySelectorAll('.pick-player-row.my-pick').forEach(r => {
+        r.classList.remove('pick-burst'); void r.offsetWidth;
+        r.classList.add('pick-burst');
+        r.addEventListener('animationend', () => r.classList.remove('pick-burst'), { once: true });
+      });
+    }, 80);
   } catch(e) {
     console.error(e);
     showToast('Error saving pick: ' + (e.message || e.error_description || 'Unknown error'), 'error');
@@ -1035,6 +1081,125 @@ async function selectPlayer(gameId, side, playerId) {
 // ═══════════════════════════════════════════════════════
 // GAME LOCKING
 // ═══════════════════════════════════════════════════════
+
+// -- FEATURE HELPER FUNCTIONS -------------------------
+function getGameTipoffDate(game) {
+  if (!game.tip_off_et || !game.game_date) return null;
+  try {
+    const m = game.tip_off_et.match(/(\d+):(\d+)\s*(AM|PM)/i);
+    if (!m) return null;
+    let [, h, min, ampm] = m;
+    h = parseInt(h); min = parseInt(min);
+    if (ampm.toUpperCase() === 'PM' && h !== 12) h += 12;
+    if (ampm.toUpperCase() === 'AM' && h === 12) h = 0;
+    const t = new Date(game.game_date + 'T00:00:00');
+    t.setUTCHours(h + 4, min, 0, 0);
+    return t;
+  } catch(e) { return null; }
+}
+
+function getGameStatus(game) {
+  const t = getGameTipoffDate(game);
+  if (!t) return 'pre';
+  const now = Date.now(), ts = t.getTime();
+  if (now < ts) return 'pre';
+  if (now < ts + 3 * 3600000) return 'live';
+  return 'final';
+}
+
+function renderGameTimeHtml(game) {
+  const st = getGameStatus(game);
+  if (st === 'live') return '<span class="status-live"><span class="ldot"></span>LIVE</span>';
+  if (st === 'final') return '<span class="status-final">FINAL</span>';
+  const t = getGameTipoffDate(game);
+  const base = '<div class="game-time">' + (game.tip_off_et || '') + ' ET</div>';
+  if (!t) return base;
+  const diff = t.getTime() - Date.now();
+  if (diff <= 0) return base;
+  const hh = Math.floor(diff / 3600000);
+  const mm = Math.floor((diff % 3600000) / 60000);
+  const ss = Math.floor((diff % 60000) / 1000);
+  const cls = diff < 1800000 ? 'red' : diff < 10800000 ? 'yellow' : 'green';
+  const str = hh > 0 ? hh + 'h ' + mm + 'm' : mm + 'm ' + ss + 's';
+  return base + '<div class="game-countdown ' + cls + '" data-game-id="' + game.id + '">Locks in ' + str + '</div>';
+}
+
+function getConfidencePill(playerId) {
+  const cnts = window._pickCounts || {};
+  const tot = window._pickCountTotal || 0;
+  if (tot === 0) return '<div style="font-size:.68rem;color:var(--muted);margin-top:4px">-- data</div>';
+  const n = cnts[playerId] || 0;
+  const pct = Math.round((n / tot) * 100);
+  const bg = pct >= 70 ? '#ef4444' : pct >= 50 ? '#f97316' : pct >= 30 ? '#eab308' : '#3b82f6';
+  const icon = pct >= 60 ? '&#x1F525;' : '&#x1F4CA;';
+  return '<span class="pick-confidence" style="background:' + bg + '">' + icon + ' ' + pct + '% of players picked this</span>';
+}
+
+async function loadPickCounts() {
+  try {
+    const _n = new Date();
+    const today = _n.getFullYear() + '-' + String(_n.getMonth()+1).padStart(2,'0') + '-' + String(_n.getDate()).padStart(2,'0');
+    const ids = (todayGames || []).filter(g => g.game_date === today).map(g => g.id);
+    if (!ids.length) { window._pickCounts = {}; window._pickCountTotal = 0; return; }
+    const { data } = await db.from('ss_picks').select('player_id, user_id').in('game_id', ids);
+    if (!data) { window._pickCounts = {}; window._pickCountTotal = 0; return; }
+    const uMap = {};
+    data.forEach(p => { if (!uMap[p.player_id]) uMap[p.player_id] = new Set(); uMap[p.player_id].add(p.user_id); });
+    window._pickCountTotal = new Set(data.map(p => p.user_id)).size || 1;
+    window._pickCounts = {};
+    Object.entries(uMap).forEach(([pid, s]) => { window._pickCounts[pid] = s.size; });
+  } catch(e) { window._pickCounts = {}; window._pickCountTotal = 0; }
+}
+
+async function loadUserStreak() {
+  try {
+    const { data } = await db.from('ss_picks').select('game_id').eq('user_id', currentUser.id);
+    if (!data || !data.length) { window._pickStreak = 0; return; }
+    const pSet = new Set(data.map(p => p.game_id));
+    const allG = todayGames || [];
+    const dates = [...new Set(allG.filter(g => pSet.has(g.id)).map(g => g.game_date))].sort().reverse();
+    const _n = new Date();
+    let streak = 0;
+    for (let i = 0; i < dates.length; i++) {
+      const e = new Date(_n); e.setDate(_n.getDate() - i);
+      const eStr = e.getFullYear() + '-' + String(e.getMonth()+1).padStart(2,'0') + '-' + String(e.getDate()).padStart(2,'0');
+      if (dates[i] === eStr) streak++; else break;
+    }
+    window._pickStreak = streak;
+  } catch(e) { window._pickStreak = 0; }
+}
+
+function startCountdownTimer() {
+  if (window._cdInt) clearInterval(window._cdInt);
+  window._cdInt = setInterval(() => {
+    document.querySelectorAll('[data-game-id]').forEach(el => {
+      const gid = parseInt(el.dataset.gameId);
+      const game = (todayGames || []).find(g => g.id === gid);
+      if (!game) return;
+      const t = getGameTipoffDate(game);
+      if (!t) return;
+      const diff = t.getTime() - Date.now();
+      if (diff <= 0) {
+        el.remove();
+        const card = document.getElementById('game-' + gid);
+        if (card && !card.querySelector('.game-lock-overlay')) {
+          const ov = document.createElement('div');
+          ov.className = 'game-lock-overlay';
+          ov.innerHTML = '<div class="game-lock-icon">&#x1F512;</div><div class="game-lock-text">LOCKED</div>';
+          card.appendChild(ov);
+        }
+        return;
+      }
+      const hh = Math.floor(diff / 3600000);
+      const mm = Math.floor((diff % 3600000) / 60000);
+      const ss = Math.floor((diff % 60000) / 1000);
+      el.className = 'game-countdown ' + (diff < 1800000 ? 'red' : diff < 10800000 ? 'yellow' : 'green');
+      el.textContent = 'Locks in ' + (hh > 0 ? hh + 'h ' + mm + 'm' : mm + 'm ' + ss + 's');
+    });
+  }, 1000);
+}
+
+// -----------------------------------------------------
 function isGameLocked(game) {
   if (game.is_locked) return true;
   if (!game.tip_off_et || !game.game_date) return false;
@@ -1098,6 +1263,7 @@ async function renderBoard() {
     container.innerHTML = '<div class="empty-state"><div class="icon">🏆</div><p>No scores yet.<br>Games in progress!</p></div>';
     return;
   }
+  const _nRanks = {}; users.forEach((u,i) => { _nRanks[u.id] = i+1; }); const _pRanks = window._prevRanks || {};
   container.innerHTML = users.map((u, i) => {
     const rank = i + 1;
     const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
@@ -1105,13 +1271,14 @@ async function renderBoard() {
     const display = u.nickname || u.username;
     return `<div class="board-card ${isMe ? 'me' : ''}">
       <div class="board-rank ${rankClass}">${rank}</div>
-      <div class="board-name">${display}${isMe ? ' <span style="color:var(--gold);font-size:.7rem">(You)</span>' : ''}</div>
+      <div class="board-name">${display}${(()=>{ const _pr=_pRanks[u.id]; if(!_pr||_pr===rank) return ''; return _pr>rank ? '<span class="rank-badge up">&#x2191;'+((_pr-rank))+'</span>' : '<span class="rank-badge dn">&#x2193;'+((rank-_pr))+'</span>'; })()}${isMe ? ' <span style="color:var(--gold);font-size:.7rem">(You)</span>' : ''}</div>
       <div class="board-pts-wrap">
         <div class="board-pts">${u.total_points || 0}</div>
         <div class="board-pts-label">pts</div>
       </div>
     </div>`;
   }).join('');
+  window._prevRanks = _nRanks;
 }
 
 // ═══════════════════════════════════════════════════════
