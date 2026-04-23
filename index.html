@@ -349,6 +349,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .results-badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 8px; font-weight: 700; }
 .results-badge.made { background: rgba(34,197,94,.2); color: var(--green); }
 .results-badge.miss { background: rgba(239,68,68,.1); color: var(--red); opacity: .6; }
+.rules-callout{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:14px}.rules-callout p{margin:0;font-size:0.78rem;color:var(--text);line-height:1.55}.rules-callout strong{color:var(--gold)}.rules-callout .rules-pts{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:0.72rem;font-weight:700}.rules-callout .rules-pts span{display:flex;align-items:center;gap:4px}
 </style>
 </head>
 <body>
@@ -850,7 +851,8 @@ function renderPicks() {
   }
 
   renderMyShootersBar(gamesForDate);
-  container.innerHTML = gamesForDate.map(game => renderGameCard(game)).join('');
+  var _rulesHtml = `<div class="rules-callout"><p>Pick <strong>1 player per team</strong> per game — <strong>2 picks per game</strong>. Once picked, that player is <strong>locked for your entire playoffs</strong>.</p><div class="rules-pts"><span>⭐ Stars = <strong style="color:var(--star-color)">1PT</strong></span><span>🏀 Role Players = <strong style="color:var(--role-color)">2PT</strong></span><span>🧱 Brick City = <strong style="color:var(--brick-color)">3PT</strong></span></div></div>` + gamesForDate.map(game => renderGameCard(game)).join('');
+container.innerHTML = _rulesHtml;
 }
 
 function renderGameCard(game) {
