@@ -251,8 +251,12 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 
 .tier-group-label {
   font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;
-  padding: 8px 10px 4px; font-weight: 700;
+  padding: 12px 10px 4px; font-weight: 700;
+  border-top: 3px solid var(--border); margin-top: 16px;
 }
+.tier-group-label.tier-star  { border-top-color: var(--star-color); }
+.tier-group-label.tier-role  { border-top-color: var(--purple2); }
+.tier-group-label.tier-brick { border-top-color: var(--brick-color); }
 
 /* ── DATE PILLS ── */
 .date-pill-row {
@@ -761,12 +765,7 @@ async function loadAll() {
     // Only burn players from games where tip-off time has already passed
     const _burnToday = _now.toISOString().split('T')[0];
     const {data:_lockGmRaw} = await db.from('ss_games').select('id,game_date,tip_off_et').lte('game_date', _burnToday);
-    const _lockGids = (_lockGmRaw||[]).filter(g => {
-      if (g.game_date < _burnToday) return true;
-      const m = (g.tip_off_et||'').match(/(\d{1,2}):(\d{2})/);
-      if (!m) return false;
-      return new Date(g.game_date + 'T' + String(m[0]).padStart(5,'0') + ':00-04:00') <= _now;
-    }).map(g => g.id);
+    const _lockGids = (_lockGmRaw||[]).filter(g => isGameLocked(g)).map(g => g.id);
     let _bpAll = [];
     if (_lockGids.length > 0) {
       const {data:_bpLkData} = await db.from('ss_picks').select('player_id').eq('user_id',currentUser.id).in('game_id',_lockGids);
@@ -980,7 +979,7 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
   tiers.forEach(tier => {
     const tierPlayers = players.filter(p => p.tier === tier);
     if (tierPlayers.length === 0) return;
-    html += `<div class="tier-group-label">${labels[tier]}</div>`;
+    html += `<div class="tier-group-label tier-${tier}">${labels[tier]}</div>`;
     tierPlayers.forEach(player => {
       const isMyCurrentPick = currentPick && (currentPick.id === player.id || String(currentPick.id) === String(player.id));
       const burnedPast = !!(window._burnedIds?.has(player.id) && !isMyCurrentPick);
