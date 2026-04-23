@@ -434,7 +434,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <span class="tab-icon">💰</span>EASY MONEY<br><span class="tab-pts">1 PT</span>
     </div>
     <div class="nav-tab role-tab" data-tab="role" onclick="switchTab('role')">
-      <span class="tab-icon">🏀</span>ROLE<br><span class="tab-pts">2 PT</span>
+      <span class="tab-icon">🏀</span>MIDS<br><span class="tab-pts">2 PT</span>
     </div>
     <div class="nav-tab brick-tab" data-tab="brick" onclick="switchTab('brick')">
       <span class="tab-icon">🧱</span>BRICK<br><span class="tab-pts">3 PT</span>
@@ -476,17 +476,17 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <div id="stars-list"><div class="loading"><div class="spinner"></div></div></div>
     </div>
 
-    <!-- ROLE PLAYERS -->
+    <!-- MIDS -->
     <div class="tab-pane" id="tab-role">
       <div class="tier-banner role-banner">
         <div class="tier-badge-lg role">2PT</div>
         <div class="tier-banner-info">
-          <h3>🏀 Role Players</h3>
+          <h3>🏀 MIDS</h3>
           <p>Moderate shooters &amp; bench contributors — solid value picks.</p>
         </div>
       </div>
       <div class="section-header">
-        <h2>Role Players</h2>
+        <h2>MIDS</h2>
         <span id="role-count">— players</span>
       </div>
       <div id="role-list"><div class="loading"><div class="spinner"></div></div></div>
@@ -582,7 +582,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <div class="admin-row">
         <select class="admin-select" id="a-p-tier">
           <option value="star">💰 Easy Money — 1PT</option>
-          <option value="role" selected>🏀 Role Player — 2PT</option>
+          <option value="role" selected>🏀 MIDS — 2PT</option>
           <option value="brick">🧱 Brick — 3PT</option>
         </select>
       </div>
@@ -887,7 +887,7 @@ function renderPicks() {
   }
 
   renderMyShootersBar(gamesForDate);
-  var _rulesHtml = `<div class="rules-callout"><p>Pick <strong>1 player per team</strong> per game — <strong>2 picks per game</strong>. Once picked, that player is <strong>locked for your entire playoffs</strong>.</p><div class="rules-pts"><span>💰 Easy Money = <strong style="color:var(--star-color)">1PT</strong></span><span>🏀 Role Players = <strong style="color:var(--role-color)">2PT</strong></span><span>🧱 Brick City = <strong style="color:var(--brick-color)">3PT</strong></span></div></div>` + gamesForDate.map(game => renderGameCard(game)).join('');
+  var _rulesHtml = `<div class="rules-callout"><p>Pick <strong>1 player per team</strong> per game — <strong>2 picks per game</strong>. Once picked, that player is <strong>locked for your entire playoffs</strong>.</p><div class="rules-pts"><span>💰 Easy Money = <strong style="color:var(--star-color)">1PT</strong></span><span>🏀 MIDS = <strong style="color:var(--role-color)">2PT</strong></span><span>🧱 Brick City = <strong style="color:var(--brick-color)">3PT</strong></span></div></div>` + gamesForDate.map(game => renderGameCard(game)).join('');
 container.innerHTML = _rulesHtml;
 }
 
@@ -953,7 +953,7 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
   if (players.length === 0) return '<p style="padding:12px;font-size:.8rem;color:var(--muted);">No players found for this team. Ask admin to add players.</p>';
 
   const tiers = ['star', 'role', 'brick'];
-  const labels = { star: '💰 Easy Money · 1PT', role: '🏀 Role Players · 2PT', brick: '🧱 Brick City · 3PT' };
+  const labels = { star: '💰 Easy Money · 1PT', role: '🏀 MIDS · 2PT', brick: '🧱 Brick City · 3PT' };
   let html = '';
   tiers.forEach(tier => {
     const tierPlayers = players.filter(p => p.tier === tier);
@@ -1219,7 +1219,7 @@ function isGameLocked(game) {
 }
 
 // ═══════════════════════════════════════════════════════
-// TIER PLAYER LISTS (Easy Money / Role / Brick)
+// TIER PLAYER LISTS (Easy Money / MIDS / Brick)
 // ═══════════════════════════════════════════════════════
 function renderTierList(tier) {
   const containerId = `${tier === 'star' ? 'stars' : tier}-list`;
