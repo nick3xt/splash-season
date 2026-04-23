@@ -160,6 +160,14 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .section-header h2 { font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 .section-header span { font-size: 0.75rem; color: var(--muted); }
 
+/* ── TIER SECTION HEADERS ── */
+.section-header.star-tier { border-left: 4px solid #f5a623; padding-left: 12px; background: rgba(245,166,35,.06); border-radius: 0 8px 8px 0; margin: 0 12px 4px; }
+.section-header.star-tier h2 { color: #f5a623; font-size: 0.95rem; }
+.section-header.role-tier { border-left: 4px solid #818cf8; padding-left: 12px; background: rgba(129,140,248,.06); border-radius: 0 8px 8px 0; margin: 0 12px 4px; }
+.section-header.role-tier h2 { color: #818cf8; font-size: 0.95rem; }
+.section-header.brick-tier { border-left: 4px solid #f43f5e; padding-left: 12px; background: rgba(244,63,94,.06); border-radius: 0 8px 8px 0; margin: 0 12px 4px; }
+.section-header.brick-tier h2 { color: #f43f5e; font-size: 0.95rem; }
+
 .player-card {
   margin: 0 12px 10px; background: var(--card); border: 1px solid var(--border);
   border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 12px;
@@ -173,9 +181,9 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .player-info { flex: 1; min-width: 0; }
 .player-name { font-size: 0.95rem; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .player-team { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-.player-stats { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+.player-stats { font-size: 0.65rem; color: #f5a623; margin-top: 2px; font-weight: 500; }
 .tier-pill {
-  flex-shrink: 0; padding: 5px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 800;
+  flex-shrink: 0; padding: 5px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.3px;
 }
 .tier-pill.star { background: rgba(245,166,35,.2); color: var(--star-color); border: 1px solid rgba(245,166,35,.4); }
 .tier-pill.role { background: rgba(129,140,248,.2); color: var(--role-color); border: 1px solid rgba(129,140,248,.4); }
@@ -469,8 +477,8 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
           <p>Elite shooters &amp; franchise players. Low risk, low reward — but still worth it.</p>
         </div>
       </div>
-      <div class="section-header">
-        <h2>Easy Money</h2>
+      <div class="section-header star-tier">
+        <h2>💰 EASY MONEY</h2>
         <span id="stars-count">— players</span>
       </div>
       <div id="stars-list"><div class="loading"><div class="spinner"></div></div></div>
@@ -485,8 +493,8 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
           <p>Moderate shooters &amp; bench contributors — solid value picks.</p>
         </div>
       </div>
-      <div class="section-header">
-        <h2>MIDS</h2>
+      <div class="section-header role-tier">
+        <h2>🏀 MIDS</h2>
         <span id="role-count">— players</span>
       </div>
       <div id="role-list"><div class="loading"><div class="spinner"></div></div></div>
@@ -501,8 +509,8 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
           <p>Centers &amp; low-usage bigs. Highest risk, highest reward if they splash one.</p>
         </div>
       </div>
-      <div class="section-header">
-        <h2>Brick City</h2>
+      <div class="section-header brick-tier">
+        <h2>🧱 BRICK CITY</h2>
         <span id="brick-count">— players</span>
       </div>
       <div id="brick-list"><div class="loading"><div class="spinner"></div></div></div>
@@ -817,7 +825,7 @@ function renderMyShootersBar(games) {
     if (!player) return '';
     const scored = todayResults.some(r => r.player_id === player.id && r.made_three);
     const tierColors = { star: 'var(--star-color)', role: 'var(--role-color)', brick: 'var(--brick-color)' };
-    const tierPts = { star: '1PT', role: '2PT', brick: '3PT' };
+    const tierPts = { star: '💰 EASY', role: '🏀 MIDS', brick: '🧱 BRICK' };
     const color = tierColors[player.tier] || 'var(--muted)';
     return `<div style="display:flex;align-items:center;gap:6px;background:${scored ? 'rgba(34,197,94,.1)' : 'var(--card)'};border:1px solid ${scored ? 'rgba(34,197,94,.4)' : 'var(--border)'};border-radius:10px;padding:6px 10px;">
       <img src="${getPhotoUrl(player.nba_id)}" onerror="this.src='${silhouette()}'" style="width:28px;height:28px;border-radius:7px;object-fit:cover;flex-shrink:0">
@@ -977,7 +985,7 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
         </div>
         <div class="pick-right">
           ${isMyCurrentPick ? '<span class="pick-check">✅</span>' : ''}
-          <span class="tier-pill ${tier}">${tier === 'star' ? '1PT' : tier === 'role' ? '2PT' : '3PT'}</span>
+          <span class="tier-pill ${tier}">${tier === 'star' ? '💰 EASY' : tier === 'role' ? '🏀 MIDS' : '🧱 BRICK'}</span>
         </div>
       </div>`;
     });
@@ -1061,7 +1069,7 @@ async function selectPlayer(gameId, side, playerId) {
     }
     myPickedPlayerIds.add(playerId);
     const player = allPlayers.find(p => p.id === playerId);
-    const pts = player.tier === 'star' ? '1PT' : player.tier === 'role' ? '2PT' : '3PT';
+    const pts = player.tier === 'star' ? '💰 EASY' : player.tier === 'role' ? '🏀 MIDS' : '🧱 BRICK';
     showToast(`✅ ${player.name} locked in (${pts})`, 'success');
     renderPicks();
     // F8 burst
@@ -1245,7 +1253,7 @@ function renderTierList(tier) {
         <div class="player-stats">${stats}</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-        <span class="tier-pill ${tier}">${tier === 'star' ? '1PT' : tier === 'role' ? '2PT' : '3PT'}</span>
+        <span class="tier-pill ${tier}">${tier === 'star' ? '💰 EASY' : tier === 'role' ? '🏀 MIDS' : '🧱 BRICK'}</span>
         ${picked ? '<span style="font-size:.65rem;color:var(--green)">✅ Used</span>' : ''}
       </div>
     </div>`;
