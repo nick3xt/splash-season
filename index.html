@@ -368,7 +368,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .rank-badge.dn{background:#ef4444;color:#fff}
 .board-card{transition:transform .4s cubic-bezier(.4,0,.2,1)}
 /* F5: pick confidence */
-.pick-confidence{display:inline-flex;align-items:center;font-size:.74rem;font-weight:800;padding:3px 10px;border-radius:20px;margin-top:5px;color:#fff;gap:3px;letter-spacing:.2px}
+.pick-confidence{display:none}.pick-3pt-pill{display:inline-flex;align-items:center;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:5px;color:var(--bg);background:var(--gold);letter-spacing:.3px;gap:0}
 /* F6: streak badge */
 .streak-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ff6b35,#cc0000);color:#fff;font-weight:900;font-size:.9rem;padding:4px 13px;border-radius:20px;margin-left:12px;box-shadow:0 2px 16px rgba(255,80,0,.6);animation:strk 2s infinite}
 @keyframes strk{0%,100%{box-shadow:0 2px 16px rgba(255,80,0,.6)}50%{box-shadow:0 4px 32px rgba(255,80,0,1)}}
@@ -973,7 +973,7 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
                 <div class="pick-info">
           <div class="pick-name">${player.name}</div>
           <div class="pick-stat">${stats}${alreadyPickedByMe ? ' · <span style="color:var(--red)">Already in your lineup</span>' : ''}</div>
-          ${getConfidencePill(player.id)}
+          ${get3ptPill(player.name)}
         </div>
         <div class="pick-right">
           ${isMyCurrentPick ? '<span class="pick-check">✅</span>' : ''}
@@ -1558,6 +1558,10 @@ UPDATE ss_users SET is_admin = TRUE WHERE username = 'nick0';`;
 // BOOT
 // ═══════════════════════════════════════════════════════
 init();
+
+  // === 3PT SEASON AVERAGES (fg3m/game, 2024-25) ===
+  const _ss3pt = {'Anthony Edwards':3.9,'Donovan Mitchell':3.2,'CJ McCollum':3.0,'James Harden':2.9,'Cameron Johnson':2.8,'Donte DiVincenzo':2.6,'Jalen Brunson':2.4,'Brandon Ingram':2.4,'Max Strus':2.3,'Jamal Murray':2.3,'OG Anunoby':2.3,'Tim Hardaway Jr.':2.1,'Naz Reid':2.1,'Jordan Clarkson':2.1,'Corey Kispert':2.0,'Sam Merrill':1.9,'Jose Alvarado':1.9,'Nikola Jokic':1.9,'Mikal Bridges':1.9,'RJ Barrett':1.9,'Karl-Anthony Towns':1.8,'Miles McBride':1.7,'Dennis Schroder':1.7,'Nickeil Alexander-Walker':1.7,'Mike Conley':1.7,'Julius Randle':1.6,'Aaron Gordon':1.5,'Gabe Vincent':1.5,'Ayo Dosunmu':1.4,'Bones Hyland':1.4,'Jalen Johnson':1.3,'Dean Wade':1.3,'Jaden McDaniels':1.3,'Evan Mobley':1.2,'Scottie Barnes':1.2,'Landry Shamet':1.2,'Christian Braun':1.1,'Jonathan Kuminga':1.1,'Dyson Daniels':1.1,'Josh Hart':1.1,'Bruce Brown':0.7,'Onyeka Okongwu':0.7,'Jeremy Sochan':0.5};
+  function get3ptPill(name){const v=_ss3pt[name];if(!v||v<0.5)return '';return '<span class="pick-3pt-pill">'+v.toFixed(1)+' 3PM</span>';}
 </script>
 </body>
 </html>
