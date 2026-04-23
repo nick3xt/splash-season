@@ -963,6 +963,7 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
   const tiers = ['star', 'role', 'brick'];
   const labels = { star: '💰 Easy Money · 1PT', role: '🏀 MIDS · 2PT', brick: '🧱 Brick City · 3PT' };
   let html = '';
+  const otherGamePickIds = new Set(myPicks.filter(p => String(p.game_id) !== String(gameId)).map(p => p.player_id));
   tiers.forEach(tier => {
     const tierPlayers = players.filter(p => p.tier === tier);
     if (tierPlayers.length === 0) return;
@@ -970,7 +971,7 @@ function renderPickablePlayers(players, gameId, side, currentPick) {
     tierPlayers.forEach(player => {
       const isMyCurrentPick = currentPick && (currentPick.id === player.id || String(currentPick.id) === String(player.id));
       const burnedPast = !!(window._burnedIds?.has(player.id) && !isMyCurrentPick);
-      const alreadyPickedByMe = (!isMyCurrentPick && myPickedPlayerIds.has(player.id)) || burnedPast;
+      const alreadyPickedByMe = (!isMyCurrentPick && otherGamePickIds.has(player.id)) || burnedPast;
       const photoUrl = getPhotoUrl(player.nba_id);
       const pct = player.three_pct ? player.three_pct.toFixed(1) + '% 3PT' : '';
       const pg = player.three_pg ? player.three_pg.toFixed(1) + ' 3PM/G' : '';
