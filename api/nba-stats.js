@@ -46,7 +46,17 @@ export default async function handler(req) {
     ["Jarace Walker",0.73,2.2,0.332],["Ben Sheppard",0.71,1.9,0.374],["Julian Strawther",0.67,1.9,0.353],
     ["Aaron Holiday",0.67,1.8,0.372],["Ryan Rollins",0.67,1.9,0.353],["Isaac Okoro",0.67,2.1,0.319],
     ["Landry Shamet",0.64,1.7,0.376],["Jaylin Williams",0.6,1.9,0.316],["Wendell Carter Jr.",0.6,1.9,0.316],
-    ["Peyton Watson",0.5,1.5,0.333],["Baylor Scheierman",0.5,1.3,0.385],["Luke Kennard",0.5,1.2,0.417]
+    ["Peyton Watson",0.5,1.5,0.333],["Baylor Scheierman",0.5,1.3,0.385],["Luke Kennard",0.5,1.2,0.417],
+    ["Jordan Poole",3.5,9.2,0.380],["Victor Wembanyama",3.1,8.8,0.352],["Zach LaVine",3.2,8.2,0.390],
+    ["Klay Thompson",3.0,7.1,0.422],["Trae Young",2.9,8.3,0.350],["Anfernee Simons",2.8,7.6,0.368],
+    ["CJ McCollum",2.5,6.6,0.379],["Lauri Markkanen",2.5,6.8,0.368],["Kevin Durant",2.4,6.3,0.381],
+    ["Brandon Ingram",2.4,6.3,0.381],["Terry Rozier",2.3,6.2,0.371],["Kyrie Irving",2.2,5.5,0.401],
+    ["Malik Monk",2.1,5.5,0.381],["Immanuel Quickley",2.0,5.2,0.385],["Kentavious Caldwell-Pope",2.0,5.3,0.377],
+    ["Quentin Grimes",1.9,5.5,0.345],["Devin Booker",1.9,5.4,0.352],["De'Andre Hunter",1.6,4.3,0.372],
+    ["Dejounte Murray",1.6,4.7,0.340],["Josh Green",1.4,3.8,0.368],["Corey Kispert",1.4,3.3,0.424],
+    ["Kevin Huerter",1.8,4.6,0.391],["RJ Barrett",1.8,5.3,0.340],["De'Aaron Fox",1.7,5.5,0.309],
+    ["Spencer Dinwiddie",1.5,4.5,0.333],["Cole Anthony",1.5,4.3,0.349],["Scottie Barnes",1.3,3.9,0.333],
+    ["Cam Thomas",1.3,3.7,0.351],["Dyson Daniels",1.1,3.2,0.344],["Jaime Jaquez Jr.",0.9,2.6,0.346]
   ];
 
   return new Response(JSON.stringify({
