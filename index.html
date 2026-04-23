@@ -244,6 +244,22 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
   padding: 8px 10px 4px; font-weight: 700;
 }
 
+/* ── DATE PILLS ── */
+.date-pill-row {
+  display: flex; gap: 8px; overflow-x: auto; padding: 10px 12px 6px;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.date-pill-row::-webkit-scrollbar { display: none; }
+.date-pill {
+  flex-shrink: 0; padding: 6px 14px; border-radius: 20px; font-size: 0.72rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer;
+  border: 1.5px solid var(--border); background: var(--bg3); color: var(--muted);
+  transition: all 0.15s;
+}
+.date-pill.active {
+  background: var(--gold); border-color: var(--gold); color: #000;
+}
+
 /* ── LEADERBOARD ── */
 .board-header { padding: 16px 16px 8px; }
 .board-header h2 { font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
@@ -400,9 +416,10 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
     <!-- TODAY'S PICKS -->
     <div class="tab-pane active" id="tab-picks">
       <div class="picks-header">
-        <h2>Today's Games</h2>
+        <h2 id="picks-date-heading">Today's Games</h2>
         <p id="picks-subhead">Pick one player from each team · Change anytime before tip-off</p>
       </div>
+      <div id="date-pill-row" class="date-pill-row" style="display:none"></div>
       <div id="my-shooters-bar" style="display:none; margin:0 12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:14px; padding:12px 14px;">
         <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px">🎯 My Shooters Today</div>
         <div id="my-shooters-inner" style="display:flex;flex-wrap:wrap;gap:8px"></div>
@@ -593,6 +610,7 @@ let allPlayers = [], todayGames = [], myPicks = [], allUsers = [];
 let myPickedPlayerIds = new Set(); // players picked by me in ANY game this playoffs
 let todayResults = []; // ss_results for today's games (to show scored ✅)
 let currentTab = 'picks';
+let selectedDate = null; // selected date pill (YYYY-MM-DD)
 
 // NBA team ID map for logos
 const TEAM_LOGOS = {
@@ -774,22 +792,65 @@ function renderMyShootersBar(games) {
   }).join('');
 }
 
+function buildDatePills() {
+  // Get unique dates from todayGames, sorted ascending
+  const dates = [...new Set(todayGames.map(g => g.game_date))].sort();
+  const pillRow = document.getElementById('date-pill-row');
+  if (dates.length === 0) { pillRow.style.display = 'none'; return; }
+  pillRow.style.display = 'flex';
+
+  // Default: pick today's local date, or closest future date
+  if (!selectedDate || !dates.includes(selectedDate)) {
+    const _n = new Date();
+    const todayLocal = `${_n.getFullYear()}-${String(_n.getMonth()+1).padStart(2,'0')}-${String(_n.getDate()).padStart(2,'0')}`;
+    selectedDate = dates.find(d => d >= todayLocal) || dates[dates.length - 1];
+  }
+
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  pillRow.innerHTML = dates.map(d => {
+    const [y, m, day] = d.split('-').map(Number);
+    const dt = new Date(y, m - 1, day);
+    const _n = new Date();
+    const todayLocal = `${_n.getFullYear()}-${String(_n.getMonth()+1).padStart(2,'0')}-${String(_n.getDate()).padStart(2,'0')}`;
+    const label = d === todayLocal ? 'Today' : `${dayNames[dt.getDay()]} ${monthNames[m-1]} ${day}`;
+    return `<div class="date-pill ${d === selectedDate ? 'active' : ''}" onclick="selectDate('${d}')">${label}</div>`;
+  }).join('');
+}
+
+function selectDate(d) {
+  selectedDate = d;
+  buildDatePills();
+  renderPicks();
+}
+
 function renderPicks() {
   const container = document.getElementById('games-list');
-  // Filter to today and next 24h
-  const now = new Date();
-  const upcoming = todayGames.filter(g => {
-    const gameDate = new Date(g.game_date + 'T00:00:00');
-    const diff = (gameDate - now) / (1000 * 60 * 60 * 24);
-    return diff >= -1 && diff < 2;
-  });
-  if (upcoming.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="icon">🏀</div><p>No games scheduled today.<br>Check back soon!</p></div>`;
+  buildDatePills();
+
+  const gamesForDate = todayGames.filter(g => g.game_date === selectedDate);
+  const heading = document.getElementById('picks-date-heading');
+
+  if (!selectedDate || gamesForDate.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="icon">🏀</div><p>No games scheduled.<br>Check back soon!</p></div>`;
+    if (heading) heading.textContent = "Today's Games";
     renderMyShootersBar([]);
     return;
   }
-  renderMyShootersBar(upcoming);
-  container.innerHTML = upcoming.map(game => renderGameCard(game)).join('');
+
+  // Update heading
+  if (heading) {
+    const _n = new Date();
+    const todayLocal = `${_n.getFullYear()}-${String(_n.getMonth()+1).padStart(2,'0')}-${String(_n.getDate()).padStart(2,'0')}`;
+    const [y, m, day] = selectedDate.split('-').map(Number);
+    const dt = new Date(y, m - 1, day);
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    heading.textContent = selectedDate === todayLocal ? "Today's Games" : `${dayNames[dt.getDay()]}, ${monthNames[m-1]} ${day}`;
+  }
+
+  renderMyShootersBar(gamesForDate);
+  container.innerHTML = gamesForDate.map(game => renderGameCard(game)).join('');
 }
 
 function renderGameCard(game) {
