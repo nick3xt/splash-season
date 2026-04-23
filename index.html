@@ -602,9 +602,7 @@ const SUPABASE_KEY = 'sb_publishable_KvxJYevSYKP1Na_de5RCTQ_G9dDi0_L';
 // ═══════════════════════════════════════════════════════
 let db, currentUser;
 let allPlayers = [], todayGames = [], myPicks = [], allUsers = [];
-let myPickedPlayerIds = new Set();
-    const {data:_bpAll} = await db.from('ss_picks').select('player_id').eq('user_id',currentUser.id);
-    window._burnedIds = new Set((_bpAll||[]).map(p=>p.player_id)); // players picked by me in ANY game this playoffs
+let myPickedPlayerIds = new Set(); // players picked by me in ANY game this playoffs
 let todayResults = []; // ss_results for today's games (to show scored ✅)
 let currentTab = 'picks';
 let selectedDate = null; // selected date pill (YYYY-MM-DD)
@@ -720,6 +718,8 @@ async function loadAll() {
     todayGames = gamesRes.data || [];
     myPicks = picksRes.data || [];
     myPickedPlayerIds = new Set(myPicks.map(p => p.player_id));
+    const {data:_bpAll} = await db.from('ss_picks').select('player_id').eq('user_id',currentUser.id);
+    window._burnedIds = new Set((_bpAll||[]).map(p=>p.player_id));
     // Load results for today's games (to show ✅ on scored picks)
     const gameIds = todayGames.filter(g => {
       const d = new Date(g.game_date + 'T00:00:00');
