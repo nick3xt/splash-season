@@ -489,31 +489,33 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 <!-- ADMIN OVERLAY -->
 <div id="admin-overlay">
   <div class="admin-panel">
-    <button class="admin-close-btn" onclick="closeAdmin()">✕ Close</button>
-    <h2>⚙️ Admin Panel</h2>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h2 style="margin:0">⚙️ Admin Panel</h2>
+      <button class="admin-close-btn" onclick="closeAdmin()">✕ Close</button>
+    </div>
 
-    <!-- Add Game -->
+    <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--gold);font-weight:900;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid rgba(245,166,35,.3)">🏀 Games</div>
+
     <div class="admin-section">
-      <h3>Add Today's Game</h3>
+      <h3>Add Game to Schedule</h3>
       <div class="admin-row">
-        <input class="admin-input" id="a-home" placeholder="Home team (e.g. LAL)">
-        <input class="admin-input" id="a-away" placeholder="Away team (e.g. HOU)">
+        <input class="admin-input" id="a-home" placeholder="Home abbr (e.g. LAL)">
+        <input class="admin-input" id="a-away" placeholder="Away abbr (e.g. HOU)">
       </div>
       <div class="admin-row">
-        <input class="admin-input" id="a-date" type="date" placeholder="Date">
+        <input class="admin-input" id="a-home-full" placeholder="Home full name">
+        <input class="admin-input" id="a-away-full" placeholder="Away full name">
+      </div>
+      <div class="admin-row">
+        <input class="admin-input" id="a-date" type="date">
         <input class="admin-input" id="a-time" placeholder="Tip-off ET (e.g. 7:30 PM)">
-      </div>
-      <div class="admin-row">
-        <input class="admin-input" id="a-home-full" placeholder="Home full name (e.g. Los Angeles Lakers)">
-        <input class="admin-input" id="a-away-full" placeholder="Away full name (e.g. Houston Rockets)">
       </div>
       <button class="admin-btn" onclick="adminAddGame()">+ Add Game</button>
       <div id="a-game-status"></div>
     </div>
 
-    <!-- Lock/Unlock Game -->
     <div class="admin-section">
-      <h3>Lock / Unlock Game</h3>
+      <h3>Lock / Unlock Picks</h3>
       <div class="admin-row">
         <select class="admin-select" id="a-lock-game"></select>
         <button class="admin-btn" onclick="adminLockGame(true)">🔒 Lock</button>
@@ -522,59 +524,56 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <div id="a-lock-status"></div>
     </div>
 
-    <!-- Enter Results -->
     <div class="admin-section">
-      <h3>Enter 3PT Results</h3>
-      <p style="font-size:.75rem;color:var(--muted);margin-bottom:10px">Select a game, then mark which players made a 3-pointer.</p>
+      <h3>Score Game &amp; Award Points</h3>
+      <p style="font-size:.75rem;color:var(--muted);margin-bottom:10px">Pick a game, check off players who made a 3, then save.</p>
       <div class="admin-row">
         <select class="admin-select" id="a-result-game" onchange="adminLoadResultPlayers()">
           <option value="">-- Select game --</option>
         </select>
       </div>
       <div id="a-result-players"></div>
-      <button class="admin-btn success" onclick="adminSaveResults()" style="margin-top:10px">💾 Save Results &amp; Award Points</button>
+      <button class="admin-btn success" onclick="adminSaveResults()" style="margin-top:10px">💾 Save &amp; Award Points</button>
       <div id="a-result-status"></div>
     </div>
 
-    <!-- Add Player -->
+    <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--purple2);font-weight:900;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid rgba(168,85,247,.3)">👤 Players</div>
+
     <div class="admin-section">
-      <h3>Add / Edit Player</h3>
+      <h3>Add Player</h3>
       <div class="admin-row">
         <input class="admin-input" id="a-p-name" placeholder="Player name">
-        <input class="admin-input" id="a-p-team" placeholder="Team (e.g. LAL)">
-      </div>
-      <div class="admin-row">
-        <input class="admin-input" id="a-p-nba-id" placeholder="NBA.com Player ID (for photo)">
-        <input class="admin-input" id="a-p-pos" placeholder="Position (G/F/C)">
+        <input class="admin-input" id="a-p-team" placeholder="Team abbr (e.g. LAL)">
+        <input class="admin-input" id="a-p-pos" placeholder="Pos (G/F/C)">
       </div>
       <div class="admin-row">
         <select class="admin-select" id="a-p-tier">
-          <option value="star">⭐ Star (1PT)</option>
-          <option value="role" selected>🏀 Role Player (2PT)</option>
-          <option value="brick">🧱 Brick City (3PT)</option>
+          <option value="star">⭐ Star — 1PT</option>
+          <option value="role" selected>🏀 Role Player — 2PT</option>
+          <option value="brick">🧱 Brick — 3PT</option>
         </select>
-        <input class="admin-input" id="a-p-3pct" placeholder="3PT% (e.g. 38.5)">
-        <input class="admin-input" id="a-p-3pg" placeholder="3PM/G (e.g. 2.3)">
       </div>
       <button class="admin-btn" onclick="adminAddPlayer()">+ Add Player</button>
       <div id="a-player-status"></div>
     </div>
 
-    <!-- Manage Users -->
+    <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--green);font-weight:900;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid rgba(34,197,94,.3)">🔑 Accounts</div>
+
     <div class="admin-section">
-      <h3>Create User Account</h3>
+      <h3>Create Player Account</h3>
       <div class="admin-row">
         <input class="admin-input" id="a-u-user" placeholder="Username">
         <input class="admin-input" id="a-u-pass" placeholder="Password">
-        <input class="admin-input" id="a-u-nick" placeholder="Nickname (for leaderboard)">
       </div>
-      <button class="admin-btn" onclick="adminCreateUser()">+ Create User</button>
+      <div class="admin-row">
+        <input class="admin-input" id="a-u-nick" placeholder="Display nickname (shows on leaderboard)">
+      </div>
+      <button class="admin-btn" onclick="adminCreateUser()">+ Create Account</button>
       <div id="a-user-status"></div>
     </div>
 
-    <!-- Set Nickname -->
     <div class="admin-section">
-      <h3>Set User Nickname</h3>
+      <h3>Change Nickname</h3>
       <div class="admin-row">
         <select class="admin-select" id="a-nick-user"></select>
         <input class="admin-input" id="a-nick-val" placeholder="New nickname">
@@ -583,12 +582,6 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <div id="a-nick-status"></div>
     </div>
 
-    <!-- DB Setup SQL -->
-    <div class="admin-section">
-      <h3>Database Setup SQL</h3>
-      <p style="font-size:.75rem;color:var(--muted);margin-bottom:6px">Run this in your Supabase SQL editor if any tables are missing:</p>
-      <div class="sql-block" id="setup-sql"></div>
-    </div>
   </div>
 </div>
 
@@ -1266,13 +1259,10 @@ async function adminSaveResults() {
 async function adminAddPlayer() {
   const name = document.getElementById('a-p-name').value.trim();
   const team = document.getElementById('a-p-team').value.trim().toUpperCase();
-  const nbaId = document.getElementById('a-p-nba-id').value.trim();
   const pos = document.getElementById('a-p-pos').value.trim().toUpperCase();
   const tier = document.getElementById('a-p-tier').value;
-  const pct = parseFloat(document.getElementById('a-p-3pct').value) || null;
-  const pg = parseFloat(document.getElementById('a-p-3pg').value) || null;
   if (!name || !team) { setStatus('a-player-status', 'Name and team required', 'err'); return; }
-  const { error } = await db.from('ss_players').insert({ name, team, nba_id: nbaId || null, position: pos, tier, three_pct: pct, three_pg: pg, is_active: true });
+  const { error } = await db.from('ss_players').insert({ name, team, position: pos, tier, is_active: true });
   if (error) { setStatus('a-player-status', 'Error: ' + error.message, 'err'); return; }
   setStatus('a-player-status', `✅ ${name} added as ${tier}!`, 'ok');
   await loadAll(); renderCurrentTab();
