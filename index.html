@@ -844,13 +844,14 @@ function renderMyShootersBar(games) {
   inner.innerHTML = todayPicksForDisplay.map(pick => {
     const player = allPlayers.find(p => p.id === pick.player_id);
     if (!player) return '';
-    const scored = todayResults.some(r => r.player_id === player.id && r.made_three);
     const game = games.find(g => g.id === pick.game_id);
-    // Show indicator only after game is final: time-based (3h+ post tip-off) OR admin/autoResolve scored it
-    const isFinal = game && (getGameStatus(game) === 'final' || (window._scoredGameIds && window._scoredGameIds.has(pick.game_id)));
-    const indicator = isFinal ? (scored ? ' ✅' : ' ❌') : '';
-    const bgColor = isFinal ? (scored ? 'rgba(34,197,94,.1)' : 'rgba(239,68,68,.07)') : 'var(--card)';
-    const borderColor = isFinal ? (scored ? 'rgba(34,197,94,.4)' : 'rgba(239,68,68,.3)') : 'var(--border)';
+    const isFinal = game && getGameStatus(game) === 'final';
+    // _playerThreePtResults is populated by autoResolveCompletedGames() after the API fetch
+    const key = player.name.toLowerCase().trim();
+    const result = window._playerThreePtResults?.[key]; // true=hit, false=missed, undefined=no data yet
+    const indicator = (isFinal && result !== undefined) ? (result ? ' ✅' : ' ❌') : '';
+    const bgColor = (isFinal && result !== undefined) ? (result ? 'rgba(34,197,94,.1)' : 'rgba(239,68,68,.07)') : 'var(--card)';
+    const borderColor = (isFinal && result !== undefined) ? (result ? 'rgba(34,197,94,.4)' : 'rgba(239,68,68,.3)') : 'var(--border)';
     const tierColors = { star: 'var(--star-color)', role: 'var(--role-color)', brick: 'var(--brick-color)' };
     const tierPts = { star: '💰 EASY', role: '🏀 MIDS', brick: '🧱 BRICK' };
     const color = tierColors[player.tier] || 'var(--muted)';
@@ -1493,7 +1494,7 @@ async function autoResolveCompletedGames() {
       if (!byDate[g.game_date]) byDate[g.game_date] = [];
       byDate[g.game_date].push(g);
     }
-    let anyScored = false;
+    let anyScored = false, anyResults = false;
     for (const [date, games] of Object.entries(byDate)) {
       let players = {};
       try {
@@ -1501,6 +1502,14 @@ async function autoResolveCompletedGames() {
         if (resp.ok) ({ players } = await resp.json());
         else console.warn('[SplashSeason] resolve-scores HTTP', resp.status, 'for', date);
       } catch (e) { console.warn('[SplashSeason] resolve-scores failed for', date, e.message); }
+      // Cache all player 3PT results globally so renderMyShootersBar can read them
+      if (Object.keys(players).length > 0) {
+        window._playerThreePtResults = window._playerThreePtResults || {};
+        for (const [name, data] of Object.entries(players)) {
+          window._playerThreePtResults[name.toLowerCase().trim()] = data.made3 === true;
+        }
+        anyResults = true;
+      }
       for (const game of games) {
         const already = await isGameScored(game.id);
         if (already) continue;
@@ -1529,6 +1538,10 @@ async function autoResolveCompletedGames() {
         localStorage.setItem('ss_session', JSON.stringify(currentUser));
       }
       await loadAll(); renderCurrentTab();
+    } else if (anyResults) {
+      // Games were already scored on a prior run — re-render so ✅/❌ appear
+      // now that _playerThreePtResults is populated
+      renderCurrentTab();
     }
   } catch (e) { console.warn('[SplashSeason] autoResolveCompletedGames error:', e.message); }
 }
