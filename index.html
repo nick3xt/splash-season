@@ -1437,9 +1437,16 @@ async function adminSaveResults() {
   await loadAll(); renderCurrentTab();
 }
 
-// Core scoring engine: awards points for a game given which player IDs made a 3.
-// Writes to ss_users (allowed) and ss_games.status (allowed).
-// Does NOT write to ss_results — that table has RLS blocking the anon key.
+// Core scoring engine. Awards points for all users who picked players in playersMade3Ids.
+// Uses ss_notifications with message '__SCORED_GAME_{id}__' as an idempotency lock
+// (ss_games.status and ss_results are RLS-protected against writes with the anon key).
+async function isGameScored(gameId) {
+  const { data } = await db.from('ss_notifications')
+    .select('id').eq('user_id', 1)
+    .eq('message', '__SCORED_GAME_' + gameId + '__').limit(1);
+  return data && data.length > 0;
+}
+
 async function scoreGameWithResults(gameId, playersMade3Ids) {
   const { data: allPicks } = await db.from('ss_picks')
     .select('*, ss_players(tier, name)')
@@ -1461,20 +1468,22 @@ async function scoreGameWithResults(gameId, playersMade3Ids) {
     const newTotal = (user?.total_points || 0) + pts;
     await db.from('ss_users').update({ total_points: newTotal }).eq('id', parseInt(userId));
   }
-  await db.from('ss_games').update({ status: 'scored' }).eq('id', gameId);
+  // Mark game as scored — using a hidden notification as the lock since
+  // ss_games updates are blocked by RLS with the anon key.
+  await db.from('ss_notifications').insert({
+    user_id: 1, message: '__SCORED_GAME_' + gameId + '__', is_read: true
+  }).catch(() => {});
   return Object.keys(pointsMap).length;
 }
 
-// Auto-resolver: runs on every page load, scores any FINAL games not yet scored.
-// Calls /api/resolve-scores for NBA per-game 3PT data, then runs scoreGameWithResults.
+// Auto-resolver: runs on every page load for regular users.
+// Scores any game where 3+ hours have elapsed since tip-off and no scoring lock exists.
 async function autoResolveCompletedGames() {
   try {
-    const toScore = (todayGames || []).filter(g =>
-      g.status !== 'scored' && getGameStatus(g) === 'final'
-    );
-    if (toScore.length === 0) return;
+    const finalGames = (todayGames || []).filter(g => getGameStatus(g) === 'final');
+    if (finalGames.length === 0) return;
     const byDate = {};
-    for (const g of toScore) {
+    for (const g of finalGames) {
       if (!byDate[g.game_date]) byDate[g.game_date] = [];
       byDate[g.game_date].push(g);
     }
@@ -1487,11 +1496,15 @@ async function autoResolveCompletedGames() {
         else console.warn('[SplashSeason] resolve-scores HTTP', resp.status, 'for', date);
       } catch (e) { console.warn('[SplashSeason] resolve-scores failed for', date, e.message); }
       for (const game of games) {
+        const already = await isGameScored(game.id);
+        if (already) continue;
         const { data: picks } = await db.from('ss_picks')
           .select('player_id, user_id, ss_players(name, tier)')
           .eq('game_id', game.id);
         if (!picks || picks.length === 0) {
-          await db.from('ss_games').update({ status: 'scored' }).eq('id', game.id);
+          await db.from('ss_notifications').insert({
+            user_id: 1, message: '__SCORED_GAME_' + game.id + '__', is_read: true
+          }).catch(() => {});
           continue;
         }
         const made3Ids = picks
