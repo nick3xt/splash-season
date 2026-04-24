@@ -381,9 +381,6 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .board-card{transition:transform .4s cubic-bezier(.4,0,.2,1)}
 /* F5: pick confidence */
 .pick-confidence{display:none}.pick-3pt-pill{display:inline-block;font-size:.65rem;font-weight:500;margin-top:5px;color:var(--gold)}
-/* F6: streak badge */
-.streak-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ff6b35,#cc0000);color:#fff;font-weight:900;font-size:.9rem;padding:4px 13px;border-radius:20px;margin-left:12px;box-shadow:0 2px 16px rgba(255,80,0,.6);animation:strk 2s infinite}
-@keyframes strk{0%,100%{box-shadow:0 2px 16px rgba(255,80,0,.6)}50%{box-shadow:0 4px 32px rgba(255,80,0,1)}}
 /* F8: pick burst */
 @keyframes pick-burst{0%{box-shadow:0 0 0 0 rgba(34,197,94,.9),inset 0 0 0 0 rgba(34,197,94,.1)}40%{box-shadow:0 0 0 20px rgba(34,197,94,0),inset 0 0 36px rgba(34,197,94,.35)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0),inset 0 0 0 0 rgba(34,197,94,0)}}
 .pick-burst{animation:pick-burst .75s ease-out forwards!important}
@@ -466,7 +463,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       </div>
       <div id="date-pill-row" class="date-pill-row" style="display:none"></div>
       <div id="my-shooters-bar" style="display:none; margin:0 12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:14px; padding:12px 14px;">
-        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px">🎯 My Shooters Today <span id="streak-badge"></span></div>
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px">🎯 My Shooters Today</div>
         <div id="my-shooters-inner" style="display:flex;flex-wrap:wrap;gap:8px"></div>
       </div>
       <div id="games-list"><div class="loading"><div class="spinner"></div><br>Loading games…</div></div>
@@ -791,7 +788,7 @@ async function loadAll() {
       window._scoredGameIds = new Set((scoredData || []).map(r => r.game_id));
     } else { todayResults = []; window._scoredGameIds = new Set(); }
     // F5+F6
-    await Promise.all([loadPickCounts(), loadUserStreak()]);
+    await Promise.all([loadPickCounts()]);
   } catch(e) {
     console.error('loadAll error', e);
   }
@@ -838,9 +835,6 @@ function renderMyShootersBar(games) {
   const todayPicksForDisplay = myPicks.filter(p => games.some(g => g.id === p.game_id));
   if (todayPicksForDisplay.length === 0) { bar.style.display = 'none'; return; }
   bar.style.display = 'block';
-  // F6 streak
-  const _sEl = document.getElementById('streak-badge');
-  if (_sEl) _sEl.innerHTML = (window._pickStreak >= 2) ? '<span class="streak-badge">&#x1F525; ' + window._pickStreak + ' day streak</span>' : '';
   inner.innerHTML = todayPicksForDisplay.map(pick => {
     const player = allPlayers.find(p => p.id === pick.player_id);
     if (!player) return '';
