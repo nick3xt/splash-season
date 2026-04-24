@@ -781,11 +781,8 @@ async function loadAll() {
       _bpAll = _bpLkData||[];
     }
     window._burnedIds = new Set(_bpAll.map(p=>p.player_id));
-    // Load results for today's games (to show ✅ on scored picks)
-    const gameIds = todayGames.filter(g => {
-      const d = new Date(g.game_date + 'T00:00:00');
-      return Math.abs((d - new Date()) / 86400000) <= 1;
-    }).map(g => g.id);
+    // Load results for all games the user has picks in (covers any date pill the user navigates to)
+    const gameIds = myPicks.length > 0 ? [...new Set(myPicks.map(p => p.game_id))] : [];
     if (gameIds.length > 0) {
       const { data: resultsData } = await db.from('ss_results').select('*').in('game_id', gameIds).eq('made_three', true);
       todayResults = resultsData || [];
