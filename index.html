@@ -582,6 +582,13 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <div id="a-result-status"></div>
     </div>
 
+    <div class="admin-section">
+      <h3>🤖 Auto-Resolve via NBA Stats</h3>
+      <p style="font-size:.75rem;color:var(--muted);margin-bottom:10px">Fetches per-game 3PT data from NBA.com and automatically scores all FINAL games not yet scored.</p>
+      <button class="admin-btn success" onclick="adminAutoResolve()">⚡ Auto-Resolve Final Games</button>
+      <div id="a-auto-status"></div>
+    </div>
+
     <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--purple2);font-weight:900;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid rgba(168,85,247,.3)">👤 Players</div>
 
     <div class="admin-section">
@@ -741,6 +748,8 @@ async function startApp() {
     renderCurrentTab();
     checkNotifications();
     startCountdownTimer();
+    // Auto-score any completed games on every page load
+    autoResolveCompletedGames().catch(() => {});
   }
 }
 
@@ -1421,34 +1430,97 @@ async function adminSaveResults() {
   const gameId = parseInt(document.getElementById('a-result-game').value);
   if (!gameId) { setStatus('a-result-status', 'Select a game', 'err'); return; }
   const checkboxes = document.querySelectorAll('#a-result-players input[type=checkbox]');
-  const results = [];
-  checkboxes.forEach(cb => { if (cb.checked) results.push(parseInt(cb.dataset.pid)); });
-  // Upsert results
-  for (const pid of results) {
-    await db.from('ss_results').upsert({ game_id: gameId, player_id: pid, made_three: true }, { onConflict: 'game_id,player_id' });
-  }
-  // Award points
-  const { data: allPicks } = await db.from('ss_picks').select('*, ss_players(tier, name)').eq('game_id', gameId);
+  const made3Ids = [];
+  checkboxes.forEach(cb => { if (cb.checked) made3Ids.push(parseInt(cb.dataset.pid)); });
+  const scoredCount = await scoreGameWithResults(gameId, made3Ids);
+  setStatus('a-result-status', `✅ Results saved! ${scoredCount} user(s) scored.`, 'ok');
+  await loadAll(); renderCurrentTab();
+}
+
+// Core scoring engine: awards points for a game given which player IDs made a 3.
+// Writes to ss_users (allowed) and ss_games.status (allowed).
+// Does NOT write to ss_results — that table has RLS blocking the anon key.
+async function scoreGameWithResults(gameId, playersMade3Ids) {
+  const { data: allPicks } = await db.from('ss_picks')
+    .select('*, ss_players(tier, name)')
+    .eq('game_id', gameId);
   const pointsMap = {};
   for (const pick of (allPicks || [])) {
-    if (!results.includes(pick.player_id)) continue;
+    if (!playersMade3Ids.includes(pick.player_id)) continue;
     const tier = pick.ss_players?.tier;
     const pts = tier === 'star' ? 1 : tier === 'role' ? 2 : 3;
     pointsMap[pick.user_id] = (pointsMap[pick.user_id] || 0) + pts;
-    // Send notification
     await db.from('ss_notifications').insert({
       user_id: pick.user_id,
       message: `🔥 ${pick.ss_players?.name} made a 3! +${pts} point${pts > 1 ? 's' : ''} awarded.`,
       is_read: false
     }).catch(() => {});
   }
-  // Update user totals
   for (const [userId, pts] of Object.entries(pointsMap)) {
     const { data: user } = await db.from('ss_users').select('total_points').eq('id', parseInt(userId)).single();
     const newTotal = (user?.total_points || 0) + pts;
     await db.from('ss_users').update({ total_points: newTotal }).eq('id', parseInt(userId));
   }
-  setStatus('a-result-status', `✅ Results saved! ${Object.keys(pointsMap).length} player(s) scored.`, 'ok');
+  await db.from('ss_games').update({ status: 'scored' }).eq('id', gameId);
+  return Object.keys(pointsMap).length;
+}
+
+// Auto-resolver: runs on every page load, scores any FINAL games not yet scored.
+// Calls /api/resolve-scores for NBA per-game 3PT data, then runs scoreGameWithResults.
+async function autoResolveCompletedGames() {
+  try {
+    const toScore = (todayGames || []).filter(g =>
+      g.status !== 'scored' && getGameStatus(g) === 'final'
+    );
+    if (toScore.length === 0) return;
+    const byDate = {};
+    for (const g of toScore) {
+      if (!byDate[g.game_date]) byDate[g.game_date] = [];
+      byDate[g.game_date].push(g);
+    }
+    let anyScored = false;
+    for (const [date, games] of Object.entries(byDate)) {
+      let players = {};
+      try {
+        const resp = await fetch('/api/resolve-scores?date=' + date);
+        if (resp.ok) ({ players } = await resp.json());
+        else console.warn('[SplashSeason] resolve-scores HTTP', resp.status, 'for', date);
+      } catch (e) { console.warn('[SplashSeason] resolve-scores failed for', date, e.message); }
+      for (const game of games) {
+        const { data: picks } = await db.from('ss_picks')
+          .select('player_id, user_id, ss_players(name, tier)')
+          .eq('game_id', game.id);
+        if (!picks || picks.length === 0) {
+          await db.from('ss_games').update({ status: 'scored' }).eq('id', game.id);
+          continue;
+        }
+        const made3Ids = picks
+          .filter(p => players[p.ss_players?.name]?.made3 === true)
+          .map(p => p.player_id);
+        await scoreGameWithResults(game.id, made3Ids);
+        anyScored = true;
+      }
+    }
+    if (anyScored) {
+      const { data: fresh } = await db.from('ss_users').select('total_points').eq('id', currentUser.id).single();
+      if (fresh) {
+        currentUser.total_points = fresh.total_points;
+        const ptsEl = document.getElementById('header-pts');
+        if (ptsEl) ptsEl.textContent = fresh.total_points + ' PTS';
+        localStorage.setItem('ss_session', JSON.stringify(currentUser));
+      }
+      await loadAll(); renderCurrentTab();
+    }
+  } catch (e) { console.warn('[SplashSeason] autoResolveCompletedGames error:', e.message); }
+}
+
+async function adminAutoResolve() {
+  setStatus('a-auto-status', '⏳ Fetching NBA stats and scoring final games...', 'ok');
+  try {
+    await loadAll();
+    await autoResolveCompletedGames();
+    setStatus('a-auto-status', '✅ Done! Check leaderboard for updated points.', 'ok');
+  } catch(e) { setStatus('a-auto-status', '❌ Error: ' + e.message, 'err'); }
 }
 
 async function adminAddPlayer() {
