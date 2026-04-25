@@ -1115,6 +1115,23 @@ async function selectPlayer(gameId, side, playerId) {
 // ═══════════════════════════════════════════════════════
 
 // -- FEATURE HELPER FUNCTIONS -------------------------
+// Convert ET time string (stored in DB) to PT string (display only).
+// Locking logic stays ET-based (DB column stays as-is).
+function etTimeToPt(etStr) {
+  if (!etStr) return etStr;
+  const m = etStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+  if (!m) return etStr;
+  let h = parseInt(m[1]), min = parseInt(m[2]), ampm = m[3].toUpperCase();
+  if (ampm === 'PM' && h !== 12) h += 12;
+  if (ampm === 'AM' && h === 12) h = 0;
+  h -= 3; // ET → PT: subtract 3 hours (handles EDT-4 → PDT-7)
+  if (h < 0) h += 24;
+  const newAmpm = h >= 12 ? 'PM' : 'AM';
+  if (h > 12) h -= 12;
+  if (h === 0) h = 12;
+  return h + ':' + String(min).padStart(2, '0') + ' ' + newAmpm;
+}
+
 function getGameTipoffDate(game) {
   if (!game.tip_off_et || !game.game_date) return null;
   try {
@@ -1125,7 +1142,7 @@ function getGameTipoffDate(game) {
     if (ampm.toUpperCase() === 'PM' && h !== 12) h += 12;
     if (ampm.toUpperCase() === 'AM' && h === 12) h = 0;
     const t = new Date(game.game_date + 'T00:00:00');
-    t.setUTCHours(h + 7, min, 0, 0); // PDT = UTC-7
+    t.setUTCHours(h + 4, min, 0, 0); // DB stores ET; EDT = UTC-4
     return t;
   } catch(e) { return null; }
 }
@@ -1144,7 +1161,7 @@ function renderGameTimeHtml(game) {
   if (st === 'live') return '<span class="status-live"><span class="ldot"></span>LIVE</span>';
   if (st === 'final') return '<span class="status-final">FINAL</span>';
   const t = getGameTipoffDate(game);
-  const base = '<div class="game-time">' + (game.tip_off_et || '') + ' PT</div>';
+  const base = '<div class="game-time">' + etTimeToPt(game.tip_off_et || '') + ' PT</div>';
   if (!t) return base;
   const diff = t.getTime() - Date.now();
   if (diff <= 0) return base;
@@ -1244,8 +1261,8 @@ function isGameLocked(game) {
     if (ampm.toUpperCase() === 'AM' && h === 12) h = 0;
     const gameDate = new Date(game.game_date + 'T00:00:00');
     const tipoff = new Date(gameDate);
-    // Convert to UTC (PDT = UTC-7)
-    tipoff.setUTCHours(h + 7, m, 0, 0);
+    // DB stores ET times; convert ET → UTC (EDT = UTC-4)
+    tipoff.setUTCHours(h + 4, m, 0, 0);
     return Date.now() >= tipoff.getTime();
   } catch(e) { return false; }
 }
