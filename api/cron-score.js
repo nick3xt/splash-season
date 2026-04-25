@@ -129,7 +129,7 @@ async function runScoring(dateET) {
     if (!user) continue;
 
     await sbPatch(`ss_users?id=eq.${pick.user_id}`, {
-      total_points: (user.total_points ?? 0) + pts,
+      total_points: Number.isFinite(Number(user.total_points)) ? Number(user.total_points) + pts : pts,
     });
 
     const tierLabel =
