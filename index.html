@@ -380,11 +380,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .rank-badge.dn{background:#ef4444;color:#fff}
 .board-card{transition:transform .4s cubic-bezier(.4,0,.2,1)}
 /* F5: pick confidence */
-.pick-confidence{display:none}.pick-3pt-pill{display:inline-block;font-size:.65rem;font-weight:500;margin-top:5px;color:var(--gold)}
-/* F6: streak badge */
-.streak-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ff6b35,#cc0000);color:#fff;font-weight:900;font-size:.9rem;padding:4px 13px;border-radius:20px;margin-left:12px;box-shadow:0 2px 16px rgba(255,80,0,.6);animation:strk 2s infinite}
-@keyframes strk{0%,100%{box-shadow:0 2px 16px rgba(255,80,0,.6)}50%{box-shadow:0 4px 32px rgba(255,80,0,1)}}
-/* F8: pick burst */
+.pick-confidence{display:none}.pick-3pt-pill{display:inline-block;font-size:.65rem;font-weight:500;margin-top:5px;color:var(--gold)}/* F8: pick burst */
 @keyframes pick-burst{0%{box-shadow:0 0 0 0 rgba(34,197,94,.9),inset 0 0 0 0 rgba(34,197,94,.1)}40%{box-shadow:0 0 0 20px rgba(34,197,94,0),inset 0 0 36px rgba(34,197,94,.35)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0),inset 0 0 0 0 rgba(34,197,94,0)}}
 .pick-burst{animation:pick-burst .75s ease-out forwards!important}
 /* F9: live badge */
@@ -466,7 +462,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       </div>
       <div id="date-pill-row" class="date-pill-row" style="display:none"></div>
       <div id="my-shooters-bar" style="display:none; margin:0 12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:14px; padding:12px 14px;">
-        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px">🎯 My Shooters Today <span id="streak-badge"></span></div>
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px">🎯 My Shooters Today </div>
         <div id="my-shooters-inner" style="display:flex;flex-wrap:wrap;gap:8px"></div>
       </div>
       <div id="games-list"><div class="loading"><div class="spinner"></div><br>Loading games…</div></div>
@@ -793,7 +789,7 @@ async function loadAll() {
       todayResults = resultsData || [];
     } else { todayResults = []; }
     // F5+F6
-    await Promise.all([loadPickCounts(), loadUserStreak()]);
+    await Promise.all([loadPickCounts()]);
   } catch(e) {
     console.error('loadAll error', e);
   }
@@ -840,20 +836,19 @@ function renderMyShootersBar(games) {
   const todayPicksForDisplay = myPicks.filter(p => games.some(g => g.id === p.game_id));
   if (todayPicksForDisplay.length === 0) { bar.style.display = 'none'; return; }
   bar.style.display = 'block';
-  // F6 streak
-  const _sEl = document.getElementById('streak-badge');
-  if (_sEl) _sEl.innerHTML = (window._pickStreak >= 2) ? '<span class="streak-badge">&#x1F525; ' + window._pickStreak + ' day streak</span>' : '';
   inner.innerHTML = todayPicksForDisplay.map(pick => {
     const player = allPlayers.find(p => p.id === pick.player_id);
     if (!player) return '';
-    const scored = todayResults.some(r => r.player_id === player.id && r.made_three);
+    const result = todayResults.find(r => r.player_id === player.id);
+    const scored = result && result.made_three;
+    const missed = result && !result.made_three;
     const tierColors = { star: 'var(--star-color)', role: 'var(--role-color)', brick: 'var(--brick-color)' };
     const tierPts = { star: '💰 EASY', role: '🏀 MIDS', brick: '🧱 BRICK' };
     const color = tierColors[player.tier] || 'var(--muted)';
     return `<div style="display:flex;align-items:center;gap:6px;background:${scored ? 'rgba(34,197,94,.1)' : 'var(--card)'};border:1px solid ${scored ? 'rgba(34,197,94,.4)' : 'var(--border)'};border-radius:10px;padding:6px 10px;">
       <img src="${getPhotoUrl(player.nba_id)}" onerror="this.src='${silhouette()}'" style="width:28px;height:28px;border-radius:7px;object-fit:cover;flex-shrink:0">
       <div>
-        <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase">${player.name}${scored ? ' ✅' : ''}</div>
+        <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase">${player.name}${scored ? ' ✅' : missed ? ' ❌' : ''}</div>
         <div style="font-size:0.58rem;color:${color};font-weight:700">${tierPts[player.tier]} · ${player.team}</div>
       </div>
     </div>`;
@@ -1183,23 +1178,6 @@ async function loadPickCounts() {
   } catch(e) { window._pickCounts = {}; window._pickCountTotal = 0; }
 }
 
-async function loadUserStreak() {
-  try {
-    const { data } = await db.from('ss_picks').select('game_id').eq('user_id', currentUser.id);
-    if (!data || !data.length) { window._pickStreak = 0; return; }
-    const pSet = new Set(data.map(p => p.game_id));
-    const allG = todayGames || [];
-    const dates = [...new Set(allG.filter(g => pSet.has(g.id)).map(g => g.game_date))].sort().reverse();
-    const _n = new Date();
-    let streak = 0;
-    for (let i = 0; i < dates.length; i++) {
-      const e = new Date(_n); e.setDate(_n.getDate() - i);
-      const eStr = e.getFullYear() + '-' + String(e.getMonth()+1).padStart(2,'0') + '-' + String(e.getDate()).padStart(2,'0');
-      if (dates[i] === eStr) streak++; else break;
-    }
-    window._pickStreak = streak;
-  } catch(e) { window._pickStreak = 0; }
-}
 
 function startCountdownTimer() {
   if (window._cdInt) clearInterval(window._cdInt);
