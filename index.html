@@ -553,7 +553,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       </div>
       <div class="admin-row">
         <input class="admin-input" id="a-date" type="date">
-        <input class="admin-input" id="a-time" placeholder="Tip-off ET (e.g. 7:30 PM)">
+        <input class="admin-input" id="a-time" placeholder="Tip-off PT (e.g. 7:30 PM)">
       </div>
       <button class="admin-btn" onclick="adminAddGame()">+ Add Game</button>
       <div id="a-game-status"></div>
@@ -734,6 +734,11 @@ async function startApp() {
     await loadAll();
     openAdmin();
   } else {
+    // Refresh user from DB so total_points is always current (fixes stale localStorage cache)
+    try {
+      const { data: fresh } = await db.from('ss_users').select('*').eq('id', currentUser.id).single();
+      if (fresh) { currentUser = fresh; localStorage.setItem('ss_session', JSON.stringify(fresh)); }
+    } catch(e) {}
     const ptsEl = document.getElementById('header-pts');
     ptsEl.textContent = (currentUser.total_points || 0) + ' PTS';
     ptsEl.style.display = 'inline-block';
@@ -1120,7 +1125,7 @@ function getGameTipoffDate(game) {
     if (ampm.toUpperCase() === 'PM' && h !== 12) h += 12;
     if (ampm.toUpperCase() === 'AM' && h === 12) h = 0;
     const t = new Date(game.game_date + 'T00:00:00');
-    t.setUTCHours(h + 4, min, 0, 0);
+    t.setUTCHours(h + 7, min, 0, 0); // PDT = UTC-7
     return t;
   } catch(e) { return null; }
 }
@@ -1139,7 +1144,7 @@ function renderGameTimeHtml(game) {
   if (st === 'live') return '<span class="status-live"><span class="ldot"></span>LIVE</span>';
   if (st === 'final') return '<span class="status-final">FINAL</span>';
   const t = getGameTipoffDate(game);
-  const base = '<div class="game-time">' + (game.tip_off_et || '') + ' ET</div>';
+  const base = '<div class="game-time">' + (game.tip_off_et || '') + ' PT</div>';
   if (!t) return base;
   const diff = t.getTime() - Date.now();
   if (diff <= 0) return base;
@@ -1239,8 +1244,8 @@ function isGameLocked(game) {
     if (ampm.toUpperCase() === 'AM' && h === 12) h = 0;
     const gameDate = new Date(game.game_date + 'T00:00:00');
     const tipoff = new Date(gameDate);
-    // Convert to UTC (assuming ET = UTC-4 during EDT)
-    tipoff.setUTCHours(h + 4, m, 0, 0);
+    // Convert to UTC (PDT = UTC-7)
+    tipoff.setUTCHours(h + 7, m, 0, 0);
     return Date.now() >= tipoff.getTime();
   } catch(e) { return false; }
 }
