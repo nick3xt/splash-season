@@ -6,13 +6,16 @@
 // ALTER TABLE ss_results ADD COLUMN IF NOT EXISTS pts_awarded INTEGER NOT NULL DEFAULT 0;
 // ALTER TABLE ss_results ADD COLUMN IF NOT EXISTS scored_date DATE;
 // CREATE UNIQUE INDEX IF NOT EXISTS ss_results_uniq ON ss_results (game_id, player_id, user_id);
+
 const SUPABASE_URL = 'https://heykwxkyvbzffkhgrqgf.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || 'sb_publishable_KvxJYevSYKP1Na_de5RCTQ_G9dDi0_L';
+
 function getSiteUrl() {
   if (process.env.VERCEL_PROJECT_PRODUCTION_URL) { return 'https://' + process.env.VERCEL_PROJECT_PRODUCTION_URL; }
   if (process.env.VERCEL_URL) { return 'https://' + process.env.VERCEL_URL; }
   return 'https://splash-season.vercel.app';
 }
+
 function tierPts(tier) {
   const t = String(tier || '').toLowerCase().trim();
   if (t === 'star' || t === '1') return 1;
@@ -20,19 +23,39 @@ function tierPts(tier) {
   if (t === 'brick' || t === '3') return 3;
   return 0;
 }
-// Alias map: normalized ss_players name -> normalized ESPN name
-const NAME_ALIASES = {
-  'brice scheierman': 'baylor scheierman',
-};
-function normName(s) {
-  const n = String(s || '')
+
+// Alias map loaded from ss_player_aliases table at handler startup
+let NAME_ALIASES = {};
+
+async function loadAliases() {
+  try {
+    const rows = await sbGet('ss_player_aliases?select=db_name,espn_name');
+    NAME_ALIASES = {};
+    for (const r of rows) {
+      NAME_ALIASES[normName0(r.espn_name)] = normName0(r.db_name);
+    }
+    console.log('[cron] loaded', Object.keys(NAME_ALIASES).length, 'player aliases');
+  } catch (e) {
+    console.warn('[cron] alias load failed:', e.message);
+    // Fallback: hardcoded until table is seeded
+    NAME_ALIASES['baylor scheierman'] = 'brice scheierman';
+  }
+}
+
+function normName0(s) {
+  return String(s || '')
     .toLowerCase()
     .replace(/[^a-z\s]/g, '')
     .replace(/\b(jr|sr|ii|iii|iv)\b/g, '')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function normName(s) {
+  const n = normName0(s);
   return NAME_ALIASES[n] || n;
 }
+
 function sbHeaders() {
   return {
     apikey: SUPABASE_KEY,
@@ -41,11 +64,13 @@ function sbHeaders() {
     Accept: 'application/json',
   };
 }
+
 async function sbGet(path) {
   const r = await fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: sbHeaders() });
   if (!r.ok) { const body = await r.text(); throw new Error('sbGet /' + path + ' => ' + r.status + ': ' + body); }
   return r.json();
 }
+
 async function sbUpsert(table, rows, conflictCols) {
   const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?on_conflict=' + conflictCols, {
     method: 'POST',
@@ -55,6 +80,7 @@ async function sbUpsert(table, rows, conflictCols) {
   if (!r.ok) { const body = await r.text(); throw new Error('sbUpsert ' + table + ' => ' + r.status + ': ' + body); }
   return r.json();
 }
+
 async function sbPatch(table, filter, body) {
   const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + filter, {
     method: 'PATCH',
@@ -63,14 +89,19 @@ async function sbPatch(table, filter, body) {
   });
   if (!r.ok) { const text = await r.text(); throw new Error('sbPatch ' + table + '?' + filter + ' => ' + r.status + ': ' + text); }
 }
+
 export default async function handler(req, res) {
   const log = [];
   try {
+    // Load player aliases from DB on each run
+    await loadAliases();
+
     const nowPT = new Date(Date.now() - 7 * 60 * 60 * 1000);
     nowPT.setDate(nowPT.getDate() - 1);
     const targetDate = nowPT.toISOString().slice(0, 10);
     const scoringDate = (req.query && req.query.date) ? req.query.date : targetDate;
     log.push('Scoring date: ' + scoringDate);
+
     const SITE_URL = getSiteUrl();
     const resolveUrl = SITE_URL + '/api/resolve-scores?date=' + scoringDate;
     log.push('Fetching ESPN data: ' + resolveUrl);
@@ -80,31 +111,38 @@ export default async function handler(req, res) {
     const espnPlayers = resolveData.players || {};
     const gamesCompleted = resolveData.gamesCompleted || 0;
     log.push('ESPN: ' + resolveData.gamesFound + ' games, ' + gamesCompleted + ' completed, ' + resolveData.playerCount + ' players with 3PT attempts');
+
     if (gamesCompleted === 0) {
       return res.json({ success: true, message: 'No completed ESPN games for ' + scoringDate, scoringDate, scored: 0, log });
     }
+
     const espnByNorm = {};
     for (const [name, data] of Object.entries(espnPlayers)) {
       espnByNorm[normName(name)] = { ...data, originalName: name };
     }
+
     const games = await sbGet('ss_games?select=id,game_date,home_team,away_team,status&game_date=eq.' + scoringDate);
     log.push('ss_games: ' + games.length + ' games');
     if (games.length === 0) {
       return res.json({ success: true, message: 'No ss_games for ' + scoringDate, scoringDate, scored: 0, log });
     }
+
     const gameIds = games.map(g => g.id);
     const picksRaw = await sbGet('ss_picks?select=id,game_id,player_id,user_id,team_side&game_id=in.(' + gameIds.join(',') + ')');
     log.push('ss_picks: ' + picksRaw.length + ' picks');
     if (picksRaw.length === 0) {
       return res.json({ success: true, message: 'No picks for ' + scoringDate, scoringDate, scored: 0, log });
     }
+
     const playerIds = [...new Set(picksRaw.map(p => p.player_id))];
     const playersData = await sbGet('ss_players?select=id,name,tier&id=in.(' + playerIds.join(',') + ')');
     const playerMap = {};
     for (const p of playersData) playerMap[p.id] = p;
+
     const upsertRows = [];
     const affectedUsers = new Set();
     const matchLog = [];
+
     for (const pick of picksRaw) {
       const player = playerMap[pick.player_id];
       if (!player) { matchLog.push('WARN: player_id ' + pick.player_id + ' not in ss_players'); continue; }
@@ -116,13 +154,17 @@ export default async function handler(req, res) {
       upsertRows.push({ game_id: pick.game_id, player_id: pick.player_id, user_id: pick.user_id, made_three, pts_awarded, scored_date: scoringDate });
       affectedUsers.add(pick.user_id);
     }
+
     log.push('Scored ' + upsertRows.length + ' picks, ' + upsertRows.filter(r => r.made_three).length + ' made threes');
+
     if (upsertRows.length > 0) {
       await sbUpsert('ss_results', upsertRows, 'game_id,player_id,user_id');
       log.push('Upserted ' + upsertRows.length + ' rows into ss_results');
     }
+
     await sbPatch('ss_games', 'game_date=eq.' + scoringDate, { status: 'final', is_locked: true });
     log.push('Marked ' + games.length + ' ss_games as final');
+
     const pointsUpdated = [];
     for (const userId of affectedUsers) {
       const rows = await sbGet('ss_results?select=pts_awarded&user_id=eq.' + userId + '&made_three=eq.true');
@@ -131,7 +173,32 @@ export default async function handler(req, res) {
       pointsUpdated.push({ userId, totalPoints });
     }
     log.push('Updated total_points for ' + pointsUpdated.length + ' users');
-    return res.json({ success: true, scoringDate, gamesCompleted, picksScored: upsertRows.length, madeThree: upsertRows.filter(r => r.made_three).length, usersUpdated: pointsUpdated, matchLog, log });
+
+    // Write cron run result to ss_cron_log for /api/status
+    try {
+      const mismatches = matchLog.filter(l => l.includes('NO MATCH')).map(l => l.split(' ')[0]);
+      await sbUpsert('ss_cron_log', [{
+        run_date: scoringDate,
+        scored_count: upsertRows.length,
+        made_three_count: upsertRows.filter(r => r.made_three).length,
+        mismatches: JSON.stringify(mismatches),
+        users_updated: JSON.stringify(pointsUpdated)
+      }], 'run_date');
+      log.push('Wrote cron log for ' + scoringDate);
+    } catch (e) {
+      log.push('cron_log write failed: ' + e.message);
+    }
+
+    return res.json({
+      success: true,
+      scoringDate,
+      gamesCompleted,
+      picksScored: upsertRows.length,
+      madeThree: upsertRows.filter(r => r.made_three).length,
+      usersUpdated: pointsUpdated,
+      matchLog,
+      log
+    });
   } catch (err) {
     console.error('[cron-score] error:', err.message);
     return res.status(500).json({ error: err.message, log });
