@@ -381,6 +381,9 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .board-card{transition:transform .4s cubic-bezier(.4,0,.2,1)}
 /* F5: pick confidence */
 .pick-confidence{display:none}.pick-3pt-pill{display:inline-block;font-size:.65rem;font-weight:500;margin-top:5px;color:var(--gold)}
+/* F6: streak badge */
+.streak-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ff6b35,#cc0000);color:#fff;font-weight:900;font-size:.9rem;padding:4px 13px;border-radius:20px;margin-left:12px;box-shadow:0 2px 16px rgba(255,80,0,.6);animation:strk 2s infinite}
+@keyframes strk{0%,100%{box-shadow:0 2px 16px rgba(255,80,0,.6)}50%{box-shadow:0 4px 32px rgba(255,80,0,1)}}
 /* F8: pick burst */
 @keyframes pick-burst{0%{box-shadow:0 0 0 0 rgba(34,197,94,.9),inset 0 0 0 0 rgba(34,197,94,.1)}40%{box-shadow:0 0 0 20px rgba(34,197,94,0),inset 0 0 36px rgba(34,197,94,.35)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0),inset 0 0 0 0 rgba(34,197,94,0)}}
 .pick-burst{animation:pick-burst .75s ease-out forwards!important}
@@ -463,7 +466,7 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       </div>
       <div id="date-pill-row" class="date-pill-row" style="display:none"></div>
       <div id="my-shooters-bar" style="display:none; margin:0 12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:14px; padding:12px 14px;">
-        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px">🎯 My Shooters Today</div>
+        <div style="font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px">🎯 My Shooters Today <span id="streak-badge"></span></div>
         <div id="my-shooters-inner" style="display:flex;flex-wrap:wrap;gap:8px"></div>
       </div>
       <div id="games-list"><div class="loading"><div class="spinner"></div><br>Loading games…</div></div>
@@ -577,13 +580,6 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
       <div id="a-result-players"></div>
       <button class="admin-btn success" onclick="adminSaveResults()" style="margin-top:10px">💾 Save &amp; Award Points</button>
       <div id="a-result-status"></div>
-    </div>
-
-    <div class="admin-section">
-      <h3>🤖 Auto-Resolve via NBA Stats</h3>
-      <p style="font-size:.75rem;color:var(--muted);margin-bottom:10px">Fetches per-game 3PT data from NBA.com and automatically scores all FINAL games not yet scored.</p>
-      <button class="admin-btn success" onclick="adminAutoResolve()">⚡ Auto-Resolve Final Games</button>
-      <div id="a-auto-status"></div>
     </div>
 
     <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--purple2);font-weight:900;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid rgba(168,85,247,.3)">👤 Players</div>
@@ -745,8 +741,6 @@ async function startApp() {
     renderCurrentTab();
     checkNotifications();
     startCountdownTimer();
-    // Auto-score any completed games on every page load
-    autoResolveCompletedGames().catch(() => {});
   }
 }
 
@@ -768,27 +762,33 @@ async function loadAll() {
     todayGames = gamesRes.data || [];
     myPicks = picksRes.data || [];
     myPickedPlayerIds = new Set(myPicks.map(p => p.player_id));
-    // Only burn players from games where tip-off time has already passed
+    // Burn players from ALL past games (game_date < today) — these are definitively over,
+    // no need to check tip-off time or is_locked flag.
+    // Also burn today's games that are explicitly locked (is_locked=true or tip-off passed).
     const _burnToday = _now.toISOString().split('T')[0];
-    const {data:_lockGmRaw} = await db.from('ss_games').select('id,game_date,tip_off_et').lte('game_date', _burnToday);
-    const _lockGids = (_lockGmRaw||[]).filter(g => isGameLocked(g)).map(g => g.id);
+    const {data:_pastGames} = await db.from('ss_games').select('id').lt('game_date', _burnToday);
+    const {data:_todayGames} = await db.from('ss_games').select('id,game_date,tip_off_et,is_locked').eq('game_date', _burnToday);
+    const _burnGameIds = [
+      ...(_pastGames || []).map(g => g.id),
+      ...(_todayGames || []).filter(g => isGameLocked(g)).map(g => g.id)
+    ];
     let _bpAll = [];
-    if (_lockGids.length > 0) {
-      const {data:_bpLkData} = await db.from('ss_picks').select('player_id').eq('user_id',currentUser.id).in('game_id',_lockGids);
+    if (_burnGameIds.length > 0) {
+      const {data:_bpLkData} = await db.from('ss_picks').select('player_id').eq('user_id',currentUser.id).in('game_id',_burnGameIds);
       _bpAll = _bpLkData||[];
     }
     window._burnedIds = new Set(_bpAll.map(p=>p.player_id));
-    // Load results for all games the user has picks in (covers any date pill the user navigates to)
-    const gameIds = myPicks.length > 0 ? [...new Set(myPicks.map(p => p.game_id))] : [];
+    // Load results for today's games (to show ✅ on scored picks)
+    const gameIds = todayGames.filter(g => {
+      const d = new Date(g.game_date + 'T00:00:00');
+      return Math.abs((d - new Date()) / 86400000) <= 1;
+    }).map(g => g.id);
     if (gameIds.length > 0) {
       const { data: resultsData } = await db.from('ss_results').select('*').in('game_id', gameIds).eq('made_three', true);
       todayResults = resultsData || [];
-      // Track which game_ids have been scored (any ss_results row = admin/autoResolve ran for that game)
-      const { data: scoredData } = await db.from('ss_results').select('game_id').in('game_id', gameIds);
-      window._scoredGameIds = new Set((scoredData || []).map(r => r.game_id));
-    } else { todayResults = []; window._scoredGameIds = new Set(); }
+    } else { todayResults = []; }
     // F5+F6
-    await Promise.all([loadPickCounts()]);
+    await Promise.all([loadPickCounts(), loadUserStreak()]);
   } catch(e) {
     console.error('loadAll error', e);
   }
@@ -835,24 +835,20 @@ function renderMyShootersBar(games) {
   const todayPicksForDisplay = myPicks.filter(p => games.some(g => g.id === p.game_id));
   if (todayPicksForDisplay.length === 0) { bar.style.display = 'none'; return; }
   bar.style.display = 'block';
+  // F6 streak
+  const _sEl = document.getElementById('streak-badge');
+  if (_sEl) _sEl.innerHTML = (window._pickStreak >= 2) ? '<span class="streak-badge">&#x1F525; ' + window._pickStreak + ' day streak</span>' : '';
   inner.innerHTML = todayPicksForDisplay.map(pick => {
     const player = allPlayers.find(p => p.id === pick.player_id);
     if (!player) return '';
-    const game = games.find(g => g.id === pick.game_id);
-    const isFinal = game && getGameStatus(game) === 'final';
-    // _playerThreePtResults is populated by autoResolveCompletedGames() after the API fetch
-    const key = player.name.toLowerCase().trim();
-    const result = window._playerThreePtResults?.[key]; // true=hit, false=missed, undefined=no data yet
-    const indicator = (isFinal && result !== undefined) ? (result ? ' ✅' : ' ❌') : '';
-    const bgColor = (isFinal && result !== undefined) ? (result ? 'rgba(34,197,94,.1)' : 'rgba(239,68,68,.07)') : 'var(--card)';
-    const borderColor = (isFinal && result !== undefined) ? (result ? 'rgba(34,197,94,.4)' : 'rgba(239,68,68,.3)') : 'var(--border)';
+    const scored = todayResults.some(r => r.player_id === player.id && r.made_three);
     const tierColors = { star: 'var(--star-color)', role: 'var(--role-color)', brick: 'var(--brick-color)' };
     const tierPts = { star: '💰 EASY', role: '🏀 MIDS', brick: '🧱 BRICK' };
     const color = tierColors[player.tier] || 'var(--muted)';
-    return `<div style="display:flex;align-items:center;gap:6px;background:${bgColor};border:1px solid ${borderColor};border-radius:10px;padding:6px 10px;">
+    return `<div style="display:flex;align-items:center;gap:6px;background:${scored ? 'rgba(34,197,94,.1)' : 'var(--card)'};border:1px solid ${scored ? 'rgba(34,197,94,.4)' : 'var(--border)'};border-radius:10px;padding:6px 10px;">
       <img src="${getPhotoUrl(player.nba_id)}" onerror="this.src='${silhouette()}'" style="width:28px;height:28px;border-radius:7px;object-fit:cover;flex-shrink:0">
       <div>
-        <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase">${player.name}${indicator}</div>
+        <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase">${player.name}${scored ? ' ✅' : ''}</div>
         <div style="font-size:0.58rem;color:${color};font-weight:700">${tierPts[player.tier]} · ${player.team}</div>
       </div>
     </div>`;
@@ -1431,122 +1427,34 @@ async function adminSaveResults() {
   const gameId = parseInt(document.getElementById('a-result-game').value);
   if (!gameId) { setStatus('a-result-status', 'Select a game', 'err'); return; }
   const checkboxes = document.querySelectorAll('#a-result-players input[type=checkbox]');
-  const made3Ids = [];
-  checkboxes.forEach(cb => { if (cb.checked) made3Ids.push(parseInt(cb.dataset.pid)); });
-  const scoredCount = await scoreGameWithResults(gameId, made3Ids);
-  setStatus('a-result-status', `✅ Results saved! ${scoredCount} user(s) scored.`, 'ok');
-  await loadAll(); renderCurrentTab();
-}
-
-// Core scoring engine. Awards points for all users who picked players in playersMade3Ids.
-// Uses ss_notifications with message '__SCORED_GAME_{id}__' as an idempotency lock
-// (ss_games.status and ss_results are RLS-protected against writes with the anon key).
-async function isGameScored(gameId) {
-  const { data } = await db.from('ss_notifications')
-    .select('id').eq('user_id', 1)
-    .eq('message', '__SCORED_GAME_' + gameId + '__').limit(1);
-  return data && data.length > 0;
-}
-
-async function scoreGameWithResults(gameId, playersMade3Ids) {
-  const { data: allPicks } = await db.from('ss_picks')
-    .select('*, ss_players(tier, name)')
-    .eq('game_id', gameId);
+  const results = [];
+  checkboxes.forEach(cb => { if (cb.checked) results.push(parseInt(cb.dataset.pid)); });
+  // Upsert results
+  for (const pid of results) {
+    await db.from('ss_results').upsert({ game_id: gameId, player_id: pid, made_three: true }, { onConflict: 'game_id,player_id' });
+  }
+  // Award points
+  const { data: allPicks } = await db.from('ss_picks').select('*, ss_players(tier, name)').eq('game_id', gameId);
   const pointsMap = {};
   for (const pick of (allPicks || [])) {
-    if (!playersMade3Ids.includes(pick.player_id)) continue;
+    if (!results.includes(pick.player_id)) continue;
     const tier = pick.ss_players?.tier;
     const pts = tier === 'star' ? 1 : tier === 'role' ? 2 : 3;
     pointsMap[pick.user_id] = (pointsMap[pick.user_id] || 0) + pts;
+    // Send notification
     await db.from('ss_notifications').insert({
       user_id: pick.user_id,
       message: `🔥 ${pick.ss_players?.name} made a 3! +${pts} point${pts > 1 ? 's' : ''} awarded.`,
       is_read: false
     }).catch(() => {});
   }
+  // Update user totals
   for (const [userId, pts] of Object.entries(pointsMap)) {
     const { data: user } = await db.from('ss_users').select('total_points').eq('id', parseInt(userId)).single();
     const newTotal = (user?.total_points || 0) + pts;
     await db.from('ss_users').update({ total_points: newTotal }).eq('id', parseInt(userId));
   }
-  // Mark game as scored — using a hidden notification as the lock since
-  // ss_games updates are blocked by RLS with the anon key.
-  await db.from('ss_notifications').insert({
-    user_id: 1, message: '__SCORED_GAME_' + gameId + '__', is_read: true
-  }).catch(() => {});
-  return Object.keys(pointsMap).length;
-}
-
-// Auto-resolver: runs on every page load for regular users.
-// Scores any game where 3+ hours have elapsed since tip-off and no scoring lock exists.
-async function autoResolveCompletedGames() {
-  try {
-    const finalGames = (todayGames || []).filter(g => getGameStatus(g) === 'final');
-    if (finalGames.length === 0) return;
-    const byDate = {};
-    for (const g of finalGames) {
-      if (!byDate[g.game_date]) byDate[g.game_date] = [];
-      byDate[g.game_date].push(g);
-    }
-    let anyScored = false, anyResults = false;
-    for (const [date, games] of Object.entries(byDate)) {
-      let players = {};
-      try {
-        const resp = await fetch('/api/resolve-scores?date=' + date);
-        if (resp.ok) ({ players } = await resp.json());
-        else console.warn('[SplashSeason] resolve-scores HTTP', resp.status, 'for', date);
-      } catch (e) { console.warn('[SplashSeason] resolve-scores failed for', date, e.message); }
-      // Cache all player 3PT results globally so renderMyShootersBar can read them
-      if (Object.keys(players).length > 0) {
-        window._playerThreePtResults = window._playerThreePtResults || {};
-        for (const [name, data] of Object.entries(players)) {
-          window._playerThreePtResults[name.toLowerCase().trim()] = data.made3 === true;
-        }
-        anyResults = true;
-      }
-      for (const game of games) {
-        const already = await isGameScored(game.id);
-        if (already) continue;
-        const { data: picks } = await db.from('ss_picks')
-          .select('player_id, user_id, ss_players(name, tier)')
-          .eq('game_id', game.id);
-        if (!picks || picks.length === 0) {
-          await db.from('ss_notifications').insert({
-            user_id: 1, message: '__SCORED_GAME_' + game.id + '__', is_read: true
-          }).catch(() => {});
-          continue;
-        }
-        const made3Ids = picks
-          .filter(p => players[p.ss_players?.name]?.made3 === true)
-          .map(p => p.player_id);
-        await scoreGameWithResults(game.id, made3Ids);
-        anyScored = true;
-      }
-    }
-    if (anyScored) {
-      const { data: fresh } = await db.from('ss_users').select('total_points').eq('id', currentUser.id).single();
-      if (fresh) {
-        currentUser.total_points = fresh.total_points;
-        const ptsEl = document.getElementById('header-pts');
-        if (ptsEl) ptsEl.textContent = fresh.total_points + ' PTS';
-        localStorage.setItem('ss_session', JSON.stringify(currentUser));
-      }
-      await loadAll(); renderCurrentTab();
-    } else if (anyResults) {
-      // Games were already scored on a prior run — re-render so ✅/❌ appear
-      // now that _playerThreePtResults is populated
-      renderCurrentTab();
-    }
-  } catch (e) { console.warn('[SplashSeason] autoResolveCompletedGames error:', e.message); }
-}
-
-async function adminAutoResolve() {
-  setStatus('a-auto-status', '⏳ Fetching NBA stats and scoring final games...', 'ok');
-  try {
-    await loadAll();
-    await autoResolveCompletedGames();
-    setStatus('a-auto-status', '✅ Done! Check leaderboard for updated points.', 'ok');
-  } catch(e) { setStatus('a-auto-status', '❌ Error: ' + e.message, 'err'); }
+  setStatus('a-result-status', `✅ Results saved! ${Object.keys(pointsMap).length} player(s) scored.`, 'ok');
 }
 
 async function adminAddPlayer() {
@@ -1668,7 +1576,7 @@ ALTER TABLE ss_games ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'scheduled';
 ALTER TABLE ss_players ADD COLUMN IF NOT EXISTS three_pct NUMERIC;
 ALTER TABLE ss_players ADD COLUMN IF NOT EXISTS three_pg NUMERIC;
 ALTER TABLE ss_players ADD COLUMN IF NOT EXISTS ppg NUMERIC;
-ALTER TABLE ss_players ADD COLUMN IF NOT EXISTS nba_id TEXT;
+ALTER TABLE ss_players ADD COLUMN IF NOT EXISTS bua_id TEXT;
 
 -- Give nick0 admin rights
 UPDATE ss_users SET is_admin = TRUE WHERE username = 'nick0';`;
