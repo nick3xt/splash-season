@@ -1282,7 +1282,8 @@ function renderTierList(tier) {
 // ═══════════════════════════════════════════════════════
 async function renderBoard() {
   const container = document.getElementById('board-list');
-  container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+    const tc = document.querySelector('.tab-content'); if(tc) tc.style.display='block';
+container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   let users = [];
   try {
     const { data } = await db.from('ss_users').select('id, username, nickname, total_points').eq('is_admin', false).order('total_points', { ascending: false });
