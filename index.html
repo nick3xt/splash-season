@@ -388,6 +388,21 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .status-live{display:inline-flex;align-items:center;gap:7px;background:#ef4444;color:#fff;font-size:.82rem;font-weight:900;padding:5px 12px;border-radius:20px;letter-spacing:1.5px;box-shadow:0 0 16px rgba(239,68,68,.8)}
 .status-live .ldot{width:10px;height:10px;background:#fff;border-radius:50%;animation:livedot 1s infinite;flex-shrink:0}
 .status-final{display:inline-flex;align-items:center;background:#374151;color:#9ca3af;font-size:.79rem;font-weight:700;padding:5px 12px;border-radius:20px;letter-spacing:1px}
+
+/* ── CHIP FLASH ANIMATION ── */
+.chip-flash { animation: chipGlow 2.5s ease-out forwards; }
+@keyframes chipGlow { 0%{background:#22c55e!important;color:#fff!important;transform:scale(1.08)} 60%{background:#22c55e!important;color:#fff!important} 100%{} }
+/* ── STANDINGS TABLE ── */
+.standings-wrap { margin-top:20px; padding-bottom:16px; }
+.standings-title { font-size:.8rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:10px; padding:0 2px; }
+.standings-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:10px; border:1px solid var(--border); }
+.standings-table { width:100%; border-collapse:collapse; font-size:.78rem; background:var(--card); }
+.standings-table th,.standings-table td { padding:7px 12px; text-align:center; border-bottom:1px solid var(--border); white-space:nowrap; }
+.standings-table th { font-weight:700; color:var(--muted); font-size:.68rem; text-transform:uppercase; background:var(--bg); }
+.standings-table td:first-child,.standings-table th:first-child { text-align:left; font-weight:600; }
+.standings-table tbody tr:last-child td { border-bottom:none; }
+.board-rank { font-size:1.1rem; min-width:28px; display:inline-block; }
+.board-top { border-left:3px solid var(--gold); }
 </style>
 </head>
 <body>
@@ -1268,32 +1283,71 @@ function renderTierList(tier) {
 async function renderBoard() {
   const container = document.getElementById('board-list');
   container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  const users = await loadLeaderboard();
-  if (users.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="icon">🏆</div><p>No scores yet.<br>Games in progress!</p></div>';
+  let users = [];
+  try {
+    const { data } = await db.from('ss_users').select('id, username, nickname, total_points').eq('is_admin', false).order('total_points', { ascending: false });
+    users = data || [];
+  } catch (e) {
+    container.innerHTML = '<div class="empty-state"><p>Error loading leaderboard.</p></div>';
     return;
   }
-  const _nRanks = {}; users.forEach((u,i) => { _nRanks[u.id] = i+1; }); const _pRanks = window._prevRanks || {};
-  container.innerHTML = users.map((u, i) => {
-    const rank = i + 1;
-    const rankClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
-    const isMe = u.id === currentUser.id;
-    const display = u.nickname || u.username;
-    return `<div class="board-card ${isMe ? 'me' : ''}">
-      <div class="board-rank ${rankClass}">${rank}</div>
-      <div class="board-name">${display}${(()=>{ const _pr=_pRanks[u.id]; if(!_pr||_pr===rank) return ''; return _pr>rank ? '<span class="rank-badge up">&#x2191;'+((_pr-rank))+'</span>' : '<span class="rank-badge dn">&#x2193;'+((rank-_pr))+'</span>'; })()}${isMe ? ' <span style="color:var(--gold);font-size:.7rem">(You)</span>' : ''}</div>
-      <div class="board-pts-wrap">
-        <div class="board-pts">${u.total_points || 0}</div>
-        <div class="board-pts-label">pts</div>
-      </div>
-    </div>`;
-  }).join('');
-  window._prevRanks = _nRanks;
+  if (users.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">🏀</div><p>No scores yet.<br>Games in progress!</p></div>';
+    return;
+  }
+  const medals = ['🥇','🥈','🥉'];
+  container.innerHTML = users.map((u, i) => '<div class="board-card' + (i < 3 ? ' board-top' : '') + '">' +
+    '<span class="board-rank">' + (medals[i] !== undefined ? medals[i] : '#' + (i+1)) + '</span>' +
+    '<div class="board-info"><span class="board-name">' + (u.nickname || u.username || 'Player') + '</span></div>' +
+    '<span class="board-pts">' + (u.total_points || 0) + ' <small>PTS</small></span>' +
+    '</div>').join('');
+
+  // ── WEEK-BY-WEEK STANDINGS ───────────────────────────────────
+  let standingsEl = document.getElementById('standings-section');
+  if (!standingsEl) {
+    standingsEl = document.createElement('div');
+    standingsEl.id = 'standings-section';
+    standingsEl.style.cssText = 'margin:0 12px 16px;';
+    container.parentElement.appendChild(standingsEl);
+  }
+  standingsEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  try {
+    const { data: results } = await db.from('ss_results').select('user_id,pts_awarded,scored_date').eq('made_three', true);
+    const rows = results || [];
+    if (rows.length === 0) { standingsEl.innerHTML = ''; return; }
+    const weekMap = {};
+    for (const r of rows) {
+      if (!r.scored_date) continue;
+      const d = new Date(r.scored_date + 'T12:00:00Z');
+      const wk = _ssIsoWeek(d);
+      if (!weekMap[wk]) weekMap[wk] = {};
+      weekMap[wk][r.user_id] = (weekMap[wk][r.user_id] || 0) + (r.pts_awarded || 0);
+    }
+    const weeks = Object.keys(weekMap).sort((a, b) => +a - +b);
+    const userMap = {};
+    for (const u of users) userMap[u.id] = u.nickname || u.username;
+    let tbl = '<div class="standings-wrap"><p class="standings-title">📅 Week-by-Week Standings</p><div class="standings-scroll"><table class="standings-table"><thead><tr><th>Player</th>';
+    for (let i = 0; i < weeks.length; i++) tbl += '<th>Wk ' + (i+1) + '</th>';
+    tbl += '<th>Total</th></tr></thead><tbody>';
+    for (const u of users) {
+      tbl += '<tr><td>' + (userMap[u.id] || u.username) + '</td>';
+      let tot = 0;
+      for (const w of weeks) { const p = (weekMap[w] && weekMap[w][u.id]) || 0; tot += p; tbl += '<td>' + (p || '–') + '</td>'; }
+      tbl += '<td><strong>' + (tot || '–') + '</strong></td></tr>';
+    }
+    tbl += '</tbody></table></div></div>';
+    standingsEl.innerHTML = tbl;
+  } catch (e) { standingsEl.innerHTML = ''; }
 }
 
-// ═══════════════════════════════════════════════════════
-// NOTIFICATIONS
-// ═══════════════════════════════════════════════════════
+function _ssIsoWeek(d) {
+  const tmp = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  tmp.setUTCDate(tmp.getUTCDate() - (tmp.getUTCDay() + 6) % 7 + 3);
+  const firstThu = new Date(Date.UTC(tmp.getUTCFullYear(), 0, 4));
+  firstThu.setUTCDate(firstThu.getUTCDate() - (firstThu.getUTCDay() + 6) % 7 + 3);
+  return 1 + Math.round((tmp - firstThu) / 604800000);
+}
+
 async function checkNotifications() {
   try {
     const { data } = await db.from('ss_notifications').select('*').eq('user_id', currentUser.id).eq('is_read', false).order('created_at', { ascending: false });
@@ -1599,6 +1653,42 @@ loadPlayerStats().catch(()=>{}).finally(()=>init());
       d.fg3a.toFixed(1) + ' 3PA · ' +
       (d.fg3pct * 100).toFixed(1) + '% 3P%</span>';
   }
+
+
+// ── LIVE RESULT POLLING ──────────────────────────────────────────────────────
+let _pollSnap = {};
+async function pollLiveResults() {
+  if (typeof currentUser === 'undefined' || !currentUser) return;
+  if (typeof selectedDate === 'undefined' || !selectedDate) return;
+  try {
+    const { data } = await db.from('ss_results')
+      .select('game_id,player_id,user_id,made_three,pts_awarded')
+      .eq('scored_date', selectedDate)
+      .eq('user_id', currentUser.id);
+    if (!data || !data.length) return;
+    const snap = {};
+    let myPts = 0;
+    for (const r of data) {
+      const key = r.game_id + '-' + r.player_id;
+      snap[key] = r;
+      if (r.made_three) myPts += (r.pts_awarded || 0);
+    }
+    let newScores = 0;
+    for (const [key, r] of Object.entries(snap)) {
+      if (r.made_three && !(_pollSnap[key] && _pollSnap[key].made_three)) {
+        newScores++;
+        const chip = document.querySelector('[data-pid="' + r.player_id + '"], [data-player-id="' + r.player_id + '"]');
+        if (chip) { chip.classList.add('chip-flash'); setTimeout(() => chip.classList.remove('chip-flash'), 2500); }
+      }
+    }
+    _pollSnap = snap;
+    const badge = document.getElementById('pts-badge');
+    if (badge && myPts > 0) badge.textContent = myPts + ' PTS';
+    if (newScores > 0 && typeof showToast === 'function') showToast('🎯 New 3PT scored! +' + myPts + ' PTS');
+  } catch (e) { /* silent */ }
+}
+setInterval(pollLiveResults, 60000);
+
 </script>
 </body>
 </html>
