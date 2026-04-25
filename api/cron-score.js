@@ -1,237 +1,194 @@
-// /api/cron-score.js
-// Vercel Cron Job — runs daily at 8:00 AM UTC (4:00 AM ET)
-// Scores all picks from the previous night's NBA games.
-//
-// Idempotency: before touching any game, we check for a
-//   __SCORED_GAME_{id}__ notification row.  After scoring, we insert one.
-// Points:  star = 1 pt  |  role = 2 pt  |  brick = 3 pt
-// Scoring: ≥ 1 three-pointer made = hit.
+// /api/cron-score.js -- Vercel Cron Job
+// Fires daily at 09:00 UTC (2:00 AM PT).
+// Fully idempotent, no locks, no hardcoded data.
+// REQUIRED ALTER TABLE before first run:
+//   ALTER TABLE ss_results ADD COLUMN IF NOT EXISTS user_id INTEGER;
+//   ALTER TABLE ss_results ADD COLUMN IF NOT EXISTS pts_awarded INTEGER NOT NULL DEFAULT 0;
+//   ALTER TABLE ss_results ADD COLUMN IF NOT EXISTS scored_date DATE;
+//   CREATE UNIQUE INDEX IF NOT EXISTS ss_results_uniq ON ss_results (game_id, player_id, user_id);
 
 const SUPABASE_URL = 'https://heykwxkyvbzffkhgrqgf.supabase.co';
-// Prefer a service-role key (bypasses RLS) if you add it in Vercel dashboard.
-// Falls back to the publishable anon key that already has write access to
-// ss_users.total_points and ss_notifications.
 const SUPABASE_KEY =
   process.env.SUPABASE_SERVICE_KEY ||
   process.env.SUPABASE_ANON_KEY ||
   'sb_publishable_KvxJYevSYKP1Na_de5RCTQ_G9dDi0_L';
 
-// The live site URL — used to call /api/resolve-scores internally.
-const SITE_URL =
-  process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : 'https://splash-season.vercel.app';
-
-const TIER_PTS = { star: 1, role: 2, brick: 3 };
-
-// ── Entry point ───────────────────────────────────────────────────────────────
-
-export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
+function getSiteUrl() {
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return 'https://' + process.env.VERCEL_PROJECT_PRODUCTION_URL;
   }
-
-  // ?date=YYYY-MM-DD override for manual back-fills / testing
-  const dateET = req.query.date || getYesterdayET();
-  console.log(`[cron-score] Running for date: ${dateET}`);
-
-  try {
-    const result = await runScoring(dateET);
-    return res.status(200).json({ ok: true, date: dateET, ...result });
-  } catch (err) {
-    console.error('[cron-score] Fatal error:', err);
-    return res.status(500).json({ ok: false, error: err.message });
+  if (process.env.VERCEL_URL) {
+    return 'https://' + process.env.VERCEL_URL;
   }
+  return 'https://splash-season.vercel.app';
 }
 
-// ── Core scoring flow ─────────────────────────────────────────────────────────
-
-async function runScoring(dateET) {
-  // 1. Find games on this date
-  const games = await sbGet(
-    `ss_games?game_date=eq.${dateET}&select=id,home_team,away_team`
-  );
-  if (!games.length) {
-    return { message: `No games found for ${dateET}`, gamesScored: 0, picksAwarded: 0 };
-  }
-
-  const gameIds = games.map(g => g.id);
-  console.log(`[cron-score] Games: ${gameIds.join(', ')}`);
-
-  // 2. Idempotency — skip games already covered by a lock notification
-  const lockRows = await sbGet(
-    `ss_notifications?message=like.*__SCORED_GAME_*&select=message`
-  );
-  const scoredSet = new Set(
-    lockRows
-      .map(n => {
-        const m = n.message?.match(/__SCORED_GAME_(\d+)__/);
-        return m ? Number(m[1]) : null;
-      })
-      .filter(Boolean)
-  );
-
-  const pendingIds = gameIds.filter(id => !scoredSet.has(id));
-  if (!pendingIds.length) {
-    return { message: 'All games already scored', gamesScored: 0, picksAwarded: 0 };
-  }
-  console.log(`[cron-score] Pending games: ${pendingIds.join(', ')}`);
-
-  // 3. Get 3PT results via /api/resolve-scores (handles both hardcoded & live NBA API)
-  let resolveData;
-  try {
-    const r = await fetch(`${SITE_URL}/api/resolve-scores?date=${dateET}`);
-    if (!r.ok) throw new Error(`resolve-scores returned HTTP ${r.status}`);
-    resolveData = await r.json();
-  } catch (e) {
-    console.error('[cron-score] resolve-scores call failed:', e.message);
-    resolveData = { players: {} };
-  }
-
-  const playerResults = resolveData.players || {};
-  console.log(
-    `[cron-score] resolve-scores (${resolveData.source || 'unknown'}):` +
-    ` ${Object.keys(playerResults).length} players`
-  );
-
-  // 4. Fetch all picks for pending games, with player tier
-  const picks = await sbGet(
-    `ss_picks?game_id=in.(${pendingIds.join(',')})` +
-    `&select=id,user_id,game_id,player_id,ss_players(name,tier)`
-  );
-  console.log(`[cron-score] Picks to evaluate: ${picks.length}`);
-
-  // 5. Admin user id for idempotency lock records
-  const admins = await sbGet(`ss_users?is_admin=eq.true&select=id&limit=1`);
-  const adminId = admins[0]?.id ?? 1;
-
-  // 6. Award points
-  let picksAwarded = 0;
-  for (const pick of picks) {
-    const playerName = pick.ss_players?.name;
-    const tier      = pick.ss_players?.tier;
-    if (!playerName || !tier || !TIER_PTS[tier]) continue;
-
-    // Try exact match first, then normalised match
-    let result = playerResults[playerName];
-    if (!result) {
-      const normKey = normName(playerName);
-      const found = Object.keys(playerResults).find(k => normName(k) === normKey);
-      if (found) result = playerResults[found];
-    }
-
-    if (!result?.made3) continue; // miss or no data — no points
-
-    const pts = TIER_PTS[tier];
-
-    // Read-then-write so we don't overwrite concurrent updates
-    const [user] = await sbGet(`ss_users?id=eq.${pick.user_id}&select=id,total_points`);
-    if (!user) continue;
-
-    await sbPatch(`ss_users?id=eq.${pick.user_id}`, {
-      total_points: Number.isFinite(Number(user.total_points)) ? Number(user.total_points) + pts : pts,
-    });
-
-    const tierLabel =
-      tier === 'star' ? 'Easy Money' : tier === 'role' ? 'MIDS' : 'Brick City';
-    const fg3m = result.fg3m ?? '?';
-    await sbPost('ss_notifications', [
-      {
-        user_id: pick.user_id,
-        message:
-          `🔥 ${playerName} made ${fg3m} three${fg3m !== 1 ? 's' : ''}! ` +
-          `+${pts} pt${pts !== 1 ? 's' : ''} awarded. (${tierLabel})`,
-        is_read: false,
-      },
-    ]);
-
-    picksAwarded++;
-    console.log(`[cron-score] +${pts}pt → user ${pick.user_id} | ${playerName} (${fg3m} 3s)`);
-  }
-
-  // 7. Insert idempotency lock for every game we just processed
-  for (const gid of pendingIds) {
-    await sbPost('ss_notifications', [
-      {
-        user_id: adminId,
-        message: `__SCORED_GAME_${gid}__ auto-scored ${new Date().toISOString()}`,
-        is_read: true,
-      },
-    ]);
-  }
-
-  return { gamesScored: pendingIds.length, picksAwarded };
+function tierPts(tier) {
+  const t = String(tier || '').toLowerCase().trim();
+  if (t === 'star' || t === '1') return 1;
+  if (t === 'role' || t === '2') return 2;
+  if (t === 'brick' || t === '3') return 3;
+  return 0;
 }
 
-// ── Supabase REST helpers ─────────────────────────────────────────────────────
+function normName(s) {
+  return String(s || '')
+    .toLowerCase()
+    .replace(/[^a-z\s]/g, '')
+    .replace(/\b(jr|sr|ii|iii|iv)\b/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 
 function sbHeaders() {
   return {
     apikey: SUPABASE_KEY,
-    Authorization: `Bearer ${SUPABASE_KEY}`,
+    Authorization: 'Bearer ' + SUPABASE_KEY,
     'Content-Type': 'application/json',
+    Accept: 'application/json',
   };
 }
 
 async function sbGet(path) {
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { headers: sbHeaders() });
+  const r = await fetch(SUPABASE_URL + '/rest/v1/' + path, { headers: sbHeaders() });
   if (!r.ok) {
-    const t = await r.text().catch(() => '');
-    throw new Error(`sbGet ${path} → ${r.status}: ${t}`);
+    const body = await r.text();
+    throw new Error('sbGet /' + path + ' => ' + r.status + ': ' + body);
   }
-  const d = await r.json();
-  return Array.isArray(d) ? d : [];
+  return r.json();
 }
 
-async function sbPatch(path, body) {
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+async function sbUpsert(table, rows, conflictCols) {
+  const r = await fetch(
+    SUPABASE_URL + '/rest/v1/' + table + '?on_conflict=' + conflictCols,
+    {
+      method: 'POST',
+      headers: {
+        ...sbHeaders(),
+        Prefer: 'return=representation,resolution=merge-duplicates',
+      },
+      body: JSON.stringify(rows),
+    }
+  );
+  if (!r.ok) {
+    const body = await r.text();
+    throw new Error('sbUpsert ' + table + ' => ' + r.status + ': ' + body);
+  }
+  return r.json();
+}
+
+async function sbPatch(table, filter, body) {
+  const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + filter, {
     method: 'PATCH',
-    headers: sbHeaders(),
-    body: JSON.stringify(body),
-  });
-  if (!r.ok) {
-    const t = await r.text().catch(() => '');
-    console.error(`[cron-score] PATCH ${path} → ${r.status}: ${t}`);
-  }
-}
-
-async function sbPost(path, body) {
-  const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-    method: 'POST',
     headers: { ...sbHeaders(), Prefer: 'return=minimal' },
     body: JSON.stringify(body),
   });
   if (!r.ok) {
-    const t = await r.text().catch(() => '');
-    console.error(`[cron-score] POST ${path} → ${r.status}: ${t}`);
+    const text = await r.text();
+    throw new Error('sbPatch ' + table + '?' + filter + ' => ' + r.status + ': ' + text);
   }
 }
 
-// ── Utilities ─────────────────────────────────────────────────────────────────
+export default async function handler(req, res) {
+  const log = [];
+  try {
+    // 1. Yesterday in PT (UTC-7)
+    const nowPT = new Date(Date.now() - 7 * 60 * 60 * 1000);
+    nowPT.setDate(nowPT.getDate() - 1);
+    const targetDate = nowPT.toISOString().slice(0, 10);
+    const scoringDate = (req.query && req.query.date) ? req.query.date : targetDate;
+    log.push('Scoring date: ' + scoringDate);
 
-/** Lowercase, strip punctuation, collapse spaces. */
-function normName(n) {
-  return n.toLowerCase().replace(/[.']/g, '').replace(/\s+/g, ' ').trim();
-}
+    // 2. Get ESPN 3PT results via resolve-scores endpoint
+    const SITE_URL = getSiteUrl();
+    const resolveUrl = SITE_URL + '/api/resolve-scores?date=' + scoringDate;
+    log.push('Fetching ESPN data: ' + resolveUrl);
+    const resolveRes = await fetch(resolveUrl);
+    if (!resolveRes.ok) throw new Error('resolve-scores HTTP ' + resolveRes.status);
+    const resolveData = await resolveRes.json();
+    const espnPlayers = resolveData.players || {};
+    const gamesCompleted = resolveData.gamesCompleted || 0;
+    log.push('ESPN: ' + resolveData.gamesFound + ' games, ' + gamesCompleted + ' completed, ' + resolveData.playerCount + ' players with 3PT attempts');
 
-/**
- * Yesterday's date in ET as "YYYY-MM-DD".
- * Cron fires at 08:00 UTC = 04:00 ET, so NBA games from the previous
- * calendar day in ET are guaranteed to be final.
- */
-function getYesterdayET() {
-  const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/New_York',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(new Date());
+    if (gamesCompleted === 0) {
+      return res.json({ success: true, message: 'No completed ESPN games for ' + scoringDate, scoringDate, scored: 0, log });
+    }
 
-  const y  = parts.find(p => p.type === 'year').value;
-  const mo = parts.find(p => p.type === 'month').value;
-  const da = parts.find(p => p.type === 'day').value;
+    // Build normalized name lookup for fast matching
+    const espnByNorm = {};
+    for (const [name, data] of Object.entries(espnPlayers)) {
+      espnByNorm[normName(name)] = { ...data, originalName: name };
+    }
 
-  const d = new Date(`${y}-${mo}-${da}T12:00:00Z`);
-  d.setUTCDate(d.getUTCDate() - 1);
-  return d.toISOString().slice(0, 10);
+    // 3. Get ss_games for scoringDate
+    const games = await sbGet('ss_games?select=id,game_date,home_team,away_team,status&game_date=eq.' + scoringDate);
+    log.push('ss_games: ' + games.length + ' games');
+    if (games.length === 0) {
+      return res.json({ success: true, message: 'No ss_games for ' + scoringDate, scoringDate, scored: 0, log });
+    }
+    const gameIds = games.map(g => g.id);
+
+    // 4. Get ss_picks for those game IDs
+    const picksRaw = await sbGet('ss_picks?select=id,game_id,player_id,user_id,team_side&game_id=in.(' + gameIds.join(',') + ')');
+    log.push('ss_picks: ' + picksRaw.length + ' picks');
+    if (picksRaw.length === 0) {
+      return res.json({ success: true, message: 'No picks for ' + scoringDate, scoringDate, scored: 0, log });
+    }
+
+    // 5. Fetch player info for all picked player IDs
+    const playerIds = [...new Set(picksRaw.map(p => p.player_id))];
+    const playersData = await sbGet('ss_players?select=id,name,tier&id=in.(' + playerIds.join(',') + ')');
+    const playerMap = {};
+    for (const p of playersData) playerMap[p.id] = p;
+
+    // 6. Score each pick
+    const upsertRows = [];
+    const affectedUsers = new Set();
+    const matchLog = [];
+
+    for (const pick of picksRaw) {
+      const player = playerMap[pick.player_id];
+      if (!player) { matchLog.push('WARN: player_id ' + pick.player_id + ' not in ss_players'); continue; }
+
+      const norm = normName(player.name);
+      const espnMatch = espnByNorm[norm];
+      const made_three = !!(espnMatch && espnMatch.fg3m > 0);
+      const pts_awarded = made_three ? tierPts(player.tier) : 0;
+
+      matchLog.push(player.name + ' (' + player.tier + ') norm=' + norm + ' => ' +
+        (espnMatch ? 'matched:' + espnMatch.originalName + ' fg3m=' + espnMatch.fg3m + ' pts=' + pts_awarded : 'NO MATCH'));
+
+      upsertRows.push({ game_id: pick.game_id, player_id: pick.player_id, user_id: pick.user_id, made_three, pts_awarded, scored_date: scoringDate });
+      affectedUsers.add(pick.user_id);
+    }
+
+    log.push('Scored ' + upsertRows.length + ' picks, ' + upsertRows.filter(r => r.made_three).length + ' made threes');
+
+    // 7. Upsert ss_results -- idempotent via UNIQUE(game_id, player_id, user_id)
+    if (upsertRows.length > 0) {
+      await sbUpsert('ss_results', upsertRows, 'game_id,player_id,user_id');
+      log.push('Upserted ' + upsertRows.length + ' rows into ss_results');
+    }
+
+    // 8. Mark games as final and locked
+    await sbPatch('ss_games', 'game_date=eq.' + scoringDate, { status: 'final', is_locked: true });
+    log.push('Marked ' + games.length + ' ss_games as final');
+
+    // 9. Recalculate total_points for each affected user FROM SCRATCH
+    const pointsUpdated = [];
+    for (const userId of affectedUsers) {
+      const rows = await sbGet('ss_results?select=pts_awarded&user_id=eq.' + userId + '&made_three=eq.true');
+      const totalPoints = rows.reduce((sum, r) => sum + (r.pts_awarded || 0), 0);
+      await sbPatch('ss_users', 'id=eq.' + userId, { total_points: totalPoints });
+      pointsUpdated.push({ userId, totalPoints });
+    }
+    log.push('Updated total_points for ' + pointsUpdated.length + ' users');
+
+    return res.json({ success: true, scoringDate, gamesCompleted, picksScored: upsertRows.length,
+      madeThree: upsertRows.filter(r => r.made_three).length, usersUpdated: pointsUpdated, matchLog, log });
+
+  } catch (err) {
+    console.error('[cron-score] error:', err.message);
+    return res.status(500).json({ error: err.message, log });
+  }
 }
